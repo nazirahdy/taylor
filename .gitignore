@@ -1,0 +1,5 @@
+/*.md
+!/README.md
+/backend/.env
+/backend/vendor/
+/frontend/node_modules/

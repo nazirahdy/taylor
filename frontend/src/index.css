@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Era Jahit Premium Palette */
+  --color-primary: #1A5C4A; /* Teal */
+  --color-primary-dark: #134035;
+  --color-primary-light: #2E7D5E;
+  --color-primary-bg: #EDF5F1;
+  
+  --color-bg: #FFFFFF;
+  --color-surface: #F7F6F4;
+  --color-surface-2: #F0EFED;
+  
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #4B4B4B;
+  --color-text-muted: #9E9E9E;
+  
+  --color-border: #E8E8E8;
+  --color-border-strong: #D0D0D0;
+
+  --font-display: "Playfair Display", serif;
+  --font-sans: "DM Sans", sans-serif;
+
+  --animate-slide-up: slideUp 0.5s ease-out forwards;
+  --animate-fade-in: fadeIn 0.3s ease-in forwards;
+
+  @keyframes slideUp {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFFFFF;
+  font-family: "DM Sans", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0D0D;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C8973F;
+}
+
+/* UI Utilities */
+@utility glass {
+  background: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@utility text-gold-gradient {
+  background: linear-gradient(to right, #E8B96A, #C8973F, #A67C32);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@utility card-hover {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: #1A5C4A;
+    box-shadow: 0 10px 30px -10px rgba(26, 92, 74, 0.2);
+  }
+}
