@@ -23,6 +23,11 @@ class OrderStatusResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?int $navigationSort = 3;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -36,14 +41,20 @@ class OrderStatusResource extends Resource
                             ->dehydrated(false),
                         Forms\Components\Select::make('status')
                             ->label('Status Pesanan')
-                            ->options([
-                                'pending'     => '📌 Menunggu Konfirmasi Admin',
-                                'confirmed'   => '✅ Dikonfirmasi',
-                                'in_progress' => '🧵 Sedang Dikerjakan (Proses Jahit)',
-                                'completed'   => '🏆 Selesai Dikerjakan',
-                                'cancelled'   => '🚫 Dibatalkan',
-                                'rejected'    => '❌ Ditolak',
-                            ])
+                            ->options(function (Order $record) {
+                                $options = [
+                                    'pending'     => '📌 Menunggu Konfirmasi Admin',
+                                    'confirmed'   => '✅ Dikonfirmasi',
+                                    'in_progress' => '🧵 Sedang Dikerjakan (Proses Jahit)',
+                                    'completed'   => '🏆 Selesai Dikerjakan',
+                                    'cancelled'   => '🚫 Dibatalkan',
+                                ];
+                                // Opsi tolak hanya tersedia saat pesanan belum dikonfirmasi
+                                if ($record->status === 'pending') {
+                                    $options['rejected'] = '❌ Ditolak';
+                                }
+                                return $options;
+                            })
                             ->required()
                             ->reactive(),
                         Forms\Components\Textarea::make('rejected_reason')
@@ -144,7 +155,7 @@ class OrderStatusResource extends Resource
                         ]);
                         return $record;
                     })
-                    ->after(function (Order $record, array $data) {
+                    ->after(function (Order $record, array $data, $livewire) {
                         if (!$record->user?->phone_wa) {
                             Notification::make()->title('Status Diperbarui')->success()->send();
                             return;
@@ -170,16 +181,12 @@ class OrderStatusResource extends Resource
 
                         if ($message) {
                             $url = $waService->generateWaLink($record->user->phone_wa, $message);
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             Notification::make()
-                                ->title('Status Berhasil Diperbarui!')
-                                ->body('Klik tombol di bawah untuk memberitahu pelanggan via WhatsApp.')
+                                ->title('Status Berhasil Diperbarui! ✅')
+                                ->body('Notifikasi perubahan status telah dikirim otomatis dan dialihkan ke WhatsApp.')
                                 ->success()
-                                ->actions([
-                                    NotificationAction::make('kirim_wa')
-                                        ->label('📲 Kirim Notifikasi WA ke Pelanggan')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
                                 ->send();
                         } else {
                             Notification::make()->title('Status Diperbarui')->success()->send();
@@ -193,8 +200,8 @@ class OrderStatusResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->modalHeading('Konfirmasi Pesanan')
-                    ->modalDescription('Pesanan akan dikonfirmasi dan pelanggan akan diberitahu via WhatsApp.')
-                    ->action(function (Order $record) {
+                    ->modalDescription('Pesanan akan dikonfirmasi dan Anda akan dialihkan ke WhatsApp untuk mengirim pesan.')
+                    ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'confirmed']);
                         $record->load('user');
 
@@ -204,16 +211,13 @@ class OrderStatusResource extends Resource
                                 $record->user->phone_wa,
                                 $waService->getMessageConfirmed($record)
                             );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             Notification::make()
-                                ->title('Pesanan Dikonfirmasi!')
-                                ->body('Klik tombol berikut untuk memberitahu pelanggan via WhatsApp.')
+                                ->title('Pesanan Dikonfirmasi! ✅')
+                                ->body('Pesanan telah dikonfirmasi dan dialihkan ke WhatsApp.')
                                 ->success()
-                                ->actions([
-                                    NotificationAction::make('kirim_wa')
-                                        ->label('📲 Kirim WA ke Pelanggan')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
                                 ->send();
                         } else {
                             Notification::make()->title('Pesanan Dikonfirmasi!')->success()->send();
@@ -227,8 +231,8 @@ class OrderStatusResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'confirmed')
                     ->requiresConfirmation()
                     ->modalHeading('Mulai Proses Jahit')
-                    ->modalDescription('Status akan diubah ke "Sedang Dikerjakan" dan pelanggan akan diberitahu.')
-                    ->action(function (Order $record) {
+                    ->modalDescription('Status akan diubah ke "Sedang Dikerjakan" dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'in_progress']);
                         $record->load('user');
 
@@ -238,16 +242,13 @@ class OrderStatusResource extends Resource
                                 $record->user->phone_wa,
                                 $waService->getMessageInProgress($record)
                             );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             Notification::make()
                                 ->title('Status Diperbarui: Proses Jahit')
-                                ->body('Klik tombol berikut untuk memberitahu pelanggan via WhatsApp.')
+                                ->body('Pesanan dalam proses jahit dan dialihkan ke WhatsApp.')
                                 ->success()
-                                ->actions([
-                                    NotificationAction::make('kirim_wa')
-                                        ->label('📲 Kirim WA ke Pelanggan')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
                                 ->send();
                         } else {
                             Notification::make()->title('Status Diperbarui')->success()->send();
@@ -261,8 +262,8 @@ class OrderStatusResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'in_progress')
                     ->requiresConfirmation()
                     ->modalHeading('Tandai Pesanan Selesai')
-                    ->modalDescription('Pesanan akan ditandai selesai dan pelanggan akan diberitahu via WhatsApp.')
-                    ->action(function (Order $record) {
+                    ->modalDescription('Pesanan akan ditandai selesai dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'completed']);
                         $record->load('user');
 
@@ -272,16 +273,13 @@ class OrderStatusResource extends Resource
                                 $record->user->phone_wa,
                                 $waService->getMessageCompleted($record)
                             );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             Notification::make()
                                 ->title('Pesanan Selesai! 🎉')
-                                ->body('Klik tombol berikut untuk memberitahu pelanggan via WhatsApp.')
+                                ->body('Pesanan telah ditandai selesai dan dialihkan ke WhatsApp.')
                                 ->success()
-                                ->actions([
-                                    NotificationAction::make('kirim_wa')
-                                        ->label('📲 Kirim WA ke Pelanggan')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
                                 ->send();
                         } else {
                             Notification::make()->title('Pesanan Selesai!')->success()->send();
@@ -299,11 +297,11 @@ class OrderStatusResource extends Resource
                             ->placeholder('Tuliskan alasan penolakan...')
                             ->rows(3),
                     ])
-                    ->visible(fn (Order $record) => in_array($record->status, ['pending', 'confirmed', 'dp_uploaded']))
+                    ->visible(fn (Order $record) => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->modalHeading('Tolak Pesanan')
-                    ->modalDescription('Pesanan akan ditolak dan pelanggan akan diberitahu alasannya via WhatsApp.')
-                    ->action(function (Order $record, array $data) {
+                    ->modalDescription('Pesanan akan ditolak dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, array $data, $livewire) {
                         $record->update([
                             'status'          => 'rejected',
                             'rejected_reason' => $data['rejected_reason'],
@@ -316,16 +314,13 @@ class OrderStatusResource extends Resource
                                 $record->user->phone_wa,
                                 $waService->getMessageRejected($record, $data['rejected_reason'])
                             );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             Notification::make()
                                 ->title('Pesanan Ditolak')
-                                ->body('Klik tombol berikut untuk memberitahu pelanggan via WhatsApp.')
+                                ->body('Pesanan telah ditolak dan dialihkan ke WhatsApp.')
                                 ->danger()
-                                ->actions([
-                                    NotificationAction::make('kirim_wa')
-                                        ->label('📲 Kirim WA ke Pelanggan')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
                                 ->send();
                         } else {
                             Notification::make()->title('Pesanan Ditolak')->danger()->send();

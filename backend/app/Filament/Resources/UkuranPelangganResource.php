@@ -23,6 +23,11 @@ class UkuranPelangganResource extends Resource
     protected static ?string $pluralModelLabel = 'Ukuran Badan Pelanggan';
     protected static ?string $navigationGroup = 'Manajemen Pengguna';
     protected static ?int $navigationSort = 2;
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
     protected static ?string $slug = 'ukuran-pelanggan';
 
     /**

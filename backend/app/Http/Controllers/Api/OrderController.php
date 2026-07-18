@@ -98,7 +98,7 @@ class OrderController extends Controller
             ->where('end_date', '>=', $requiredDate)
             ->first();
 
-        if ($closure || $requiredDate->isSunday()) {
+        if ($closure || $requiredDate->isWeekend()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Maaf, tanggal pemesanan ini tidak tersedia karena toko tutup.'
@@ -144,6 +144,25 @@ class OrderController extends Controller
             $setting = \App\Models\HomeServiceSetting::first();
             $dpAmount = $setting ? $setting->dp_amount : 150000;
             
+            // Jarak Validasi
+            if ($request->filled('latitude') && $request->filled('longitude') && $setting && $setting->store_latitude && $setting->store_longitude) {
+                $distance = $this->calculateDistance(
+                    $setting->store_latitude,
+                    $setting->store_longitude,
+                    $request->input('latitude'),
+                    $request->input('longitude')
+                );
+                
+                $maxDistance = $setting->max_distance_km ?? 15.0;
+                
+                if ($distance > $maxDistance) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Maaf, lokasi Anda di luar jangkauan Home Service kami (' . round($distance, 1) . ' km). Maksimal jangkauan: ' . $maxDistance . ' km. Silakan pilih layanan In-Store.'
+                    ], 422);
+                }
+            }
+            
             if ($request->hasFile('dp_proof')) {
                 $dpProofPath = $request->file('dp_proof')->store('dp_proofs', 'public');
                 $status = 'dp_uploaded';
@@ -176,6 +195,9 @@ class OrderController extends Controller
             ]);
         }
 
+        // Hapus lock sesi setelah order berhasil
+        \App\Models\QuotaLock::where('user_id', $user->id)->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Pesanan berhasil dibuat.',
@@ -192,7 +214,26 @@ class OrderController extends Controller
             ->whereNotIn('status', ['cancelled', 'rejected'])
             ->count();
 
-        return max(0, $weeklyMaxOrders - $usedThisWeek);
+        // Calculate locks
+        $lockedThisWeek = \App\Models\QuotaLock::whereBetween('quota_date', [$weekStart, $weekEnd])
+            ->where('expires_at', '>', now());
+
+        if (Auth::check()) {
+            $lockedThisWeek->where('user_id', '!=', Auth::id());
+        }
+
+        $lockedCount = $lockedThisWeek->count();
+
+        return max(0, $weeklyMaxOrders - ($usedThisWeek + $lockedCount));
+    }
+
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371; // radius of earth in km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon/2) * sin($dLon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        return $earthRadius * $c;
     }
 
     /**
@@ -268,7 +309,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Track order progress (public or authenticated)
+     * Track order progress (public or authenticated) - by ID
      */
     public function track($id)
     {
@@ -290,6 +331,53 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'data' => $order
+        ]);
+    }
+
+    /**
+     * Public order tracking by order_number (format: EJ-001)
+     * Accessible without authentication
+     */
+    public function trackByOrderNumber($orderNumber)
+    {
+        // Normalize: strip "EJ-" prefix jika ada, lalu cari by order_number
+        $normalizedNumber = strtoupper(trim($orderNumber));
+
+        $order = Order::with([
+            'measurement',
+            'progressLogs' => fn($q) => $q->orderBy('created_at', 'asc'),
+        ])->where('order_number', $normalizedNumber)->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan dengan nomor tersebut tidak ditemukan.'
+            ], 404);
+        }
+
+        // Only expose limited data for public tracking (no personal info)
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id'                   => $order->id,
+                'order_number'         => $order->order_number,
+                'status'               => $order->status,
+                'method'               => $order->method,
+                'quota_date'           => $order->quota_date,
+                'estimated_finish_at'  => $order->estimated_finish_at,
+                'total_price'          => $order->estimated_price,
+                'dp_paid'              => $order->dp_amount,
+                'balance_remaining'    => max(0, ($order->estimated_price ?? 0) - ($order->dp_amount ?? 0)),
+                'design_notes'         => $order->design_notes,
+                'fashion_model'        => null, // future feature
+                'progress_logs'        => $order->progressLogs->map(fn($log) => [
+                    'stage'       => $log->stage ?? $log->tahapan ?? $log->status,
+                    'description' => $log->description ?? $log->keterangan,
+                    'notified_at' => $log->notified_at,
+                    'created_at'  => $log->created_at,
+                ]),
+                'created_at'           => $order->created_at,
+            ]
         ]);
     }
 

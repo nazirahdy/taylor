@@ -55,6 +55,8 @@ const OrderForm = () => {
         catatan: location.state?.galleryItem ? `Pemesanan model: ${location.state.galleryItem.title}. ` : '',
         alamat_kunjungan: user?.alamat || '',
         gallery_image_path: location.state?.galleryItem?.image_path || '',
+        latitude: '',
+        longitude: '',
     });
     
     const [designFile, setDesignFile] = useState(null);
@@ -62,6 +64,9 @@ const OrderForm = () => {
     const [mapsVerified, setMapsVerified] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [createdOrder, setCreatedOrder] = useState(null);
+
+    const [isLocked, setIsLocked] = useState(false);
+    const [lockTimeRemaining, setLockTimeRemaining] = useState(0);
 
     const [globalDpAmount, setGlobalDpAmount] = useState(150000);
     const [dpProofFile, setDpProofFile] = useState(null);
@@ -172,7 +177,20 @@ const OrderForm = () => {
         setTimeout(() => {
             setIsLoading(false);
             setMapsVerified(true);
-            alert("Koordinat GPS berhasil diverifikasi oleh Google Maps! 🟢");
+            
+            // Mocking geolocation or getting actual
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    setFormData(prev => ({...prev, latitude: position.coords.latitude, longitude: position.coords.longitude}));
+                // eslint-disable-next-line no-unused-vars
+                }, (err) => {
+                    setFormData(prev => ({...prev, latitude: -6.20876, longitude: 106.82020}));
+                });
+            } else {
+                setFormData(prev => ({...prev, latitude: -6.20876, longitude: 106.82020}));
+            }
+            
+            alert("Koordinat GPS berhasil diverifikasi! 🟢");
         }, 1500);
     };
 
@@ -199,10 +217,42 @@ const OrderForm = () => {
         }
         if (step === 4) {
             if (!formData.tanggal) return alert("Pilih tanggal jadwal kedatangan.");
-            setStep(5);
+            
+            // Lock session logic
+            setIsLoading(true);
+            axios.post('/quotas/lock', { quota_date: formData.tanggal })
+                .then(() => {
+                    setIsLoading(false);
+                    setIsLocked(true);
+                    setLockTimeRemaining(600); // 10 minutes in seconds
+                    setStep(5);
+                })
+                // eslint-disable-next-line no-unused-vars
+                .catch(err => {
+                    setIsLoading(false);
+                    alert("Gagal mengunci jadwal, mungkin kuota sudah penuh. Silakan pilih tanggal lain.");
+                    fetchQuotas(currentMonth, currentYear);
+                });
             return;
         }
     };
+
+    useEffect(() => {
+        let timer;
+        if (isLocked && lockTimeRemaining > 0) {
+            timer = setInterval(() => {
+                setLockTimeRemaining(prev => prev - 1);
+            }, 1000);
+        } else if (isLocked && lockTimeRemaining === 0) {
+            // Lock expired
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setIsLocked(false);
+            alert("Waktu reservasi Anda telah habis (10 Menit). Silakan pilih jadwal kembali.");
+            setStep(4);
+            fetchQuotas(currentMonth, currentYear);
+        }
+        return () => clearInterval(timer);
+    }, [isLocked, lockTimeRemaining]);
 
     const prevStep = () => {
         if (step === 5) {
@@ -453,14 +503,14 @@ const OrderForm = () => {
                             <div className="w-full h-40 rounded-xl bg-gray-200 overflow-hidden relative border border-border shadow-inner animate-in zoom-in-95 duration-500">
                                 <iframe 
                                     title="Google Maps Mockup"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.044941919598!2d106.8202026!3d-6.2087634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTInMzEuNSJTIDEwNsKwNDknMTIuNyJF!5e0!3m2!1sid!2sid!4v1620000000000!5m2!1sid!2sid" 
+                                    src={`https://maps.google.com/maps?q=${encodeURIComponent(formData.alamat_kunjungan)}&t=&z=15&ie=UTF8&iwloc=&output=embed`} 
                                     className="w-full h-full border-0 grayscale opacity-80"
                                     allowFullScreen="" 
                                     loading="lazy"
                                 ></iframe>
                                 <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>
                                 <div className="absolute bottom-2 left-2 bg-text-primary/80 text-[10px] text-white/90 px-2 py-1 rounded font-mono">
-                                    Lat: -6.20876, Lng: 106.82020 (GPS OK)
+                                    Lat: {formData.latitude || '-6.20876'}, Lng: {formData.longitude || '106.82020'} (GPS OK)
                                 </div>
                             </div>
                         )}
@@ -586,7 +636,14 @@ const OrderForm = () => {
         </div>
     );
 
-    const renderStep5 = () => (
+    const renderStep5 = () => {
+        const formatTime = (seconds) => {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        };
+
+        return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
             <div className="text-center mb-12">
                 <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 05</span>
@@ -594,6 +651,22 @@ const OrderForm = () => {
             </div>
             
             <div className="bg-white p-10 md:p-14 border border-border rounded-[2.5rem] max-w-3xl mx-auto shadow-sm">
+                
+                {isLocked && (
+                    <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-2xl mb-8 flex items-center justify-between shadow-sm animate-in zoom-in-95 duration-500">
+                        <div className="flex items-center gap-3">
+                            <Clock className="w-6 h-6 text-amber-600 animate-pulse" />
+                            <div>
+                                <span className="block font-bold text-sm">Sesi Jadwal Terkunci</span>
+                                <span className="block text-xs opacity-80">Selesaikan pesanan sebelum waktu habis</span>
+                            </div>
+                        </div>
+                        <div className="text-2xl font-mono font-bold text-amber-700 bg-white px-4 py-2 rounded-xl shadow-inner">
+                            {formatTime(lockTimeRemaining)}
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex justify-between items-center pb-8 border-b border-border mb-8">
                     <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest font-bold">Metode Layanan</span>
                     <span className="font-display font-bold text-primary text-xl">
@@ -714,7 +787,8 @@ const OrderForm = () => {
                 </div>
             </div>
         </div>
-    );
+        );
+    };
 
     const submitOrder = async () => {
         setIsLoading(true);
@@ -725,6 +799,10 @@ const OrderForm = () => {
             data.append('design_notes', formData.catatan);
             if (formData.metode === 'home_service') {
                 data.append('alamat', formData.alamat_kunjungan);
+                if (formData.latitude && formData.longitude) {
+                    data.append('latitude', formData.latitude);
+                    data.append('longitude', formData.longitude);
+                }
                 if (dpProofFile) {
                     data.append('dp_proof', dpProofFile);
                 } else {

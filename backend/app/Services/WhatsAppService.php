@@ -4,7 +4,7 @@ namespace App\Services;
  
 class WhatsAppService
 {
-    const ADMIN_PHONE = '089673533620';
+    const ADMIN_PHONE = '081267976080';
     
     protected static array $sentNotifications = [];
 
@@ -30,27 +30,58 @@ class WhatsAppService
 
     public function getMessageConfirmed($order): string
     {
-        return "Halo {$order->user->name} 👋\n"
-             . "Pesanan Anda #{$order->id} telah *Dikonfirmasi*. Kami akan segera memprosesnya! 🙏";
+        $customerName = $order->user?->name ?? 'Pelanggan';
+        return "👋 *Halo {$customerName},* \n\n"
+             . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "📦 *Nomor Pesanan:* {$order->order_number}\n"
+             . "📌 *Status Saat Ini:* *DIKONFIRMASI* ✅\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "Pesan dari Admin:\n"
+             . "_Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim desainer dan penjahit kami akan segera memproses pembuatan busana Anda sesuai dengan detail desain & ukuran yang disepakati._ 🧵✨\n\n"
+             . "Terima kasih banyak atas kepercayaan Anda kepada Era Jahit Studio! 🙏";
     }
 
     public function getMessageInProgress($order): string
     {
-        return "Halo {$order->user->name} 🧵\n"
-             . "Pesanan Anda #{$order->id} saat ini *Sedang Dikerjakan* oleh tim kami. ✨";
+        $customerName = $order->user?->name ?? 'Pelanggan';
+        return "🧵 *Halo {$customerName},* \n\n"
+             . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "📦 *Nomor Pesanan:* {$order->order_number}\n"
+             . "📌 *Status Saat Ini:* *SEDANG DIKERJAKAN* ⏳\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "Pesan dari Admin:\n"
+             . "_Proses menjahit busana Anda resmi dimulai! Tim penjahit kami sedang mengerjakan pemotongan kain dan pola desain dengan teliti untuk menjamin kesempurnaan busana Anda._ ✨🪡\n\n"
+             . "Kami akan terus memperbarui progres pengerjaan di dashboard pesanan Anda. Terima kasih! 🙏";
     }
 
     public function getMessageCompleted($order): string
     {
-        return "Halo {$order->user->name} 🎉\n"
-             . "Pesanan Anda #{$order->id} telah *Selesai*! Silakan hubungi kami untuk pengambilan/pengiriman. ✨";
+        $customerName = $order->user?->name ?? 'Pelanggan';
+        return "🎉 *Halo {$customerName},* \n\n"
+             . "Kabar gembira! Pesanan Anda dari Admin *Era Jahit Studio* telah selesai:\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "📦 *Nomor Pesanan:* {$order->order_number}\n"
+             . "📌 *Status Saat Ini:* *SELESAI / SIAP DIAMBIL* 🏆\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "Pesan dari Admin:\n"
+             . "_Busana Anda telah selesai dijahit dan telah lolos tahap Quality Control (QC) kami dengan hasil yang sangat baik. Silakan hubungi kami untuk koordinasi pengiriman atau silakan datang langsung ke studio untuk fitting/pengambilan._ ✨💼\n\n"
+             . "Terima kasih telah mempercayakan busana Anda kepada Era Jahit Studio! 🙏";
     }
 
-    public function getMessageRejected($order, $reason): string
+    public function getMessageRejected($order, $reason = 'Ketidaksesuaian detail'): string
     {
-        return "Halo {$order->user->name},\n"
-             . "Mohon maaf, pesanan #{$order->id} tidak dapat kami proses.\n"
-             . "❌ Alasan: {$reason}";
+        $customerName = $order->user?->name ?? 'Pelanggan';
+        return "📌 *Halo {$customerName},* \n\n"
+             . "Berikut adalah pembaruan status pesanan Anda dari Admin *Era Jahit Studio*:\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "📦 *Nomor Pesanan:* {$order->order_number}\n"
+             . "📌 *Status Saat Ini:* *DITOLAK / DIBATALKAN* ❌\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "Alasan dari Admin:\n"
+             . "_Mohon maaf sebesar-besarnya, pesanan Anda saat ini belum dapat kami proses karena: *{$reason}*._\n\n"
+             . "Jika ada hal yang ingin ditanyakan atau ingin mendiskusikan alternatif desain/jadwal lain, silakan langsung membalas pesan ini. Terima kasih. 🙏";
     }
 
     public function getMessageProgressUpdate($order, string $stage, string $description = ''): string
@@ -65,11 +96,23 @@ class WhatsAppService
              . "Terima kasih atas kepercayaan Anda! 🙏✨";
     }
 
-    protected function sendMessage(string $phone, string $message): void
+    public function sendMessage(string $phone, string $message): void
     {
         // Log saja untuk keperluan debugging / audit trail
-        // Notifikasi ke pelanggan dikirim via wa.me link langsung dari Filament Admin
-        \Illuminate\Support\Facades\Log::info("WhatsApp Notification [wa.me link] to {$phone}: {$message}");
+        \Illuminate\Support\Facades\Log::info("WhatsApp Notification [automatic send] to {$phone}: {$message}");
+
+        $token = env('FONNTE_TOKEN');
+        if (empty($token) || $token === 'your_fonnte_api_token_here') {
+            \Illuminate\Support\Facades\Log::warning("Fonnte API Token belum dikonfigurasi secara benar. Mengabaikan pengiriman otomatis.");
+            return;
+        }
+
+        try {
+            // Jalankan job secara sinkron agar langsung terkirim tanpa perlu antrean queue worker di lokal
+            \App\Jobs\SendWhatsAppNotification::dispatchSync($phone, $message);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim WhatsApp otomatis ke {$phone}: " . $e->getMessage());
+        }
     }
 
     public function notifyAdminNewOrder($order): void
@@ -101,17 +144,7 @@ class WhatsAppService
         $order->load('user');
         if (!$order->user || !$order->user->phone_wa) return;
 
-        $customerName = $order->user->name;
-        $message = "👋 *Halo {$customerName},* \n\n"
-                 . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "📦 *Nomor Pesanan:* {$order->order_number}\n"
-                 . "📌 *Status Saat Ini:* *DIKONFIRMASI* ✅\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "Pesan dari Admin:\n"
-                 . "_Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim desainer dan penjahit kami akan segera memproses pembuatan busana Anda sesuai dengan detail desain & ukuran yang disepakati._ 🧵✨\n\n"
-                 . "Terima kasih banyak atas kepercayaan Anda kepada Era Jahit Studio! 🙏";
-
+        $message = $this->getMessageConfirmed($order);
         $this->sendMessage($order->user->phone_wa, $message);
     }
 
@@ -123,17 +156,7 @@ class WhatsAppService
         $order->load('user');
         if (!$order->user || !$order->user->phone_wa) return;
 
-        $customerName = $order->user->name;
-        $message = "🎉 *Halo {$customerName},* \n\n"
-                 . "Kabar gembira! Pesanan Anda dari Admin *Era Jahit Studio* telah selesai:\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "📦 *Nomor Pesanan:* {$order->order_number}\n"
-                 . "📌 *Status Saat Ini:* *SELESAI / SIAP DIAMBIL* 🏆\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "Pesan dari Admin:\n"
-                 . "_Busana Anda telah selesai dijahit dan telah lolos tahap Quality Control (QC) kami dengan hasil yang sangat baik. Silakan hubungi kami untuk koordinasi pengiriman atau silakan datang langsung ke studio untuk fitting/pengambilan._ ✨💼\n\n"
-                 . "Terima kasih telah mempercayakan busana Anda kepada Era Jahit Studio! 🙏";
-
+        $message = $this->getMessageCompleted($order);
         $this->sendMessage($order->user->phone_wa, $message);
     }
 
@@ -145,17 +168,7 @@ class WhatsAppService
         $order->load('user');
         if (!$order->user || !$order->user->phone_wa) return;
 
-        $customerName = $order->user->name;
-        $message = "📌 *Halo {$customerName},* \n\n"
-                 . "Berikut adalah pembaruan status pesanan Anda dari Admin *Era Jahit Studio*:\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "📦 *Nomor Pesanan:* {$order->order_number}\n"
-                 . "📌 *Status Saat Ini:* *DITOLAK / DIBATALKAN* ❌\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "Alasan dari Admin:\n"
-                 . "_Mohon maaf sebesar-besarnya, pesanan Anda saat ini belum dapat kami proses karena: *{$reason}*._\n\n"
-                 . "Jika ada hal yang ingin ditanyakan atau ingin mendiskusikan alternatif desain/jadwal lain, silakan langsung membalas pesan ini. Terima kasih. 🙏";
-
+        $message = $this->getMessageRejected($order, $reason);
         $this->sendMessage($order->user->phone_wa, $message);
     }
 
@@ -167,17 +180,7 @@ class WhatsAppService
         $order->load('user');
         if (!$order->user || !$order->user->phone_wa) return;
 
-        $customerName = $order->user->name;
-        $message = "🧵 *Halo {$customerName},* \n\n"
-                 . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "📦 *Nomor Pesanan:* {$order->order_number}\n"
-                 . "📌 *Status Saat Ini:* *SEDANG DIKERJAKAN* ⏳\n"
-                 . "━━━━━━━━━━━━━━━━━━━\n"
-                 . "Pesan dari Admin:\n"
-                 . "_Proses menjahit busana Anda resmi dimulai! Tim penjahit kami sedang mengerjakan pemotongan kain dan pola desain dengan teliti untuk menjamin kesempurnaan busana Anda._ ✨🪡\n\n"
-                 . "Kami akan terus memperbarui progres pengerjaan di dashboard pesanan Anda. Terima kasih! 🙏";
-
+        $message = $this->getMessageInProgress($order);
         $this->sendMessage($order->user->phone_wa, $message);
     }
 

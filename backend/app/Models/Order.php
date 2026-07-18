@@ -40,6 +40,8 @@ class Order extends Model
         'final_payment_proof_path',
         'final_payment_verified_at',
         'is_fully_paid',
+        'payment_status',
+        'payment_status_label',
     ];
 
     protected static function booted()
@@ -113,12 +115,7 @@ class Order extends Model
 
     public function getDpAmountAttribute()
     {
-        $payment = $this->payments->where('type', 'dp')->first();
-        if ($payment) {
-            return (float) $payment->amount;
-        }
-
-        return 0.0;
+        return (float) $this->payments->where('type', 'dp')->sum('amount');
     }
 
     public function getDpProofPathAttribute()
@@ -135,11 +132,7 @@ class Order extends Model
 
     public function getFinalPaymentAmountAttribute()
     {
-        $payment = $this->payments->where('type', 'final')->first();
-        if ($payment) {
-            return (float) $payment->amount;
-        }
-        return 0.0;
+        return (float) $this->payments->where('type', 'final')->sum('amount');
     }
 
     public function getFinalPaymentProofPathAttribute()
@@ -167,19 +160,30 @@ class Order extends Model
      */
     public function getPaymentStatusAttribute(): string
     {
-        $totalPaid = (float) $this->dp_amount + (float) $this->final_payment_amount;
+        $dpPaid = (float) $this->payments->where('type', 'dp')->sum('amount');
+        $finalPaid = (float) $this->payments->where('type', 'final')->sum('amount');
+        $totalPaid = $dpPaid + $finalPaid;
         $price = (float) $this->estimated_price;
         
-        if ($price > 0 && $totalPaid >= $price && $totalPaid > 0) {
-            return 'lunas';
-        }
-
-        if ($this->final_payment_amount > 0) {
-            return 'belum_lunas';
-        }
-
-        if ($this->dp_amount > 0 || $this->dp_proof_path) {
-            return 'dp_diunggah';
+        // Jika sudah ada harga estimasi, cek apakah total bayar sudah memenuhi
+        if ($price > 0) {
+            if ($totalPaid >= $price && $totalPaid > 0) {
+                return 'lunas';
+            }
+            if ($finalPaid > 0) {
+                return 'belum_lunas';
+            }
+            if ($dpPaid > 0 || $this->dp_proof_path) {
+                return 'dp_diunggah';
+            }
+        } else {
+            // Jika harga belum diset tapi sudah ada pembayaran akhir
+            if ($finalPaid > 0) {
+                return 'belum_lunas';
+            }
+            if ($dpPaid > 0 || $this->dp_proof_path) {
+                return 'dp_diunggah';
+            }
         }
 
         return 'belum_ada';

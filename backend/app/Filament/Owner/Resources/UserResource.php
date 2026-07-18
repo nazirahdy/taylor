@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Owner\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Owner\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -22,6 +22,11 @@ class UserResource extends Resource
     protected static ?string $pluralModelLabel = 'Daftar User';
     protected static ?string $navigationGroup = 'Manajemen Pengguna';
     protected static ?int $navigationSort = 1;
+
+    public static function canViewAny(): bool
+    {
+        return auth('owner')->user()?->role === 'owner';
+    }
 
     public static function form(Form $form): Form
     {

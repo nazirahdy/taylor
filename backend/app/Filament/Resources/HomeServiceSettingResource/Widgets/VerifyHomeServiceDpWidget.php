@@ -113,7 +113,7 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                     ->modalHeading('Verifikasi Pembayaran DP')
                     ->modalDescription('Apakah Anda yakin ingin memverifikasi DP ini? Setelah diverifikasi, pesanan akan otomatis berubah ke status "Menunggu Konfirmasi Admin" dan pelanggan akan diberitahu via WhatsApp.')
                     ->modalSubmitActionLabel('Ya, Verifikasi Sekarang')
-                    ->action(function (Order $record) {
+                    ->action(function (Order $record, $livewire) {
                         // 1. Verifikasi payment DP
                         $dp = $record->payments()->where('type', 'dp')->first();
                         if ($dp) {
@@ -157,22 +157,18 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "Terima kasih telah memilih Era Jahit Studio!";
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
+                            // Kirim otomatis via API
+                            $waService->sendMessage($record->user->phone_wa, $waMsg);
                         }
 
-                        // 4. Tampilkan notifikasi Filament dengan tombol WA
-                        $actions = [];
                         if ($waUrl) {
-                            $actions[] = NotificationAction::make('kirim_wa')
-                                ->label('📲 Beritahu Pelanggan via WA')
-                                ->url($waUrl, shouldOpenInNewTab: true)
-                                ->button();
+                            $livewire->js("window.open('{$waUrl}', '_blank')");
                         }
 
                         Notification::make()
-                            ->title('DP Berhasil Diverifikasi!')
-                            ->body('Pesanan ' . $record->order_number . ' telah diverifikasi dan statusnya diperbarui ke "Menunggu Konfirmasi Admin". ' . ($waUrl ? 'Klik tombol di bawah untuk memberitahu pelanggan via WhatsApp.' : ''))
+                            ->title('DP Berhasil Diverifikasi! ✅')
+                            ->body('Pesanan ' . $record->order_number . ' telah diverifikasi dan dialihkan ke WhatsApp.')
                             ->success()
-                            ->actions($actions)
                             ->send();
                     }),
 
@@ -191,7 +187,7 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                             ->required()
                             ->rows(3),
                     ])
-                    ->action(function (Order $record, array $data) {
+                    ->action(function (Order $record, array $data, $livewire) {
                         // 1. Tolak payment DP
                         $dp = $record->payments()->where('type', 'dp')->first();
                         if ($dp) {
@@ -224,21 +220,18 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih. 🙏";
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
+                            // Kirim otomatis via API
+                            $waService->sendMessage($record->user->phone_wa, $waMsg);
                         }
 
-                        $actions = [];
                         if ($waUrl) {
-                            $actions[] = NotificationAction::make('kirim_wa')
-                                ->label('📲 Beritahu Pelanggan via WA')
-                                ->url($waUrl, shouldOpenInNewTab: true)
-                                ->button();
+                            $livewire->js("window.open('{$waUrl}', '_blank')");
                         }
 
                         Notification::make()
-                            ->title('DP Ditolak')
-                            ->body('DP pesanan ' . $record->order_number . ' telah ditolak.')
+                            ->title('DP Ditolak ❌')
+                            ->body('DP pesanan ' . $record->order_number . ' telah ditolak dan dialihkan ke WhatsApp.')
                             ->danger()
-                            ->actions($actions)
                             ->send();
                     }),
             ])

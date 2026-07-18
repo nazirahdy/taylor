@@ -46,7 +46,10 @@ class PaymentStatusResource extends Resource
                 ->schema([
                     Forms\Components\Placeholder::make('dp_proof_path')
                         ->label('Bukti DP')
-                        ->content(fn (?Order $record) => $record?->dp_proof_path ? new \Illuminate\Support\HtmlString('<a href="/storage/'.$record->dp_proof_path.'" target="_blank" class="text-primary-600 underline font-bold">Lihat Bukti DP</a>') : '-'),
+                        ->content(fn (?Order $record) => $record?->dp_proof_path 
+                            ? new \Illuminate\Support\HtmlString('<a href="/storage/'.$record->dp_proof_path.'" target="_blank" class="text-primary-600 underline font-bold">Lihat Bukti DP</a>') 
+                            : ($record?->method === 'visit' ? 'Bayar di Toko (In-Store)' : '-'))
+                        ->visible(fn (?Order $record) => $record?->method !== 'visit' || $record?->dp_proof_path),
                     Forms\Components\Placeholder::make('final_payment_proof_path')
                         ->label('Bukti Pelunasan')
                         ->content(fn (?Order $record) => $record?->final_payment_proof_path ? new \Illuminate\Support\HtmlString('<a href="/storage/'.$record->final_payment_proof_path.'" target="_blank" class="text-primary-600 underline font-bold">Lihat Bukti Pelunasan</a>') : '-'),
@@ -60,21 +63,37 @@ class PaymentStatusResource extends Resource
                         ->label('Estimasi Harga/Total Biaya')
                         ->numeric()
                         ->prefix('Rp')
-                        ->required(),
+                        ->helperText('Input angka saja tanpa titik/koma (Contoh: 500000)')
+                        ->required()
+                        ->live(onBlur: true),
                     Forms\Components\TextInput::make('dp_amount')
                         ->label('Jumlah DP')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->helperText('Tanpa titik/koma')
+                        ->prefix('Rp')
+                        ->live(onBlur: true),
                     Forms\Components\TextInput::make('final_payment_amount')
                         ->label('Jumlah Pelunasan')
                         ->numeric()
-                        ->prefix('Rp'),
+                        ->helperText('Tanpa titik/koma')
+                        ->prefix('Rp')
+                        ->live(onBlur: true),
                     Forms\Components\Placeholder::make('sisa_tagihan')
                         ->label('Sisa Tagihan')
-                        ->content(fn (?Order $record) => 'Rp ' . number_format(max(0, ($record?->estimated_price ?? 0) - ($record?->dp_amount ?? 0) - ($record?->final_payment_amount ?? 0)), 0, ',', '.')),
+                        ->content(fn (callable $get) => 'Rp ' . number_format(max(0, (float)($get('estimated_price') ?? 0) - (float)($get('dp_amount') ?? 0) - (float)($get('final_payment_amount') ?? 0)), 0, ',', '.')),
                     Forms\Components\Placeholder::make('status_lunas')
                         ->label('Status Pelunasan')
-                        ->content(fn (?Order $record) => $record?->payment_status_label ?? '-'),
+                        ->content(function (callable $get) {
+                            $price = (float)($get('estimated_price') ?? 0);
+                            $dp = (float)($get('dp_amount') ?? 0);
+                            $final = (float)($get('final_payment_amount') ?? 0);
+                            $total = $dp + $final;
+                            
+                            if ($price > 0 && $total >= $price && $total > 0) return 'Lunas ✅';
+                            if ($final > 0) return 'Belum Lunas (Ada Sisa)';
+                            if ($dp > 0) return 'DP Diunggah';
+                            return 'Belum Ada';
+                        }),
                     Forms\Components\Select::make('status')
                         ->label('Status Pesanan')
                         ->options([
@@ -153,6 +172,7 @@ class PaymentStatusResource extends Resource
                 Tables\Columns\ImageColumn::make('dp_proof_path')
                     ->label('Bukti DP')
                     ->getStateUsing(fn (Order $record) => $record->payments->where('type', 'dp')->first()?->proof_path ?? $record->dp_proof_path)
+                    ->defaultImageUrl(fn (Order $record) => $record->method === 'visit' && !$record->dp_proof_path ? null : '')
                     ->disk('public')
                     ->rounded(),
             ])
@@ -250,6 +270,7 @@ class PaymentStatusResource extends Resource
                         Forms\Components\TextInput::make('dp_amount')
                             ->label('Nominal DP')
                             ->numeric()
+                            ->helperText('Tanpa titik/koma')
                             ->prefix('Rp')
                             ->required(),
                         Forms\Components\FileUpload::make('proof_path')
@@ -289,6 +310,7 @@ class PaymentStatusResource extends Resource
                             Forms\Components\TextInput::make('final_payment_amount')
                                 ->label('Nominal Pelunasan')
                                 ->numeric()
+                                ->helperText('Tanpa titik/koma')
                                 ->required()
                                 ->prefix('Rp')
                                 ->default($sisa),

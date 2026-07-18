@@ -57,27 +57,26 @@ class ProgressLogsRelationManager extends RelationManager
                         $data['notified_at'] = Carbon::now();
                         return $data;
                     })
-                    ->after(function ($record) {
+                    ->after(function ($record, $livewire) {
                         // Auto update status order
                         $order = $record->order;
                         $order->update(['status' => 'in_progress']);
                         
                         if ($order->user?->phone_wa) {
                             $wa = new WhatsAppService();
+                            // Kirim otomatis via API
+                            $wa->notifyProgressUpdate($record);
+                            
                             $url = $wa->generateWaLink(
                                 $order->user->phone_wa, 
                                 $wa->getMessageProgressUpdate($order, $record->stage, $record->description ?? '')
                             );
                             
+                            $livewire->js("window.open('{$url}', '_blank')");
+
                             \Filament\Notifications\Notification::make()
-                                ->title('Progres Tercatat')
-                                ->body('Klik untuk mengabari pelanggan via WhatsApp.')
-                                ->actions([
-                                    \Filament\Notifications\Actions\Action::make('send_wa')
-                                        ->label('Kirim WA')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
+                                ->title('Progres Tercatat! ✅')
+                                ->body('Progres berhasil dicatat, notifikasi dikirim secara otomatis, dan dialihkan ke WhatsApp.')
                                 ->success()
                                 ->send();
                         }

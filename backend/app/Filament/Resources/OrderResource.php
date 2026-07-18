@@ -76,8 +76,8 @@ class OrderResource extends Resource
             ])->columns(2),
 
             Forms\Components\Section::make('Harga & Status')->schema([
-                Forms\Components\TextInput::make('estimated_price')->label('Estimasi Harga/Total Biaya')->numeric()->prefix('Rp')->live(),
-                Forms\Components\TextInput::make('dp_amount')->label('Jumlah DP')->numeric()->prefix('Rp')->live(),
+                Forms\Components\TextInput::make('estimated_price')->label('Estimasi Harga/Total Biaya')->numeric()->helperText('Tanpa titik/koma')->prefix('Rp')->live(),
+                Forms\Components\TextInput::make('dp_amount')->label('Jumlah DP')->numeric()->helperText('Tanpa titik/koma')->prefix('Rp')->live(),
                 Forms\Components\TextInput::make('final_payment_amount')
                     ->label('Jumlah Pelunasan')
                     ->numeric()
@@ -154,6 +154,8 @@ class OrderResource extends Resource
                 Tables\Columns\ImageColumn::make('dp_proof_path')
                     ->label('Bukti DP')
                     ->getStateUsing(fn (Order $record) => $record->dp_proof_path)
+                    ->defaultImageUrl(fn (Order $record) => $record->method === 'visit' && !$record->dp_proof_path ? null : '')
+                    ->visible(fn ($livewire) => !isset($livewire->activeTab) || $livewire->activeTab !== 'visit')
                     ->disk('public')
                     ->rounded(),
                 Tables\Columns\TextColumn::make('quota_date')->date()->sortable()->label('Tgl Janji'),
@@ -224,6 +226,7 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('final_payment_amount')
                             ->label('Nominal Pelunasan')
                             ->numeric()
+                            ->helperText('Tanpa titik/koma')
                             ->required()
                             ->prefix('Rp')
                             ->default(fn (Order $record) => $record->estimated_price - $record->dp_amount),
@@ -285,7 +288,17 @@ class OrderResource extends Resource
                                  . "Silakan bayar DP agar pesanan segera kami proses! 🙏";
 
                             $url = $waService->generateWaLink($record->user->phone_wa, $msg);
-                            echo "<script>window.open('{$url}', '_blank');</script>";
+                            Notification::make()
+                                ->title('Pesan WA Siap!')
+                                ->body('Klik tombol di bawah untuk membuka WhatsApp')
+                                ->actions([
+                                    \Filament\Notifications\Actions\Action::make('send_wa')
+                                        ->label('Kirim Sekarang')
+                                        ->url($url, shouldOpenInNewTab: true)
+                                        ->button(),
+                                ])
+                                ->success()
+                                ->send();
                         }),
                     Tables\Actions\Action::make('send_wa_confirmed')
                         ->label('Kirim Ulang Konfirmasi')
@@ -294,7 +307,17 @@ class OrderResource extends Resource
                         ->action(function (Order $record) {
                             $waService = app(\App\Services\WhatsAppService::class);
                             $url = $waService->generateWaLink($record->user->phone_wa, $waService->getMessageConfirmed($record));
-                            echo "<script>window.open('{$url}', '_blank');</script>";
+                            Notification::make()
+                                ->title('Pesan WA Siap!')
+                                ->body('Klik tombol di bawah untuk membuka WhatsApp')
+                                ->actions([
+                                    \Filament\Notifications\Actions\Action::make('send_wa')
+                                        ->label('Kirim Sekarang')
+                                        ->url($url, shouldOpenInNewTab: true)
+                                        ->button(),
+                                ])
+                                ->success()
+                                ->send();
                         }),
                 ])->label('WhatsApp')->icon('heroicon-m-chat-bubble-bottom-center-text')->button(),
             ])

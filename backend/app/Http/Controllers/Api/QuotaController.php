@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DailyQuota;
 use App\Models\StoreClosure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class QuotaController extends Controller
@@ -47,7 +48,7 @@ class QuotaController extends Controller
 
         while ($current <= $endDate) {
             $dateStr = $current->format('Y-m-d');
-            $isSunday = $current->isSunday();
+            $isWeekend = $current->isWeekend();
             $isPast = $current < $today;
             $closure = $closures->first(fn (StoreClosure $closure) => $closure->containsDate($current));
 
@@ -55,7 +56,7 @@ class QuotaController extends Controller
             
             $remaining = $this->getWeeklyRemainingFromOrders($current, $maxOrders);
             
-            $isOpen = !$isSunday && !$isPast && $globalIsOpen && $remaining > 0;
+            $isOpen = !$isWeekend && !$isPast && $globalIsOpen && $remaining > 0;
 
             if ($closure) {
                 $isOpen = false;
@@ -66,7 +67,7 @@ class QuotaController extends Controller
             $statusLabel = 'Buka';
             if ($isPast) {
                 $statusLabel = 'Lampau';
-            } elseif (($closure !== null) || $isSunday) {
+            } elseif (($closure !== null) || $isWeekend) {
                 $statusLabel = 'Tutup';
             } elseif ($remaining <= 0) {
                 $statusLabel = 'Kuota Minggu Penuh';
@@ -81,14 +82,14 @@ class QuotaController extends Controller
                 'is_open' => $isOpen,
                 'is_closed' => !$isOpen,
                 'is_past' => $isPast,
-                'is_closure' => ($closure !== null) || $isSunday,
+                'is_closure' => ($closure !== null) || $isWeekend,
                 'status_label' => $statusLabel,
                 'disabled' => !$isOpen,
                 'quota_type' => 'weekly',
                 'max_orders' => $maxOrders,
                 'current_orders' => $maxOrders - $remaining,
                 'available_slots' => $availableSlots,
-                'is_sunday' => $isSunday,
+                'is_weekend' => $isWeekend,
                 'remaining' => $remaining,
                 'closure' => $closure ? [
                     'start_date' => $closure->start_date->format('Y-m-d'),
@@ -115,6 +116,51 @@ class QuotaController extends Controller
             ->whereNotIn('status', ['cancelled', 'rejected'])
             ->count();
 
-        return max(0, $weeklyMaxOrders - $usedThisWeek);
+        // Calculate locks
+        $lockedThisWeek = \App\Models\QuotaLock::whereBetween('quota_date', [$weekStart, $weekEnd])
+            ->where('expires_at', '>', now());
+
+        if (Auth::check()) {
+            $lockedThisWeek->where('user_id', '!=', Auth::id());
+        }
+
+        $lockedCount = $lockedThisWeek->count();
+
+        return max(0, $weeklyMaxOrders - ($usedThisWeek + $lockedCount));
+    }
+
+    /**
+     * Lock a quota slot temporarily for the authenticated user
+     */
+    public function lock(Request $request)
+    {
+        $request->validate([
+            'quota_date' => 'required|date',
+        ]);
+
+        $user = Auth::user();
+
+        // Clean up expired locks for this user to avoid clutter
+        \App\Models\QuotaLock::where('user_id', $user->id)->where('expires_at', '<', now())->delete();
+
+        // Check if there is already an active lock for this user
+        $lock = \App\Models\QuotaLock::where('user_id', $user->id)->first();
+        if ($lock) {
+            $lock->update([
+                'quota_date' => $request->quota_date,
+                'expires_at' => now()->addMinutes(10),
+            ]);
+        } else {
+            \App\Models\QuotaLock::create([
+                'user_id' => $user->id,
+                'quota_date' => $request->quota_date,
+                'expires_at' => now()->addMinutes(10),
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jadwal berhasil dikunci sementara.',
+        ]);
     }
 }

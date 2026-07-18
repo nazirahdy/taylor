@@ -26,8 +26,11 @@ const Login = () => {
             const { token, user } = response.data.data || response.data;
             login(token, user);
             
-            // Redirect based on profile completeness
-            if (!user.phone_wa || !user.alamat) {
+            // Owner dan Admin langsung ke dashboard, tidak perlu isi profil
+            if (user.role === 'owner' || user.role === 'admin') {
+                navigate('/');
+            } else if (!user.phone_wa || !user.alamat) {
+                // Customer baru dengan profil belum lengkap
                 navigate('/complete-profile');
             } else {
                 navigate('/');

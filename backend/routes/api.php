@@ -79,6 +79,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{orderId}/chat', [ChatController::class, 'index']);
     Route::post('/orders/{orderId}/chat', [ChatController::class, 'store']);
 
+    // Quota lock
+    Route::post('/quotas/lock', [QuotaController::class, 'lock']);
+
     // Quota management
     Route::middleware('role:admin')->group(function () {
         Route::get('/quotas/{date}', [QuotaController::class, 'show']);

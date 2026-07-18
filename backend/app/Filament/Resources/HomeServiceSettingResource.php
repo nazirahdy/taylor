@@ -21,6 +21,11 @@ class HomeServiceSettingResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?int $navigationSort = 2;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
