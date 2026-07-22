@@ -21,8 +21,8 @@ const Dashboard = () => {
                 
                 // Hitung stats
                 setStats({
-                    aktif: data.filter(o => ['confirmed', 'in_progress'].includes(o.status)).length,
-                    selesai: data.filter(o => o.status === 'completed').length,
+                    aktif: data.filter(o => ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing'].includes(o.status)).length,
+                    selesai: data.filter(o => o.status === 'selesai_penyerahan').length,
                     pending: data.filter(o => ['pending', 'dp_uploaded'].includes(o.status)).length
                 });
             } catch (err) {
@@ -37,11 +37,14 @@ const Dashboard = () => {
 
     const getStatusBadge = (status) => {
         const badges = {
-            'pending': <span className="px-3 py-1 rounded-lg bg-surface text-text-muted text-[10px] font-bold uppercase tracking-widest border border-border">Menunggu Review</span>,
+            'pending': <span className="px-3 py-1 rounded-lg bg-surface text-text-muted text-[10px] font-bold uppercase tracking-widest border border-border">Menunggu Konfirmasi</span>,
             'dp_uploaded': <span className="px-3 py-1 rounded-lg bg-primary/5 text-primary text-[10px] font-bold uppercase tracking-widest border border-primary/20">Validasi DP</span>,
             'confirmed': <span className="px-3 py-1 rounded-lg bg-primary text-white text-[10px] font-bold uppercase tracking-widest border border-primary/20">Dikonfirmasi</span>,
-            'in_progress': <span className="px-3 py-1 rounded-lg bg-teal-500/10 text-teal-600 text-[10px] font-bold uppercase tracking-widest border border-teal-500/20">Dalam Pengerjaan</span>,
-            'completed': <span className="px-3 py-1 rounded-lg bg-green-500/10 text-green-600 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Selesai</span>,
+            'pola_pemotongan': <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase tracking-widest border border-amber-500/20">Pola & Pemotongan</span>,
+            'pola_penjahitan': <span className="px-3 py-1 rounded-lg bg-orange-500/10 text-orange-600 text-[10px] font-bold uppercase tracking-widest border border-orange-500/20">Pola Penjahitan</span>,
+            'proses_menjahit': <span className="px-3 py-1 rounded-lg bg-teal-500/10 text-teal-600 text-[10px] font-bold uppercase tracking-widest border border-teal-500/20">Proses Menjahit</span>,
+            'finishing': <span className="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-600 text-[10px] font-bold uppercase tracking-widest border border-blue-500/20">Finishing</span>,
+            'selesai_penyerahan': <span className="px-3 py-1 rounded-lg bg-green-500/10 text-green-600 text-[10px] font-bold uppercase tracking-widest border border-green-500/20">Selesai & Penyerahan</span>,
             'rejected': <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-600 text-[10px] font-bold uppercase tracking-widest border border-red-500/20">Ditolak</span>,
             'cancelled': <span className="px-3 py-1 rounded-lg bg-surface text-text-muted/50 text-[10px] font-bold uppercase tracking-widest border border-border">Dibatalkan</span>,
         };
@@ -60,7 +63,7 @@ const Dashboard = () => {
                         <p className="text-text-secondary font-body text-sm">Pantau progres jahitan Anda dan kelola konsultasi desain busana Anda.</p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0 animate-fade-in">
-                        <Link to="/profile" className="px-6 py-4 border border-border text-text-primary rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-surface transition-all font-sans">
+                        <Link to="/profile/edit" className="px-6 py-4 border border-border text-text-primary rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-surface transition-all font-sans">
                             Kelola Profil
                         </Link>
                         <Link to="/pesanan/buat" className="px-8 py-4 bg-primary text-white rounded-xl font-bold uppercase tracking-widest text-[11px] flex items-center gap-3 hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 font-sans">
@@ -81,7 +84,7 @@ const Dashboard = () => {
                                 <p className="text-red-700 text-sm font-body leading-relaxed">Harap lengkapi nomor WhatsApp dan alamat Anda untuk dapat melakukan pemesanan.</p>
                             </div>
                         </div>
-                        <Link to="/profile" className="px-6 py-3 bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all font-sans shadow-lg shadow-red-200">Lengkapi Profil</Link>
+                        <Link to="/profile/edit" className="px-6 py-3 bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all font-sans shadow-lg shadow-red-200">Lengkapi Profil</Link>
                     </div>
                 )}
 

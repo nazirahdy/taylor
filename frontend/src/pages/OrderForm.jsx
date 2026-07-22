@@ -87,6 +87,39 @@ const OrderForm = () => {
         }
     }, [location.state, formData.metode]);
 
+    useEffect(() => {
+        if (user?.alamat && !formData.alamat_kunjungan) {
+            setFormData(prev => ({ ...prev, alamat_kunjungan: user.alamat }));
+        }
+    }, [user, formData.alamat_kunjungan]);
+
+    useEffect(() => {
+        if (step === 3 && formData.alamat_kunjungan && !mapsVerified) {
+            setMapsVerified(true);
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    setFormData(prev => ({
+                        ...prev, 
+                        latitude: position.coords.latitude, 
+                        longitude: position.coords.longitude
+                    }));
+                }, () => {
+                    setFormData(prev => ({
+                        ...prev, 
+                        latitude: -6.20876, 
+                        longitude: 106.82020
+                    }));
+                });
+            } else {
+                setFormData(prev => ({
+                    ...prev, 
+                    latitude: -6.20876, 
+                    longitude: 106.82020
+                }));
+            }
+        }
+    }, [step, formData.alamat_kunjungan, mapsVerified]);
+
     const fetchQuotas = (m, y) => {
         axios.get(`/quota?month=${m}&year=${y}`)
             .then(res => setDates(res.data?.data || res.data || []))
@@ -201,7 +234,6 @@ const OrderForm = () => {
             return;
         }
         if (step === 2) {
-            if (!formData.catatan || formData.catatan.length < 5) return alert("Deskripsikan catatan desain minimal 5 karakter.");
             if (formData.metode === 'visit') {
                 setStep(4);
             } else {
@@ -359,7 +391,7 @@ const OrderForm = () => {
                     placeholder="Tuliskan inspirasi model baju, bahan kain, warna, atau detail lain yang Anda inginkan..."
                     className="w-full rounded-3xl border border-border px-5 py-4 text-text-primary bg-white focus:border-primary focus:outline-none resize-none font-body text-sm shadow-sm"
                 />
-                <p className="text-[11px] text-text-muted mt-3">Deskripsikan keinginan desain minimal 5 karakter agar penjahit bisa menyiapkan lebih baik.</p>
+                <p className="text-[11px] text-text-muted mt-3">Opsional: Deskripsikan keinginan desain agar penjahit bisa menyiapkan lebih baik.</p>
             </div>
 
             <div className="mb-10 max-w-xl mx-auto">

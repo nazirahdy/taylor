@@ -1,18 +1,40 @@
 <div 
     x-data="{
-        scrollToBottom() {
-            $nextTick(() => {
-                const body = $refs.chatBody;
-                if (body) {
+        userScrolledUp: false,
+        scrollToBottom(force = false) {
+            this.$nextTick(() => {
+                const body = this.$refs.chatBody;
+                if (!body) return;
+                if (force || !this.userScrolledUp) {
                     body.scrollTop = body.scrollHeight;
                 }
             });
+        },
+        handleScroll() {
+            const body = this.$refs.chatBody;
+            if (!body) return;
+            const distanceToBottom = body.scrollHeight - body.scrollTop - body.clientHeight;
+            this.userScrolledUp = distanceToBottom > 80;
+        },
+        initScroll() {
+            const doScroll = () => {
+                const body = this.$refs.chatBody;
+                if (body) {
+                    body.scrollTop = body.scrollHeight;
+                }
+            };
+            doScroll();
+            this.$nextTick(doScroll);
+            setTimeout(doScroll, 100);
+            setTimeout(doScroll, 300);
         }
     }"
     x-init="
-        scrollToBottom();
+        initScroll();
         Livewire.hook('morph.updated', ({ component, el }) => {
-            scrollToBottom();
+            if ($el.contains(el) || el === $el) {
+                scrollToBottom(false);
+            }
         });
     "
     class="flex flex-col bg-[#f2ebe3] overflow-hidden shadow-2xl border border-gray-200 rounded-sm w-full" 
@@ -21,7 +43,7 @@
 >
 
     <!-- Chat Body -->
-    <div x-ref="chatBody" class="flex-grow overflow-y-auto p-5" id="chat-body-{{ $this->getId() }}">
+    <div x-ref="chatBody" @scroll.passive="handleScroll()" class="flex-grow overflow-y-auto p-5" id="chat-body-{{ $this->getId() }}">
         @if(auth()->guest())
             <div class="text-center text-gray-500 mt-10 text-sm font-sans bg-white/50 py-2 mx-10 rounded-sm">
                 <p>Silakan login admin untuk membuka percakapan chat.</p>
@@ -46,7 +68,7 @@
                 
                 @if(!$isAdmin)
                     <!-- Avatar Pelanggan -->
-                    <div class="w-9 h-9 bg-slate-800 text-white flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0 mt-1 shadow-md rounded-full">
+                    <div class="w-9 h-9 text-white flex items-center justify-center font-bold text-sm mr-3 flex-shrink-0 mt-1 shadow-md rounded-full" style="background-color: #79D12A;">
                         {{ $initial }}
                     </div>
                 @endif
@@ -59,16 +81,15 @@
                                 <textarea wire:model="editingMessageText" class="w-full border-gray-300 text-sm p-2 focus:ring-amber-600 focus:border-amber-600 rounded-sm" rows="3"></textarea>
                                 <div class="flex justify-end gap-2 mt-1">
                                     <button wire:click="cancelEdit" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 text-gray-500 hover:bg-gray-100 rounded-sm">Batal</button>
-                                    <button wire:click="saveEdit" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 text-white rounded-sm" style="background-color: #d97706;">Simpan</button>
+                                    <button wire:click="saveEdit" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 text-white rounded-sm" style="background-color: #79D12A;">Simpan</button>
                                 </div>
                             </div>
                         @else
-                            <div class="px-4 py-3 text-[14px] leading-relaxed shadow-sm font-sans break-words relative min-w-[120px]
-                                {{ $isAdmin ? 'text-white' : 'text-gray-800' }}"
-                                style="{{ $isAdmin ? 'background-color: #d97706; border-radius: 0.5rem 0 0.5rem 0.5rem;' : 'background-color: #ffffff; border-radius: 0 0.5rem 0.5rem 0.5rem;' }}">
+                            <div class="px-4 py-3 text-[14px] leading-relaxed shadow-sm font-sans break-words relative min-w-[120px]"
+                                style="{{ $isAdmin ? 'background-color: #ececec; border-radius: 0.5rem 0 0.5rem 0.5rem;' : 'background-color: #ececec; border-radius: 0 0.5rem 0.5rem 0.5rem;' }} color: #1f2937;">
                                 
                                 <!-- Sender Name Inside Bubble -->
-                                <div class="text-[10px] font-bold mb-1" style="color: {{ $isAdmin ? '#fde68a' : '#8c1c1c' }};">
+                                <div class="text-[10px] font-bold mb-1" style="color: #6b7280">
                                     {{ $senderName }}
                                 </div>
 
@@ -78,7 +99,7 @@
                                 </div>
 
                                 <!-- Time -->
-                                <div class="text-[9px] text-right mt-1.5 italic" style="color: {{ $isAdmin ? '#fef3c7' : '#9ca3af' }};">
+                                <div class="text-[9px] text-right mt-1.5 italic" style="color: #000000ff">
                                     {{ $msg->created_at ? $msg->created_at->format('H.i') : '' }}
                                 </div>
                             </div>
@@ -100,7 +121,7 @@
 
                 @if($isAdmin)
                     <!-- Avatar Admin -->
-                    <div class="w-9 h-9 text-white flex items-center justify-center font-bold text-sm ml-3 flex-shrink-0 mt-1 shadow-md rounded-full" style="background-color: #b45309;">
+                    <div class="w-9 h-9 text-white flex items-center justify-center font-bold text-sm ml-3 flex-shrink-0 mt-1 shadow-md rounded-full" style="background-color: #79D12A;">
                         A
                     </div>
                 @endif
@@ -110,17 +131,17 @@
 
     <!-- Input Box -->
     <div class="p-4 bg-white border-t border-gray-200">
-        <form wire:submit.prevent="sendMessage" class="flex gap-3 items-center">
+        <form wire:submit.prevent="sendMessage" @submit="userScrolledUp = false; setTimeout(() => scrollToBottom(true), 150)" class="flex gap-3 items-center">
             <input 
                 type="text" 
                 wire:model="newMessage" 
                 placeholder="Tulis pesan..." 
-                class="flex-grow border border-gray-400 px-5 py-3 text-sm focus:outline-none focus:border-amber-600 transition-all font-sans min-w-0 rounded-full"
+                class="flex-grow border border-gray-400 px-5 py-3 text-sm focus:outline-none focus:border-green-500 transition-all font-sans min-w-0 rounded-full"
             />
             <button 
                 type="submit" 
                 class="text-white flex items-center justify-center transition-transform hover:scale-105 flex-shrink-0 disabled:opacity-50 rounded-full"
-                style="background-color: #d97706; width: 44px; height: 44px; min-width: 44px;"
+                style="background-color: #79D12A; width: 44px; height: 44px; min-width: 44px;"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin-left: -2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>

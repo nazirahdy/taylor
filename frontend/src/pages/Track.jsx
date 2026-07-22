@@ -92,10 +92,14 @@ const Track = () => {
                                 <div>
                                     <div className="flex items-center gap-3 mb-6">
                                         <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-widest rounded-sm">
-                                            {order.status === 'pending' ? 'Menunggu' :
+                                            {order.status === 'pending' ? 'Menunggu Konfirmasi' :
                                              order.status === 'confirmed' ? 'Dikonfirmasi' :
-                                             order.status === 'in_progress' ? 'Pengerjaan' :
-                                             order.status === 'completed' ? 'Selesai' :
+                                             order.status === 'pola_pemotongan' ? 'Pola & Pemotongan' :
+                                             order.status === 'pola_penjahitan' ? 'Pola Penjahitan' :
+                                             order.status === 'proses_menjahit' ? 'Proses Menjahit' :
+                                             order.status === 'finishing' ? 'Finishing' :
+                                             order.status === 'selesai_penyerahan' ? 'Selesai & Penyerahan' :
+                                             order.status === 'rejected' ? 'Ditolak' :
                                              order.status?.replace('_', ' ')}
                                         </span>
                                         <span className="text-white/20 font-bold text-[10px] uppercase tracking-widest">Ref: #{order.order_number}</span>
@@ -118,16 +122,13 @@ const Track = () => {
                                     <p className="font-bold text-white/20 uppercase tracking-widest text-[10px]">Progres Pengerjaan</p>
                                     <p className="text-6xl font-display text-white leading-none">
                                         {(() => {
-                                            if (order.status === 'pending' || order.status === 'dp_uploaded') return 0;
-                                            if (order.status === 'completed') return 100;
+                                            if (order.status === 'pending' || order.status === 'dp_uploaded' || order.status === 'rejected') return 0;
+                                            if (order.status === 'selesai_penyerahan') return 100;
                                             
-                                            const PRD_STAGES = ['Dikonfirmasi', 'Pemotongan Kain', 'Proses Jahit', 'Finishing', 'Siap Diambil'];
-                                            let doneCount = 1; // Confirmed
-                                            const logs = order.progress_logs || [];
-                                            logs.forEach(log => {
-                                                if (PRD_STAGES.includes(log.stage)) doneCount++;
-                                            });
-                                            return Math.min(100, Math.round((doneCount / 5) * 100));
+                                            const STAGES_ORDER = ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'];
+                                            const currentIdx = STAGES_ORDER.indexOf(order.status);
+                                            if (currentIdx === -1) return 0;
+                                            return Math.min(100, Math.round(((currentIdx + 1) / STAGES_ORDER.length) * 100));
                                         })()}
                                         <span className="text-primary text-2xl ml-1">%</span>
                                     </p>
@@ -136,12 +137,13 @@ const Track = () => {
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(() => {
-                                            if (order.status === 'pending' || order.status === 'dp_uploaded') return 0;
-                                            if (order.status === 'completed') return 100;
-                                            const logs = order.progress_logs || [];
-                                            let doneCount = 1;
-                                            logs.forEach(log => { if (['Pemotongan Kain', 'Proses Jahit', 'Finishing', 'Siap Diambil'].includes(log.stage)) doneCount++; });
-                                            return Math.min(100, Math.round((doneCount / 5) * 100));
+                                            if (order.status === 'pending' || order.status === 'dp_uploaded' || order.status === 'rejected') return 0;
+                                            if (order.status === 'selesai_penyerahan') return 100;
+                                            
+                                            const STAGES_ORDER = ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'];
+                                            const currentIdx = STAGES_ORDER.indexOf(order.status);
+                                            if (currentIdx === -1) return 0;
+                                            return Math.min(100, Math.round(((currentIdx + 1) / STAGES_ORDER.length) * 100));
                                         })()}%` }}
                                         transition={{ duration: 1.5, ease: "circOut" }}
                                         className="h-full bg-primary shadow-[0_0_20px_rgba(200,151,63,0.5)]"
@@ -159,15 +161,27 @@ const Track = () => {
                                     <div className="space-y-12 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-white/5">
                                         
                                         {[
-                                            { key: 'Dikonfirmasi', label: 'Pesanan Dikonfirmasi', desc: 'Verifikasi spesifikasi desain dan alokasi bahan telah selesai.' },
-                                            { key: 'Pemotongan Kain', label: 'Pemotongan Kain', desc: 'Proses pemotongan pola pada bahan kain.' },
-                                            { key: 'Proses Jahit', label: 'Proses Jahit', desc: 'Perakitan komponen busana sedang berlangsung.' },
-                                            { key: 'Finishing', label: 'Finishing', desc: 'Pemasangan detail, kancing, resleting, dan setrika.' },
-                                            { key: 'Siap Diambil', label: 'Selesai / Siap Diambil', desc: 'Pemeriksaan akhir selesai, pesanan siap diambil atau dikirim.' }
+                                            { key: 'confirmed', label: 'Dikonfirmasi', desc: 'Pesanan telah dikonfirmasi dan disetujui oleh admin.' },
+                                            { key: 'pola_pemotongan', label: 'Pola & Pemotongan', desc: 'Proses pembuatan pola dan pemotongan bahan kain.' },
+                                            { key: 'pola_penjahitan', label: 'Pola Penjahitan', desc: 'Tahap perancangan pola jahitan detail.' },
+                                            { key: 'proses_menjahit', label: 'Proses Menjahit', desc: 'Pekerjaan menjahit kain sedang dilakukan.' },
+                                            { key: 'finishing', label: 'Finishing', desc: 'Tahap penyelesaian akhir dan quality check.' },
+                                            { key: 'selesai_penyerahan', label: 'Selesai & Penyerahan', desc: 'Busana selesai dan siap diserahkan kepada pelanggan.' }
                                         ].map((stage, idx) => {
-                                            const isConfirmed = stage.key === 'Dikonfirmasi' && ['confirmed', 'in_progress', 'completed'].includes(order.status);
-                                            const log = (order.progress_logs || []).find(l => l.stage === stage.key);
-                                            const isDone = isConfirmed || !!log || order.status === 'completed';
+                                            const STAGES_ORDER = ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'];
+                                            const currentIdx = STAGES_ORDER.indexOf(order.status);
+                                            const stageIdx = STAGES_ORDER.indexOf(stage.key);
+                                            const isDone = currentIdx >= stageIdx && order.status !== 'rejected';
+                                            const log = (order.progress_logs || []).find(l => {
+                                                const logStage = (l.stage || '').toLowerCase();
+                                                if (stage.key === 'confirmed' && logStage.includes('konfirm')) return true;
+                                                if (stage.key === 'pola_pemotongan' && (logStage.includes('pemotongan') || logStage.includes('potong'))) return true;
+                                                if (stage.key === 'pola_penjahitan' && logStage.includes('penjahitan')) return true;
+                                                if (stage.key === 'proses_menjahit' && logStage.includes('menjahit')) return true;
+                                                if (stage.key === 'finishing' && logStage.includes('finishing')) return true;
+                                                if (stage.key === 'selesai_penyerahan' && logStage.includes('penyerahan')) return true;
+                                                return false;
+                                            });
                                             const displayDesc = log && log.description ? log.description : stage.desc;
 
                                             return (
@@ -194,7 +208,7 @@ const Track = () => {
                                     <div className="space-y-6">
                                         <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] font-bold">
                                             <span className="text-white/20">Total Biaya</span>
-                                            <span className="text-white">Rp {order.total_price?.toLocaleString('id-ID')}</span>
+                                            <span className="text-white">{order.total_price && Number(order.total_price) > 0 ? `Rp ${order.total_price.toLocaleString('id-ID')}` : 'Belum ada'}</span>
                                         </div>
                                         <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] font-bold">
                                             <span className="text-white/20">DP Terbayar</span>

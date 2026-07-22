@@ -20,7 +20,7 @@ class ReportExportController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
 
-        $query = Order::whereIn('status', ['completed', 'finished', 'paid'])
+        $query = Order::whereIn('status', ['selesai_penyerahan'])
                     ->with('user');
 
         if ($startDate) {
@@ -149,8 +149,32 @@ class ReportExportController extends Controller
 
     protected function buildReportData(string $type, string $status, ?string $startDate, ?string $endDate): array
     {
-        if (! in_array($type, ['pesanan', 'pelunasan'], true)) {
+        if (! in_array($type, ['pesanan', 'transaksi', 'pelunasan', 'dp'], true)) {
             abort(404);
+        }
+
+        if ($type === 'dp') {
+            $query = Payment::query()->where('type', 'dp')->with(['order.user']);
+            if ($startDate) $query->where('created_at', '>=', $startDate . ' 00:00:00');
+            if ($endDate) $query->where('created_at', '<=', $endDate . ' 23:59:59');
+
+            $items = $query->get();
+
+            return [
+                'title' => 'Laporan Pembayaran DP',
+                'filename' => 'Laporan_DP',
+                'headers' => ['No. Pesanan', 'Pelanggan', 'Tanggal Upload', 'Tanggal Verifikasi', 'Nominal DP', 'Status'],
+                'rows' => $items->map(function (Payment $payment) {
+                    return [
+                        $payment->order->order_number ?? '-',
+                        $payment->order->user->name ?? '-',
+                        $payment->created_at->format('d M Y H:i'),
+                        $payment->verified_at ? $payment->verified_at->format('d M Y H:i') : '-',
+                        'Rp ' . number_format($payment->amount, 0, ',', '.'),
+                        ucfirst($payment->status),
+                    ];
+                })->all(),
+            ];
         }
 
         $query = Order::query()->with(['user', 'payments']);
@@ -162,7 +186,7 @@ class ReportExportController extends Controller
             $query->where('order_date', '<=', $endDate);
         }
 
-        if ($type === 'pesanan') {
+        if ($type === 'pesanan' || $type === 'transaksi') {
             if ($status && $status !== 'semua') {
                 $query->where('status', $status);
             }
@@ -177,7 +201,7 @@ class ReportExportController extends Controller
         $items = $query->get();
 
         return match ($type) {
-            'pesanan' => [
+            'pesanan', 'transaksi' => [
                 'title' => 'Laporan Pesanan Pelanggan',
                 'filename' => 'Laporan_Pesanan',
                 'headers' => ['No. Pesanan', 'Tanggal Pesan', 'Pelanggan', 'WhatsApp', 'Metode', 'Status', 'Total DP', 'Lunas', 'Tgl Janji'],
@@ -187,7 +211,7 @@ class ReportExportController extends Controller
                         optional($order->order_date)->format('d M Y') ?? '-',
                         $order->user->name ?? '-',
                         $order->user->phone_wa ?? '-',
-                        $order->method ?? '-',
+                        $order->method === 'home_service' ? 'Home Service' : 'Booking ke Toko',
                         ucfirst($order->status),
                         'Rp ' . number_format($order->dp_amount, 0, ',', '.'),
                         $order->is_fully_paid ? 'Lunas' : 'Belum Lunas',

@@ -18,7 +18,7 @@ const Contact = () => {
             
             {/* HERO SECTION CONTACT */}
             <section className="relative pt-48 pb-32 overflow-hidden bg-surface">
-                <div className="absolute inset-0 opacity-10 bg-[url('https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[13px] font-bold mb-6 block">Hubungi Kami</span>
                     <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 leading-tight text-text-primary">

@@ -12,7 +12,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CompleteProfile from './pages/CompleteProfile';
-import Profile from './pages/Profile';
+import ManageProfile from './pages/ManageProfile';
+import ManagePassword from './pages/ManagePassword';
+import Measurements from './pages/Measurements';
 import OrderForm from './pages/OrderForm';
 import UploadDP from './pages/UploadDP';
 import OrderDetail from './pages/OrderDetail';
@@ -52,9 +54,19 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              <Route path="/profile" element={
+              <Route path="/profile/edit" element={
                 <ProtectedRoute>
-                  <Profile />
+                  <ManageProfile />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile/password" element={
+                <ProtectedRoute>
+                  <ManagePassword />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile/measurements" element={
+                <ProtectedRoute>
+                  <Measurements />
                 </ProtectedRoute>
               } />
 

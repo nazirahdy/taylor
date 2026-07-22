@@ -25,10 +25,14 @@ class ProgressLogsRelationManager extends RelationManager
                     ->required()
                     ->label('Tahapan')
                     ->options([
-                        'Pemotongan Kain' => 'Pemotongan Kain',
-                        'Proses Jahit' => 'Proses Jahit',
-                        'Finishing' => 'Finishing',
-                        'Siap Diambil' => 'Siap Diambil',
+                        'Konsultasi & Pengukuran'  => 'Konsultasi & Pengukuran',
+                        'Pemilihan Bahan'          => 'Pemilihan Bahan',
+                        'Pola & Pemotongan'        => 'Pola & Pemotongan',
+                        'Pola Penjahitan'          => 'Pola Penjahitan',
+                        'Proses Menjahit'          => 'Proses Menjahit',
+                        'Fitting Pertama'          => 'Fitting Pertama',
+                        'Finishing & Quality Check'=> 'Finishing & Quality Check',
+                        'Selesai & Penyerahan'     => 'Selesai & Penyerahan',
                     ]),
                 Forms\Components\Textarea::make('description')
                     ->label('Keterangan')

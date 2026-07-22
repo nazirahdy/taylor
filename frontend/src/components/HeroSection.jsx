@@ -7,10 +7,9 @@ const HeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center text-center px-6 overflow-hidden" id="beranda">
       {/* Background image layer */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[10000ms] scale-110 hover:scale-100"
-        style={{ backgroundImage: "url('https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg')" }}
+        className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-100"
+        style={{ backgroundImage: "url('https://as2.ftcdn.net/jpg/09/05/00/55/1000_F_905005503_yzsxQV76TLxuvKlzXXADdlNUXin54gcr.jpg')" }}
       />
-      
       {/* Overlay gradient */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-white/10 via-text-primary/40 to-text-primary/80" />
       <div className="absolute inset-0 z-10 backdrop-blur-[1px]" />

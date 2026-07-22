@@ -1,12 +1,13 @@
+
 import { ChevronRight, Loader2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const FeaturedServices = () => {
   const categories = [
-    { name: 'Klasik', image: 'https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg' },
-    { name: 'Modern', image: 'https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg' },
-    { name: 'Minimalis', image: 'https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg' },
-    { name: 'Kontemporer', image: 'https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpgp' }
+    { name: 'Klasik', image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=800&auto=format&fit=crop' },
+    { name: 'Modern', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop' },
+    { name: 'Minimalis', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop' },
+    { name: 'Kontemporer', image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop' }
   ];
 
   return (

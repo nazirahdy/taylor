@@ -22,7 +22,7 @@ class GalleryResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->role === 'admin';
+        return auth()->user()?->role === 'admin';
     }
 
     public static function form(Form $form): Form
@@ -46,6 +46,7 @@ class GalleryResource extends Resource
                             ->label('Foto Karya')
                             ->image()
                             ->directory('galleries')
+                            ->maxSize(10240)
                             ->required(),
                         Forms\Components\Toggle::make('is_published')
                             ->label('Tampilkan di Website')
@@ -53,11 +54,7 @@ class GalleryResource extends Resource
                         Forms\Components\TextInput::make('sort_order')
                             ->label('Urutan Tampil')
                             ->numeric()
-                            ->default(0)
-                            ->unique(table: 'galleries', column: 'sort_order', ignoreRecord: true)
-                            ->validationMessages([
-                                'unique' => 'Nomor urutan tampil ini sudah digunakan oleh karya lain. Harap gunakan nomor urutan yang unik/berbeda.',
-                            ]),
+                            ->default(0),
                     ])
                     ->columns(2),
             ]);
@@ -96,16 +93,14 @@ class GalleryResource extends Resource
                     ->label('Status Publikasi'),
                 Tables\Filters\SelectFilter::make('category')
                     ->label('Kategori')
-                    ->options(fn () => Gallery::pluck('category', 'category')->filter()->toArray()),
+                    ->options(fn () => Gallery::query()->whereNotNull('category')->distinct()->pluck('category', 'category')->toArray()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ])
             ->defaultSort('sort_order', 'asc');
     }

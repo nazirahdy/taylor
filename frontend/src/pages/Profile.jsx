@@ -256,14 +256,6 @@ const Profile = () => {
                                     })}
                                 </div>
 
-                                <div className="mt-8 pt-6 border-t border-border/60">
-                                    <span className="block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans">Catatan & Referensi Desain dari Penjahit</span>
-                                    <div className="p-6 bg-white border border-border/80 rounded-2xl min-h-[100px] text-sm text-text-secondary font-body leading-relaxed whitespace-pre-line">
-                                        {measurements.notes || (
-                                            <span className="text-text-muted/60 italic">Tidak ada catatan atau referensi khusus dari penjahit.</span>
-                                        )}
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

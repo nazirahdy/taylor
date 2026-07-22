@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import {ArrowLeft, Loader2, MessageSquare, Activity} from 'lucide-react';
+import { ArrowLeft, Loader2, Activity } from 'lucide-react';
 import OrderInfo from '../components/order/OrderInfo';
 import ProgressTracker from '../components/order/ProgressTracker';
-import ChatBoard from '../components/order/ChatBoard';
 
 const OrderDetail = () => {
     const { id } = useParams();
-    // eslint-disable-next-line no-unused-vars
     const navigate = useNavigate();
     
-    const [activeTab, setActiveTab] = useState('progres');
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    
+    // Prevent auto-scroll caused by polling re-renders
+    const hasScrolled = useRef(false);
 
     const fetchOrder = async () => {
         try {
@@ -38,6 +31,16 @@ const OrderDetail = () => {
         fetchOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
+
+    // Scroll to top once when page first loads — not on every re-render
+    useEffect(() => {
+        if (!isLoading && order && !hasScrolled.current) {
+            hasScrolled.current = true;
+            setTimeout(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }, 0);
+        }
+    }, [isLoading, order]);
 
     if (isLoading) {
         return (
@@ -70,43 +73,16 @@ const OrderDetail = () => {
                     </div>
                 </div>
 
-                {/* Subcomponent 1: Order Info */}
+                {/* Order Info */}
                 <OrderInfo order={order} />
 
-                {/* Main Content Area */}
-                <div className="flex flex-col md:flex-row gap-10 mt-16 animate-slide-up">
-                    
-                    {/* TABS (MOBILE ONLY) */}
-                    {isMobile && (
-                        <div className="flex bg-surface rounded-2xl p-2 border border-border shadow-sm mb-4">
-                            <button 
-                                onClick={() => setActiveTab('progres')}
-                                className={`flex-1 py-4 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 ${activeTab === 'progres' ? 'bg-primary text-white shadow-lg' : 'text-text-muted'}`}
-                            >
-                                <Activity className="w-4 h-4" /> Progres
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab('chat')}
-                                className={`flex-1 py-4 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 ${activeTab === 'chat' ? 'bg-white text-text-primary shadow-sm' : 'text-text-muted'}`}
-                            >
-                                <MessageSquare className="w-4 h-4" /> Chat Studio
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Left: Progress Tracker Area */}
-                    {(!isMobile || activeTab === 'progres') && (
-                        <div className="w-full md:w-5/12 lg:w-4/12 flex flex-col">
-                            <ProgressTracker orderId={order.id} isMobile={isMobile} />
-                        </div>
-                    )}
-
-                    {/* Right: Chat Board Area */}
-                    {(!isMobile || activeTab === 'chat') && (
-                        <div className="w-full md:w-7/12 lg:w-8/12 flex flex-col h-[70vh] md:h-auto min-h-[600px]">
-                            <ChatBoard orderId={order.id} isMobile={isMobile} />
-                        </div>
-                    )}
+                {/* Progress Tracker */}
+                <div className="mt-16 animate-slide-up">
+                    <div className="flex items-center gap-4 mb-8">
+                        <Activity className="w-5 h-5 text-primary" />
+                        <h2 className="text-xl font-display font-bold text-text-primary">Tahapan Pengerjaan</h2>
+                    </div>
+                    <ProgressTracker orderId={order.id} orderStatus={order.status} />
                 </div>
 
             </div>
@@ -115,4 +91,3 @@ const OrderDetail = () => {
 };
 
 export default OrderDetail;
-

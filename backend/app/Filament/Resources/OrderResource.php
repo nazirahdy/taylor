@@ -86,15 +86,25 @@ class OrderResource extends Resource
                     ->helperText(fn (callable $get) => 'Sisa Tagihan: Rp ' . number_format(max(0, (float)($get('estimated_price') ?? 0) - ((float)($get('dp_amount') ?? 0) + (float)($get('final_payment_amount') ?? 0))), 0, ',', '.')),
                 Forms\Components\Placeholder::make('is_fully_paid')
                     ->label('Status Lunas')
-                    ->content(fn (?Order $record) => ($record?->is_fully_paid ?? false) ? '✅ Lunas' : '❌ Belum Lunas'),
+                    ->content(function (callable $get) {
+                        $price = (float)($get('estimated_price') ?? 0);
+                        $dp = (float)($get('dp_amount') ?? 0);
+                        $final = (float)($get('final_payment_amount') ?? 0);
+                        $total = $dp + $final;
+                        
+                        if ($price > 0 && $total >= $price && $total > 0) return '✅ Lunas';
+                        if ($final > 0) return '❌ Belum Lunas (Ada Sisa)';
+                        return '❌ Belum Lunas';
+                    }),
                 Forms\Components\Select::make('status')->options([
-                    'pending'     => 'Menunggu Konfirmasi',
-                    'dp_uploaded' => 'DP Diupload',
-                    'confirmed'   => 'Dikonfirmasi (DP Diverifikasi)',
-                    'in_progress' => 'Sedang Diproses',
-                    'completed'   => 'Selesai',
-                    'cancelled'   => 'Dibatalkan',
-                    'rejected'    => 'Ditolak',
+                    'pending'              => 'Menunggu Konfirmasi',
+                    'confirmed'            => 'Dikonfirmasi',
+                    'pola_pemotongan'      => 'Pola dan Pemotongan',
+                    'pola_penjahitan'      => 'Pola Penjahitan',
+                    'proses_menjahit'      => 'Proses Menjahit',
+                    'finishing'            => 'Finishing',
+                    'selesai_penyerahan'   => 'Selesai & Penyerahan',
+                    'rejected'             => 'Ditolak',
                 ])->default('pending')->disabled()->dehydrated(false)->required(),
                 Forms\Components\Textarea::make('rejected_reason')->label('Alasan Penolakan')
                     ->visible(fn (Order $record) => $record->status === 'rejected')->disabled()->dehydrated(false),
@@ -138,8 +148,26 @@ class OrderResource extends Resource
                     ->formatStateUsing(fn ($state) => $state === 'home_service' ? 'Home Service' : 'Booking ke Toko'),
                 Tables\Columns\TextColumn::make('status')->badge()
                     ->color(fn ($state) => match($state) {
-                        'pending' => 'info', 'confirmed' => 'success', 'in_progress' => 'warning',
-                        'completed' => 'success', 'rejected' => 'danger', 'cancelled' => 'gray', default => 'gray',
+                        'pending'            => 'info',
+                        'confirmed'          => 'success',
+                        'pola_pemotongan'    => 'warning',
+                        'pola_penjahitan'    => 'warning',
+                        'proses_menjahit'    => 'warning',
+                        'finishing'          => 'primary',
+                        'selesai_penyerahan' => 'success',
+                        'rejected'           => 'danger',
+                        default              => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'pending'            => 'Menunggu Konfirmasi',
+                        'confirmed'          => 'Dikonfirmasi',
+                        'pola_pemotongan'    => 'Pola dan Pemotongan',
+                        'pola_penjahitan'    => 'Pola Penjahitan',
+                        'proses_menjahit'    => 'Proses Menjahit',
+                        'finishing'          => 'Finishing',
+                        'selesai_penyerahan' => 'Selesai & Penyerahan',
+                        'rejected'           => 'Ditolak',
+                        default              => $state,
                     }),
                 Tables\Columns\TextColumn::make('dp_amount')->money('IDR', locale: 'id')->label('Total DP')->sortable(),
                 Tables\Columns\TextColumn::make('final_payment_amount')
@@ -169,8 +197,14 @@ class OrderResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')->options([
-                    'pending' => 'Menunggu', 'dp_uploaded' => 'DP Diupload', 'confirmed' => 'Dikonfirmasi', 'in_progress' => 'Dikerjakan',
-                    'completed' => 'Selesai', 'rejected' => 'Ditolak', 'cancelled' => 'Dibatalkan',
+                    'pending'            => 'Menunggu Konfirmasi',
+                    'confirmed'          => 'Dikonfirmasi',
+                    'pola_pemotongan'    => 'Pola dan Pemotongan',
+                    'pola_penjahitan'    => 'Pola Penjahitan',
+                    'proses_menjahit'    => 'Proses Menjahit',
+                    'finishing'          => 'Finishing',
+                    'selesai_penyerahan' => 'Selesai & Penyerahan',
+                    'rejected'           => 'Ditolak',
                 ]),
                 Tables\Filters\SelectFilter::make('method')->options([
                     'home_service' => 'Home Service', 'visit' => 'Booking ke Toko',
@@ -201,18 +235,37 @@ class OrderResource extends Resource
                     ->form([
                         Forms\Components\Textarea::make('rejected_reason')->required()->label('Alasan Penolakan'),
                     ])
-                    ->visible(fn (Order $record) => in_array($record->status, ['pending', 'confirmed']))
+                    ->visible(fn (Order $record) => $record->status === 'pending')
                     ->action(function (Order $record, array $data) {
                         $record->update(['status' => 'rejected', 'rejected_reason' => $data['rejected_reason']]);
                         Notification::make()->title('Pesanan ditolak')->danger()->send();
                     }),
                 Tables\Actions\Action::make('complete')
-                    ->label('Selesai')->icon('heroicon-o-check-circle')->color('success')
+                    ->label('Tandai Selesai & Penyerahan')->icon('heroicon-o-check-circle')->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (Order $record) => $record->status === 'in_progress')
+                    ->visible(fn (Order $record) => $record->status === 'finishing')
                     ->action(function (Order $record) {
-                        $record->update(['status' => 'completed']);
-                        Notification::make()->title('Pesanan selesai!')->success()->send();
+                        $record->update(['status' => 'selesai_penyerahan']);
+                        Notification::make()->title('Pesanan selesai & siap diserahkan!')->success()->send();
+                    }),
+                Tables\Actions\Action::make('set_progress')
+                    ->label('Update Tahap')->icon('heroicon-o-arrow-path')->color('warning')
+                    ->form([
+                        Forms\Components\Select::make('next_status')
+                            ->label('Pindah ke Tahap')
+                            ->required()
+                            ->options(fn (Order $record) => array_filter([
+                                'confirmed'          => 'Dikonfirmasi',
+                                'pola_pemotongan'    => 'Pola dan Pemotongan',
+                                'pola_penjahitan'    => 'Pola Penjahitan',
+                                'proses_menjahit'    => 'Proses Menjahit',
+                                'finishing'          => 'Finishing',
+                            ], fn($k) => $k !== $record->status, ARRAY_FILTER_USE_KEY)),
+                    ])
+                    ->visible(fn (Order $record) => in_array($record->status, ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing']))
+                    ->action(function (Order $record, array $data) {
+                        $record->update(['status' => $data['next_status']]);
+                        Notification::make()->title('Tahap pesanan diperbarui!')->success()->send();
                     }),
                 Tables\Actions\Action::make('terima_pelunasan')
                     ->label('Catat Pelunasan')
@@ -245,13 +298,21 @@ class OrderResource extends Resource
                             'verified_at' => Carbon::now(),
                         ]);
                         
+                        $record->refresh();
                         // Siapkan link WhatsApp Kwitansi Pelunasan
                         if ($record->user && $record->user->phone_wa) {
                             $whatsAppService = app(\App\Services\WhatsAppService::class);
                             $nomPelunasan = number_format($data['final_payment_amount'], 0, ',', '.');
                             $msg = "Halo {$record->user->name} 💵\n"
-                                 . "Terima kasih, pembayaran pelunasan sebesar *Rp {$nomPelunasan}* untuk pesanan #{$record->id} telah kami terima.\n"
-                                 . "Pesanan Anda kini berstatus LUNAS. Terima kasih! ✨";
+                                 . "Terima kasih, pembayaran pelunasan sebesar *Rp {$nomPelunasan}* untuk pesanan #{$record->id} telah kami terima.\n";
+                            
+                            if ($record->is_fully_paid) {
+                                $msg .= "Pesanan Anda kini berstatus LUNAS. Terima kasih! ✨";
+                            } else {
+                                $sisa = max(0, $record->estimated_price - $record->dp_amount - $record->final_payment_amount);
+                                $nomSisa = number_format($sisa, 0, ',', '.');
+                                $msg .= "Sisa tagihan Anda saat ini adalah *Rp {$nomSisa}*. Terima kasih! ✨";
+                            }
                             
                             $url = $whatsAppService->generateWaLink($record->user->phone_wa, $msg);
                             Notification::make()

@@ -91,19 +91,21 @@ const GallerySection = () => {
                                 onClick={() => setSelectedImage(item)}
                             >
                                     <img 
-                                    src={(item.image_path || '').includes('http') ? item.image_path : `http://localhost:8000/storage/${item.image_path}`} 
-                                    alt={item.title || 'Koleksi Era Jahit'} 
-                                    className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110" 
-                                />
+                                        src={(item.image_path || '').includes('http') ? item.image_path : `http://localhost:8000/storage/${item.image_path}`} 
+                                        alt={item.title || 'Koleksi Era Jahit'} 
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110" 
+                                    />
                                 <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-12">
-                                    <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
-                                        <span className="text-primary text-[10px] uppercase tracking-widest mb-3 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
-                                        <h3 className="text-white text-3xl font-display font-bold mb-6">{item.title || `Galeri ${item.id}`}</h3>
-                                        <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
-                                            <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
-                                        </div>
-                                    </div>
-                                </div>
+                                     <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
+                                         <span className="text-primary text-[10px] uppercase tracking-widest mb-3 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
+                                         <h3 className="text-white text-3xl font-display font-bold mb-6">{item.title || `Galeri ${item.id}`}</h3>
+                                         <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
+                                             <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
+                                         </div>
+                                     </div>
+                                 </div>
                             </div>
                         ))}
                     </div>
@@ -119,6 +121,8 @@ const GallerySection = () => {
                             <img 
                                 src={(selectedImage.image_path || '').includes('http') ? selectedImage.image_path : `http://localhost:8000/storage/${selectedImage.image_path}`} 
                                 alt={selectedImage.title || 'Preview'} 
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover" 
                             />
                         </div>

@@ -39,7 +39,7 @@ const Gallery = () => {
             
             {/* HERO SECTION GALLERY */}
             <section className="relative pt-48 pb-32 overflow-hidden bg-surface">
-                <div className="absolute inset-0 opacity-10 bg-[url('https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-primary/10 via-amber-500/5 to-transparent"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Portofolio Kami</span>
                     <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h1>
@@ -89,10 +89,12 @@ const Gallery = () => {
                                 onClick={() => setSelectedImage(item)}
                             >
                                     <img 
-                                    src={(item.image_path || '').includes('http') ? item.image_path : `http://localhost:8000/storage/${item.image_path}`} 
-                                    alt={item.title || 'Koleksi Era Jahit'} 
-                                    className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110" 
-                                />
+                                        src={(item.image_path || '').includes('http') ? item.image_path : `http://localhost:8000/storage/${item.image_path}`} 
+                                        alt={item.title || 'Koleksi Era Jahit'} 
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110" 
+                                    />
                                 <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-12">
                                     <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
                                         <span className="text-primary text-[10px] uppercase tracking-widest mb-3 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
@@ -117,6 +119,8 @@ const Gallery = () => {
                             <img 
                                 src={(selectedImage.image_path || '').includes('http') ? selectedImage.image_path : `http://localhost:8000/storage/${selectedImage.image_path}`} 
                                 alt={selectedImage.title || 'Preview'} 
+                                loading="lazy"
+                                decoding="async"
                                 className="w-full h-full object-cover" 
                             />
                         </div>

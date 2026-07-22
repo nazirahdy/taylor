@@ -67,9 +67,9 @@ class Order extends Model
                 
                 switch ($status) {
                     case 'confirmed': $whatsAppService->notifyOrderConfirmed($order); break;
-                    case 'completed': $whatsAppService->notifyOrderCompleted($order); break;
+                    case 'selesai_penyerahan': $whatsAppService->notifyOrderCompleted($order); break;
                     case 'rejected': $whatsAppService->notifyOrderRejected($order, $order->rejected_reason ?? 'Ketidaksesuaian detail'); break;
-                    case 'in_progress': $whatsAppService->notifyOrderInProgress($order); break;
+                    case 'proses_menjahit': $whatsAppService->notifyOrderInProgress($order); break;
                 }
             }
         });

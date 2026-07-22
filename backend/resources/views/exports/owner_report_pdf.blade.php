@@ -13,7 +13,7 @@
             padding: 10px;
         }
         .header-container {
-            border-bottom: 3px solid #f59e0b;
+            border-bottom: 3px solid #79D12A;
             padding-bottom: 12px;
             margin-bottom: 20px;
         }

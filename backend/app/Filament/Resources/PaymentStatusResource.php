@@ -94,19 +94,19 @@ class PaymentStatusResource extends Resource
                             if ($dp > 0) return 'DP Diunggah';
                             return 'Belum Ada';
                         }),
-                    Forms\Components\Select::make('status')
-                        ->label('Status Pesanan')
-                        ->options([
-                            'pending'     => 'Menunggu Konfirmasi',
-                            'dp_uploaded' => 'DP Diupload',
-                            'confirmed'   => 'Dikonfirmasi',
-                            'in_progress' => 'Sedang Diproses',
-                            'completed'   => 'Selesai',
-                            'cancelled'   => 'Dibatalkan',
-                            'rejected'    => 'Ditolak',
-                        ])
-                        ->required()
-                        ->reactive(),
+                    Forms\Components\Placeholder::make('status_pesanan_display')
+                        ->label('Status Pesanan Saat Ini')
+                        ->content(fn (?Order $record) => match($record?->status) {
+                            'pending'            => 'Menunggu Konfirmasi',
+                            'confirmed'          => 'Dikonfirmasi',
+                            'pola_pemotongan'    => 'Pola dan Pemotongan',
+                            'pola_penjahitan'    => 'Pola Penjahitan',
+                            'proses_menjahit'    => 'Proses Menjahit',
+                            'finishing'          => 'Finishing',
+                            'selesai_penyerahan' => 'Selesai & Penyerahan',
+                            'rejected'           => 'Ditolak',
+                            default              => $record?->status ?? '-',
+                        }),
                     Forms\Components\Textarea::make('rejected_reason')
                         ->label('Alasan Penolakan')
                         ->visible(fn (callable $get) => $get('status') === 'rejected')
@@ -203,9 +203,9 @@ class PaymentStatusResource extends Resource
                     ->modalWidth('xl')
                     ->using(function (Order $record, array $data): Order {
                         $record->update([
-                            'status' => $data['status'],
+                            'status' => $data['status'] ?? $record->status,
                             'estimated_price' => $data['estimated_price'] ?? $record->estimated_price,
-                            'rejected_reason' => $data['status'] === 'rejected' ? $data['rejected_reason'] : null,
+                            'rejected_reason' => ($data['status'] ?? $record->status) === 'rejected' ? ($data['rejected_reason'] ?? $record->rejected_reason) : null,
                         ]);
 
                         if (array_key_exists('dp_amount', $data) && $data['dp_amount'] !== null) {

@@ -61,10 +61,12 @@ const ChatWidget = () => {
         return () => clearInterval(interval);
     }, [fetchMessages, getStorageKey, sessionInitialized]);
 
-    // Auto-scroll to bottom when messages update
+    const chatBodyRef = useRef(null);
+
+    // Auto-scroll to bottom INSIDE chat box only — not the whole page
     useEffect(() => {
-        if (isOpen && scrollRef.current) {
-            scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (isOpen && chatBodyRef.current) {
+            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
         }
     }, [messages, isOpen]);
 
@@ -129,7 +131,7 @@ const ChatWidget = () => {
                         </button>
                     </div>
 
-                    <div className="flex-grow overflow-y-auto p-5 space-y-5 bg-white relative" id="customer-chat-body">
+                    <div ref={chatBodyRef} className="flex-grow overflow-y-auto p-5 space-y-5 bg-white relative" id="customer-chat-body">
                         {messages.length === 0 && (
                             <div className="text-center text-gray-400 mt-10 text-sm font-sans">
                                 <p>Tanya apa saja seputar pesanan kamu!</p>
@@ -157,7 +159,6 @@ const ChatWidget = () => {
                                 </div>
                             </div>
                         ))}
-                        <div ref={scrollRef}></div>
                     </div>
 
                     <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex items-center gap-3">

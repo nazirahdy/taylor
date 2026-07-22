@@ -9,8 +9,11 @@ const OrderInfo = ({ order }) => {
             'pending': 'bg-surface text-text-muted border-border',
             'dp_uploaded': 'bg-primary/5 text-primary border-primary/20',
             'confirmed': 'bg-primary text-white border-primary/20',
-            'in_progress': 'bg-teal-500/10 text-teal-600 border-teal-500/20',
-            'completed': 'bg-green-500/10 text-green-600 border-green-500/20',
+            'pola_pemotongan': 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+            'pola_penjahitan': 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+            'proses_menjahit': 'bg-teal-500/10 text-teal-600 border-teal-500/20',
+            'finishing': 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+            'selesai_penyerahan': 'bg-green-500/10 text-green-600 border-green-500/20',
             'rejected': 'bg-red-500/10 text-red-600 border-red-500/20',
         };
         return colors[status] || 'bg-surface text-text-muted border-border';
@@ -30,11 +33,14 @@ const OrderInfo = ({ order }) => {
                     </div>
                 </div>
                 <div className={`px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-[11px] border font-sans shadow-sm ${getStatusColor(order.status)}`}>
-                    {order.status === 'pending' ? 'Menunggu' : 
+                    {order.status === 'pending' ? 'Menunggu Konfirmasi' : 
                      order.status === 'dp_uploaded' ? 'Validasi DP' : 
                      order.status === 'confirmed' ? 'Dikonfirmasi' : 
-                     order.status === 'in_progress' ? 'Pengerjaan' : 
-                     order.status === 'completed' ? 'Selesai' : 
+                     order.status === 'pola_pemotongan' ? 'Pola dan Pemotongan' : 
+                     order.status === 'pola_penjahitan' ? 'Pola Penjahitan' : 
+                     order.status === 'proses_menjahit' ? 'Proses Menjahit' : 
+                     order.status === 'finishing' ? 'Finishing' : 
+                     order.status === 'selesai_penyerahan' ? 'Selesai & Penyerahan' : 
                      order.status === 'rejected' ? 'Ditolak' : order.status}
                 </div>
             </div>
@@ -79,56 +85,38 @@ const OrderInfo = ({ order }) => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 relative z-10">
                 <div className="space-y-3">
                     <span className="flex items-center gap-2 text-[11px] text-text-muted font-bold uppercase tracking-widest font-sans"><Layers className="w-4 h-4"/> Metode Layanan</span>
                     <p className="text-text-primary font-bold font-sans">{order.method === 'home_service' ? 'Home Service' : 'In-Store'}</p>
                 </div>
                 <div className="space-y-3">
                     <span className="flex items-center gap-2 text-[11px] text-text-muted font-bold uppercase tracking-widest font-sans"><CreditCard className="w-4 h-4"/> Status Pembayaran</span>
-                    <p className="text-text-primary font-bold font-sans">{order.status === 'confirmed' || order.status === 'in_progress' || order.status === 'completed' ? 'DP Terbayar' : 'Menunggu DP'}</p>
+                    <p className="text-text-primary font-bold font-sans">{order.status === 'confirmed' || ['pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'].includes(order.status) ? 'DP Terbayar' : 'Menunggu DP'}</p>
                 </div>
                 <div className="space-y-3">
                     <span className="flex items-center gap-2 text-[11px] text-text-muted font-bold uppercase tracking-widest font-sans">Total Biaya</span>
-                    <p className="text-primary font-bold text-2xl font-display">Rp {order.estimated_price ? Number(order.estimated_price).toLocaleString('id-ID') : 'Menghitung...'}</p>
-                </div>
-                <div className="space-y-3">
-                    <span className="flex items-center gap-2 text-[11px] text-text-muted font-bold uppercase tracking-widest font-sans">Target Selesai</span>
-                    <p className="text-text-primary font-bold font-sans">
-                        {order.quota_date 
-                            ? new Date(order.quota_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) 
-                            : 'Menjadwalkan...'}
-                    </p>
+                    <p className="text-primary font-bold text-2xl font-display">{order.estimated_price && Number(order.estimated_price) > 0 ? `Rp ${Number(order.estimated_price).toLocaleString('id-ID')}` : 'Belum ada'}</p>
                 </div>
             </div>
 
             <div className="mt-16 pt-16 border-t border-border relative z-10">
-                <div className="flex items-center gap-4 mb-10">
-                    <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
-                        <Ruler className="w-5 h-5 text-primary" />
-                    </div>
-                    <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-[0.3em] font-sans">Spesifikasi Ukuran & Detail Teknis</h4>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-5 mb-10">
-                    {order.measurements ? Object.entries(order.measurements).map(([key, val]) => (
-                        val && !['id', 'user_id', 'created_at', 'updated_at', 'notes'].includes(key) ? (
-                            <div key={key} className="bg-white p-5 rounded-2xl border border-border hover:border-primary/30 hover:shadow-md transition-all group">
-                                <span className="text-[9px] text-text-muted uppercase font-bold block mb-2 truncate font-sans group-hover:text-primary">{key.replace('_', ' ')}</span>
-                                <span className="text-lg font-bold text-text-primary font-display">{val}<span className="text-[10px] ml-1 text-text-muted font-sans font-bold">CM</span></span>
-                            </div>
-                        ) : null
-                    )) : (
-                        <div className="col-span-full py-8 text-text-muted text-sm italic font-body">
-                            Belum ada data ukuran untuk pesanan ini.
+                {order.design_image_path ? (
+                    <div className="bg-white p-8 rounded-[2rem] border border-border shadow-sm flex flex-col items-center gap-6 max-w-xl mx-auto">
+                        <span className="text-[11px] font-bold text-text-primary uppercase tracking-[0.3em] font-sans">Foto Referensi Desain</span>
+                        <div className="w-full overflow-hidden rounded-2xl border border-border shadow-md hover:shadow-lg transition-all duration-300">
+                            <img 
+                                src={order.design_image_path.includes('http') 
+                                    ? order.design_image_path.replace('http://localhost/storage', 'http://localhost:8000/storage') 
+                                    : `http://localhost:8000/storage/${order.design_image_path}`} 
+                                alt="Referensi Desain" 
+                                className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
+                            />
                         </div>
-                    )}
-                </div>
-                
-                {order.design_notes && (
-                    <div className="bg-white p-8 rounded-[1.5rem] border border-border text-sm text-text-secondary font-body leading-relaxed italic shadow-sm relative">
-                        <span className="absolute -top-3 left-6 bg-white px-3 text-[10px] text-primary font-bold uppercase tracking-widest font-sans">Catatan Desain</span>
-                        "{order.design_notes}"
+                    </div>
+                ) : (
+                    <div className="bg-white p-8 rounded-[2rem] border border-border shadow-sm text-center text-text-muted italic text-sm font-body max-w-xl mx-auto">
+                        Belum ada foto referensi desain untuk pesanan ini.
                     </div>
                 )}
 

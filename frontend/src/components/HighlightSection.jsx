@@ -2,15 +2,6 @@ import React from 'react';
 import { Settings, Ruler, MapPin, Star } from 'lucide-react';
 
 const HighlightSection = () => {
-  const galleryItems = [
-    { image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=800&auto=format&fit=crop', title: 'Jas Pria Modern' },
-    { image: 'https://images.unsplash.com/photo-1616486341351-7025244f6714?q=80&w=800&auto=format&fit=crop', title: 'Kebaya Klasik' },
-    { image: 'https://images.unsplash.com/photo-1616137422495-1e9e46e2aa77?q=80&w=800&auto=format&fit=crop', title: 'Seragam Kantor' },
-    { image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=800&auto=format&fit=crop', title: 'Gaun Pesta' },
-    { image: 'https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?q=80&w=800&auto=format&fit=crop', title: 'Batik Premium' },
-    { image: 'https://images.unsplash.com/photo-1617103996702-96ff29b1c467?q=80&w=800&auto=format&fit=crop', title: 'Celana Formal' }
-  ];
-
   return (
     <section className="bg-white py-32 px-4 md:px-20" id="gallery">
       <div className="max-w-7xl mx-auto">

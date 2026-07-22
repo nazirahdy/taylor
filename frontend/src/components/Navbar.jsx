@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, Link } from 'react-router-dom';
-import { Menu, X, User, Phone, LogOut } from 'lucide-react';
+import { Menu, X, User, Phone, LogOut, Settings, KeyRound, Ruler, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('#beranda');
     const { user, logout } = useAuth();
     
@@ -115,13 +116,53 @@ const Navbar = () => {
                                     <span className={`text-[10px] uppercase tracking-widest font-bold font-sans ${isTransparent ? 'text-white/80' : 'text-text-muted'}`}>Portal Pelanggan</span>
                                     <span className={`text-sm font-display font-bold transition-colors ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-primary group-hover:text-primary'}`}>{user.name?.split(' ')[0]}</span>
                                 </Link>
-                                <Link to="/profile" className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all group overflow-hidden ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}>
-                                    {user.avatar ? (
-                                        <img src={user.avatar} alt="Profil" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <User className={`w-5 h-5 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
+                                <div className="relative">
+                                    <button 
+                                        onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                                        className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all group overflow-hidden ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}
+                                    >
+                                        {user.avatar ? (
+                                            <img src={user.avatar} alt="Profil" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User className={`w-5 h-5 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
+                                        )}
+                                    </button>
+                                    
+                                    {isProfileDropdownOpen && (
+                                        <>
+                                            <div className="fixed inset-0 z-40" onClick={() => setIsProfileDropdownOpen(false)}></div>
+                                            <div className="absolute right-0 mt-3 w-64 bg-white rounded-[2rem] shadow-2xl border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                                                <div className="p-3 flex flex-col gap-1">
+                                                    <div className="px-4 py-3 mb-2 flex items-center gap-3 border-b border-border/60 pb-4">
+                                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">
+                                                            {user.avatar ? <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" /> : user.name?.charAt(0)}
+                                                        </div>
+                                                        <div className="overflow-hidden">
+                                                            <span className="block text-sm font-bold text-text-primary truncate">{user.name}</span>
+                                                            <span className="block text-[10px] text-text-muted truncate">{user.email || user.phone_wa}</span>
+                                                        </div>
+                                                    </div>
+                                                    <Link to="/profile/edit" onClick={() => setIsProfileDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-xs font-bold text-text-primary hover:bg-surface hover:text-primary transition-all rounded-xl font-sans group">
+                                                        <Settings className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" /> Kelola Profil
+                                                    </Link>
+                                                    <Link to="/profile/password" onClick={() => setIsProfileDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-xs font-bold text-text-primary hover:bg-surface hover:text-primary transition-all rounded-xl font-sans group">
+                                                        <KeyRound className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" /> Pengaturan Sandi
+                                                    </Link>
+                                                    <Link to="/profile/measurements" onClick={() => setIsProfileDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-xs font-bold text-text-primary hover:bg-surface hover:text-primary transition-all rounded-xl font-sans group">
+                                                        <Ruler className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" /> Ukuran Badan
+                                                    </Link>
+                                                    <Link to="/dashboard" onClick={() => setIsProfileDropdownOpen(false)} className="flex items-center gap-3 px-4 py-3 text-xs font-bold text-text-primary hover:bg-surface hover:text-primary transition-all rounded-xl font-sans group">
+                                                        <FileText className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" /> Riwayat Pesanan
+                                                    </Link>
+                                                    <div className="h-[1px] bg-border my-1"></div>
+                                                    <button onClick={() => { setIsProfileDropdownOpen(false); logout(); }} className="flex items-center gap-3 px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-all rounded-xl font-sans w-full text-left">
+                                                        <LogOut className="w-4 h-4" /> Keluar Akun
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </>
                                     )}
-                                </Link>
+                                </div>
                             </div>
                         )}
                         
@@ -170,8 +211,8 @@ const Navbar = () => {
                                 <Link to="/dashboard" className="w-full py-6 text-center rounded-2xl bg-primary text-white font-bold uppercase tracking-[0.2em] text-[11px] shadow-xl shadow-primary/20 font-sans">
                                     Dashboard Pelanggan
                                 </Link>
-                                <Link to="/profile" className="w-full py-6 text-center rounded-2xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[11px] bg-surface font-sans">
-                                    Profil Saya
+                                <Link to="/profile/edit" className="w-full py-6 text-center rounded-2xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[11px] bg-surface font-sans">
+                                    Kelola Profil
                                 </Link>
                                 <button onClick={logout} className="w-full py-6 text-center rounded-2xl border border-red-100 text-red-500 font-bold uppercase tracking-[0.2em] text-[11px] bg-red-50 font-sans mt-4 flex items-center justify-center gap-2">
                                     <LogOut className="w-4 h-4" /> Keluar Akun

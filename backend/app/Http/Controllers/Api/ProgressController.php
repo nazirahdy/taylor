@@ -71,15 +71,11 @@ class ProgressController extends Controller
         $order = Order::with('user')->findOrFail($orderId);
 
         // Ensure order is in valid status for progress update
-        if (!in_array($order->status, ['confirmed', 'in_progress'])) {
+        if (!in_array($order->status, ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Pesanan harus dikonfirmasi terlebih dahulu sebelum progres dapat dicatat.'
             ], 422);
-        }
-
-        if ($order->status === 'confirmed') {
-            $order->update(['status' => 'in_progress']);
         }
 
         $log = ProgressLog::create([
@@ -120,14 +116,14 @@ class ProgressController extends Controller
 
         $order = Order::with('user')->findOrFail($orderId);
 
-        if ($order->status === 'completed') {
+        if ($order->status === 'selesai_penyerahan') {
             return response()->json([
                 'success' => false,
                 'message' => 'Pesanan sudah ditandai selesai'
             ], 422);
         }
 
-        $order->update(['status' => 'completed']);
+        $order->update(['status' => 'selesai_penyerahan']);
 
         // Send completion notification
         $this->whatsAppService->notifyOrderCompleted($order);

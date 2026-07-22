@@ -63,7 +63,7 @@ const FAQ = () => {
             
             {/* Header FAQ */}
             <section className="pt-48 pb-32 relative overflow-hidden bg-surface border-b border-border">
-                <div className="absolute inset-0 opacity-10 bg-[url('https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg')] bg-cover bg-center"></div>
+                <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
                         <div className="max-w-3xl animate-fade-in">

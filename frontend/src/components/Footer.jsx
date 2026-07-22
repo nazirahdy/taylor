@@ -7,15 +7,15 @@ const Footer = () => {
         <footer className="relative mt-32">
             {/* CTA Banner Section */}
             <div className="relative h-[600px] flex items-center justify-center text-center px-6 overflow-hidden mx-4 md:mx-16 rounded-[3.5rem] mb-[-120px] z-10 shadow-2xl group">
-                <div 
+                <div
                     className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
-                    style={{ backgroundImage: "url('https://i.pinimg.com/1200x/51/50/aa/5150aa0e03c7c51bf976d34063befec0.jpg')" }}
+                    style={{ backgroundImage: "url('https://as2.ftcdn.net/jpg/09/05/00/55/1000_F_905005503_yzsxQV76TLxuvKlzXXADdlNUXin54gcr.jpg')" }}
                 />
                 <div className="absolute inset-0 z-10 bg-primary/40 backdrop-blur-[2px]" />
                 <div className="relative z-20 max-w-4xl animate-fade-in flex flex-col items-center px-6">
                     <span className="text-white uppercase tracking-[0.5em] text-[12px] font-bold mb-6 font-sans drop-shadow-lg">Mari Ciptakan Karya Terbaik</span>
                     <h2 className="text-4xl md:text-6xl font-display font-bold text-white leading-tight mb-12 drop-shadow-2xl">
-                        Mewujudkan Visi Busana <br/> Anda Menjadi Nyata
+                        Mewujudkan Visi Busana <br /> Anda Menjadi Nyata
                     </h2>
                     <div className="flex flex-wrap justify-center gap-6">
                         <Link to="/contact" className="px-12 py-5 bg-white text-primary font-bold rounded-2xl hover:bg-surface transition-all flex items-center gap-3 shadow-2xl font-sans text-sm uppercase tracking-widest">

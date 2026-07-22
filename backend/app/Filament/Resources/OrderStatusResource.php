@@ -43,15 +43,16 @@ class OrderStatusResource extends Resource
                             ->label('Status Pesanan')
                             ->options(function (Order $record) {
                                 $options = [
-                                    'pending'     => '📌 Menunggu Konfirmasi Admin',
-                                    'confirmed'   => '✅ Dikonfirmasi',
-                                    'in_progress' => '🧵 Sedang Dikerjakan (Proses Jahit)',
-                                    'completed'   => '🏆 Selesai Dikerjakan',
-                                    'cancelled'   => '🚫 Dibatalkan',
+                                    'pending'              => 'Menunggu Konfirmasi',
+                                    'confirmed'            => 'Dikonfirmasi',
+                                    'pola_pemotongan'      => 'Pola dan Pemotongan',
+                                    'pola_penjahitan'      => 'Pola Penjahitan',
+                                    'proses_menjahit'      => 'Proses Menjahit',
+                                    'finishing'            => 'Finishing',
+                                    'selesai_penyerahan'   => 'Selesai & Penyerahan',
                                 ];
-                                // Opsi tolak hanya tersedia saat pesanan belum dikonfirmasi
                                 if ($record->status === 'pending') {
-                                    $options['rejected'] = '❌ Ditolak';
+                                    $options['rejected'] = 'Ditolak';
                                 }
                                 return $options;
                             })
@@ -100,24 +101,28 @@ class OrderStatusResource extends Resource
                     ->label('Status Pesanan')
                     ->badge()
                     ->color(fn ($state) => match($state) {
-                        'pending'     => 'info',
-                        'dp_uploaded' => 'warning',
-                        'confirmed'   => 'success',
-                        'in_progress' => 'primary',
-                        'completed'   => 'success',
-                        'rejected'    => 'danger',
-                        'cancelled'   => 'gray',
-                        default       => 'gray',
+                        'pending'            => 'info',
+                        'dp_uploaded'        => 'warning',
+                        'confirmed'          => 'success',
+                        'pola_pemotongan'    => 'warning',
+                        'pola_penjahitan'    => 'warning',
+                        'proses_menjahit'    => 'warning',
+                        'finishing'          => 'primary',
+                        'selesai_penyerahan' => 'success',
+                        'rejected'           => 'danger',
+                        default              => 'gray',
                     })
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'pending'     => '📌 Menunggu Konfirmasi',
-                        'dp_uploaded' => '⏳ Menunggu Verifikasi DP',
-                        'confirmed'   => '✅ Dikonfirmasi',
-                        'in_progress' => '🧵 Proses Jahit',
-                        'completed'   => '🏆 Selesai',
-                        'rejected'    => '❌ Ditolak',
-                        'cancelled'   => '🚫 Batal',
-                        default       => $state,
+                        'pending'            => 'Menunggu Konfirmasi',
+                        'dp_uploaded'        => 'Menunggu Verifikasi DP',
+                        'confirmed'          => 'Dikonfirmasi',
+                        'pola_pemotongan'    => 'Pola dan Pemotongan',
+                        'pola_penjahitan'    => 'Pola Penjahitan',
+                        'proses_menjahit'    => 'Proses Menjahit',
+                        'finishing'          => 'Finishing',
+                        'selesai_penyerahan' => 'Selesai & Penyerahan',
+                        'rejected'           => 'Ditolak',
+                        default              => $state,
                     }),
                 Tables\Columns\TextColumn::make('quota_date')
                     ->label('Tgl Janji')
@@ -130,13 +135,15 @@ class OrderStatusResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')->options([
-                    'pending'     => 'Menunggu Konfirmasi',
-                    'dp_uploaded' => 'Menunggu Verifikasi DP',
-                    'confirmed'   => 'Dikonfirmasi',
-                    'in_progress' => 'Proses Jahit',
-                    'completed'   => 'Selesai',
-                    'rejected'    => 'Ditolak',
-                    'cancelled'   => 'Dibatalkan',
+                    'pending'            => 'Menunggu Konfirmasi',
+                    'dp_uploaded'        => 'Menunggu Verifikasi DP',
+                    'confirmed'          => 'Dikonfirmasi',
+                    'pola_pemotongan'    => 'Pola dan Pemotongan',
+                    'pola_penjahitan'    => 'Pola Penjahitan',
+                    'proses_menjahit'    => 'Proses Menjahit',
+                    'finishing'          => 'Finishing',
+                    'selesai_penyerahan' => 'Selesai & Penyerahan',
+                    'rejected'           => 'Ditolak',
                 ]),
                 Tables\Filters\SelectFilter::make('method')->options([
                     'home_service' => 'Home Service',
@@ -148,6 +155,7 @@ class OrderStatusResource extends Resource
                     ->label('Ubah Status')
                     ->icon('heroicon-o-pencil')
                     ->modalWidth('md')
+                    ->disabled(fn (Order $record) => $record->status === 'selesai_penyerahan')
                     ->using(function (Order $record, array $data): Order {
                         $record->update([
                             'status'          => $data['status'],
@@ -168,10 +176,19 @@ class OrderStatusResource extends Resource
                             case 'confirmed':
                                 $message = $waService->getMessageConfirmed($record);
                                 break;
-                            case 'in_progress':
+                            case 'pola_pemotongan':
+                                $message = $waService->getMessageProgressUpdate($record, 'Pola dan Pemotongan', 'Pesanan Anda masuk ke tahap pembuatan pola dan pemotongan bahan.');
+                                break;
+                            case 'pola_penjahitan':
+                                $message = $waService->getMessageProgressUpdate($record, 'Pola Penjahitan', 'Pesanan Anda masuk ke tahap pola penjahitan.');
+                                break;
+                            case 'proses_menjahit':
                                 $message = $waService->getMessageInProgress($record);
                                 break;
-                            case 'completed':
+                            case 'finishing':
+                                $message = $waService->getMessageProgressUpdate($record, 'Finishing', 'Pesanan Anda masuk ke tahap finishing (penyelesaian akhir).');
+                                break;
+                            case 'selesai_penyerahan':
                                 $message = $waService->getMessageCompleted($record);
                                 break;
                             case 'rejected':
@@ -194,7 +211,7 @@ class OrderStatusResource extends Resource
                     }),
 
                 Tables\Actions\Action::make('confirm_order')
-                    ->label('✅ Konfirmasi')
+                    ->label('Konfirmasi')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
                     ->visible(fn (Order $record) => $record->status === 'pending')
@@ -215,7 +232,7 @@ class OrderStatusResource extends Resource
                             $livewire->js("window.open('{$url}', '_blank')");
 
                             Notification::make()
-                                ->title('Pesanan Dikonfirmasi! ✅')
+                                ->title('Pesanan Dikonfirmasi!')
                                 ->body('Pesanan telah dikonfirmasi dan dialihkan ke WhatsApp.')
                                 ->success()
                                 ->send();
@@ -224,16 +241,78 @@ class OrderStatusResource extends Resource
                         }
                     }),
 
-                Tables\Actions\Action::make('start_sewing')
-                    ->label('🧵 Proses Jahit')
-                    ->color('primary')
+                Tables\Actions\Action::make('start_cutting')
+                    ->label('Pola & Potong')
+                    ->color('warning')
                     ->icon('heroicon-o-scissors')
                     ->visible(fn (Order $record) => $record->status === 'confirmed')
                     ->requiresConfirmation()
-                    ->modalHeading('Mulai Proses Jahit')
-                    ->modalDescription('Status akan diubah ke "Sedang Dikerjakan" dan Anda akan dialihkan ke WhatsApp.')
+                    ->modalHeading('Mulai Pembuatan Pola & Pemotongan')
+                    ->modalDescription('Status akan diubah ke "Pola dan Pemotongan" dan Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
-                        $record->update(['status' => 'in_progress']);
+                        $record->update(['status' => 'pola_pemotongan']);
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
+                            $waService = app(\App\Services\WhatsAppService::class);
+                            $url = $waService->generateWaLink(
+                                $record->user->phone_wa,
+                                $waService->getMessageProgressUpdate($record, 'Pola dan Pemotongan', 'Pesanan Anda masuk ke tahap pembuatan pola dan pemotongan bahan.')
+                            );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
+                            Notification::make()
+                                ->title('Status Diperbarui')
+                                ->body('Pesanan berada di tahap Pola & Pemotongan.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()->title('Status Diperbarui')->success()->send();
+                        }
+                    }),
+
+                Tables\Actions\Action::make('start_sewing_pattern')
+                    ->label('Pola Jahit')
+                    ->color('warning')
+                    ->icon('heroicon-o-wrench-screwdriver')
+                    ->visible(fn (Order $record) => $record->status === 'pola_pemotongan')
+                    ->requiresConfirmation()
+                    ->modalHeading('Mulai Pola Penjahitan')
+                    ->modalDescription('Status akan diubah ke "Pola Penjahitan" dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, $livewire) {
+                        $record->update(['status' => 'pola_penjahitan']);
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
+                            $waService = app(\App\Services\WhatsAppService::class);
+                            $url = $waService->generateWaLink(
+                                $record->user->phone_wa,
+                                $waService->getMessageProgressUpdate($record, 'Pola Penjahitan', 'Pesanan Anda masuk ke tahap pola penjahitan.')
+                            );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
+                            Notification::make()
+                                ->title('Status Diperbarui')
+                                ->body('Pesanan berada di tahap Pola Penjahitan.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()->title('Status Diperbarui')->success()->send();
+                        }
+                    }),
+
+                Tables\Actions\Action::make('start_sewing')
+                    ->label('Proses Jahit')
+                    ->color('primary')
+                    ->icon('heroicon-o-scissors')
+                    ->visible(fn (Order $record) => $record->status === 'pola_penjahitan')
+                    ->requiresConfirmation()
+                    ->modalHeading('Mulai Proses Jahit')
+                    ->modalDescription('Status akan diubah ke "Proses Menjahit" dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, $livewire) {
+                        $record->update(['status' => 'proses_menjahit']);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -255,16 +334,47 @@ class OrderStatusResource extends Resource
                         }
                     }),
 
+                Tables\Actions\Action::make('start_finishing')
+                    ->label('Finishing')
+                    ->color('info')
+                    ->icon('heroicon-o-sparkles')
+                    ->visible(fn (Order $record) => $record->status === 'proses_menjahit')
+                    ->requiresConfirmation()
+                    ->modalHeading('Mulai Finishing')
+                    ->modalDescription('Status akan diubah ke "Finishing" dan Anda akan dialihkan ke WhatsApp.')
+                    ->action(function (Order $record, $livewire) {
+                        $record->update(['status' => 'finishing']);
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
+                            $waService = app(\App\Services\WhatsAppService::class);
+                            $url = $waService->generateWaLink(
+                                $record->user->phone_wa,
+                                $waService->getMessageProgressUpdate($record, 'Finishing', 'Pesanan Anda masuk ke tahap finishing (penyelesaian akhir).')
+                            );
+                            
+                            $livewire->js("window.open('{$url}', '_blank')");
+
+                            Notification::make()
+                                ->title('Status Diperbarui')
+                                ->body('Pesanan berada di tahap Finishing.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()->title('Status Diperbarui')->success()->send();
+                        }
+                    }),
+
                 Tables\Actions\Action::make('complete')
-                    ->label('🏆 Selesaikan')
+                    ->label('Selesaikan')
                     ->color('success')
                     ->icon('heroicon-o-check-badge')
-                    ->visible(fn (Order $record) => $record->status === 'in_progress')
+                    ->visible(fn (Order $record) => $record->status === 'finishing')
                     ->requiresConfirmation()
                     ->modalHeading('Tandai Pesanan Selesai')
-                    ->modalDescription('Pesanan akan ditandai selesai dan Anda akan dialihkan ke WhatsApp.')
+                    ->modalDescription('Pesanan akan ditandai selesai dan diserahkan, serta Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
-                        $record->update(['status' => 'completed']);
+                        $record->update(['status' => 'selesai_penyerahan']);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -277,8 +387,8 @@ class OrderStatusResource extends Resource
                             $livewire->js("window.open('{$url}', '_blank')");
 
                             Notification::make()
-                                ->title('Pesanan Selesai! 🎉')
-                                ->body('Pesanan telah ditandai selesai dan dialihkan ke WhatsApp.')
+                                ->title('Pesanan Selesai!')
+                                ->body('Pesanan telah ditandai selesai & penyerahan dan dialihkan ke WhatsApp.')
                                 ->success()
                                 ->send();
                         } else {
@@ -287,7 +397,7 @@ class OrderStatusResource extends Resource
                     }),
 
                 Tables\Actions\Action::make('reject')
-                    ->label('❌ Tolak')
+                    ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->form([

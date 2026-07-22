@@ -81,7 +81,7 @@ class OrderController extends Controller
 
         // Check active orders limit
         $activeOrdersCount = Order::where('user_id', $user->id)
-            ->whereNotIn('status', ['completed', 'cancelled', 'rejected'])
+            ->whereNotIn('status', ['selesai_penyerahan', 'cancelled', 'rejected'])
             ->count();
 
         if ($activeOrdersCount >= 3) {
