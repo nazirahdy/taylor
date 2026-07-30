@@ -7,7 +7,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/export/omzet', [\App\Http\Controllers\ReportExportController::class, 'exportOmzet'])->name('export.omzet')->middleware('auth:owner');
 Route::get('/export/reports', [\App\Http\Controllers\ReportExportController::class, 'exportReport'])->name('export.reports')->middleware('auth:owner');
 
 /**

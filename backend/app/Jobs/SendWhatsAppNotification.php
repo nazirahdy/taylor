@@ -18,9 +18,7 @@ class SendWhatsAppNotification implements ShouldQueue
     protected $target;
     protected $message;
     
-    /**
-     * Berapa kali job boleh dicoba kembali jika gagal (Retry Config)
-     */
+
     public $tries = 3;
 
     /**
@@ -35,9 +33,7 @@ class SendWhatsAppNotification implements ShouldQueue
         $this->message = $message;
     }
 
-    /**
-     * Eksekusi (Execute) Job ke API Fonnte.
-     */
+    
     public function handle()
     {
         $token = env('FONNTE_TOKEN');
@@ -58,16 +54,16 @@ class SendWhatsAppNotification implements ShouldQueue
 
             if ($response->successful()) {
                 Log::info("WhatsApp berhasil dikirim ke {$this->target}", ['response' => $response->json()]);
-            } else {
+            } else 
+            {
                 Log::error("Fonnte API Gagal. Response error:", ['body' => $response->body()]);
-                // Biarkan job fail untuk retry dengan memanggil throw exception
-                throw new \Exception("Request Failed: " . $response->body());
+                 throw new \Exception("Request Failed: " . $response->body());
             }
 
-        } catch (Throwable $e) {
+        } catch (Throwable $e)
+            {
             Log::error('Koneksi Queue ke Fonnte terputus.', ['error' => $e->getMessage()]);
-            // Lempar error agar Laravel meng-queue ulang (retry) selama quota tries belum habis
-            throw $e;
-        }
+              throw $e;
+            }
     }
 }

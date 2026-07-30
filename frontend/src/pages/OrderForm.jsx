@@ -1,27 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { ChevronRight, ArrowLeft, CheckCircle2, Home, Store, Calendar as CalendarIcon, Save, UploadCloud, MapPin, ExternalLink, Clock } from 'lucide-react';
+import { useToast } from '../components/Toast';
+import { ChevronRight, ArrowLeft, CheckCircle2, Home, Store, Calendar as CalendarIcon, Save, UploadCloud, MapPin, ExternalLink, Clock, Search, X, Loader2 } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import L from 'leaflet';
+
+// Setup custom Leaflet pin marker icon
+const customMarkerIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+// Component to dynamically change map view center when lat/lng updates
+const MapViewUpdater = ({ center }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (center && center[0] && center[1]) {
+            map.flyTo(center, 15, { animate: true });
+        }
+    }, [center, map]);
+    return null;
+};
 
 const StepIndicator = ({ step, metode }) => {
-    const activeSteps = [
-        { num: 1, label: 'Layanan', icon: <Home className="w-5 h-5" /> },
-        { num: 2, label: 'Desain', icon: <UploadCloud className="w-5 h-5" /> },
-        ...(metode === 'home_service' ? [{ num: 3, label: 'Lokasi', icon: <MapPin className="w-5 h-5" /> }] : []),
-        { num: 4, label: 'Jadwal', icon: <CalendarIcon className="w-5 h-5" /> },
-        { num: 5, label: 'Konfirmasi', icon: <CheckCircle2 className="w-5 h-5" /> }
-    ];
+    // Build step list based on service type
+    const allSteps = metode === 'home_service'
+        ? [
+            { num: 1, label: 'Layanan', icon: <Home className="w-5 h-5" /> },
+            { num: 2, label: 'Desain', icon: <UploadCloud className="w-5 h-5" /> },
+            { num: 3, label: 'Lokasi', icon: <MapPin className="w-5 h-5" /> },
+            { num: 4, label: 'Jadwal', icon: <CalendarIcon className="w-5 h-5" /> },
+            { num: 5, label: 'Konfirmasi', icon: <CheckCircle2 className="w-5 h-5" /> }
+        ]
+        : [
+            { num: 1, label: 'Layanan', icon: <Home className="w-5 h-5" /> },
+            { num: 2, label: 'Desain', icon: <UploadCloud className="w-5 h-5" /> },
+            { num: 3, label: 'Jadwal', icon: <CalendarIcon className="w-5 h-5" /> },
+            { num: 4, label: 'Konfirmasi', icon: <CheckCircle2 className="w-5 h-5" /> }
+        ];
 
-    const activeStepIndex = activeSteps.findIndex(s => s.num === step);
-    const progressWidth = activeSteps.length > 1 ? (activeStepIndex / (activeSteps.length - 1)) * 100 : 0;
+    const activeStepIndex = allSteps.findIndex(s => s.num === step);
+    const progressWidth = allSteps.length > 1 ? (activeStepIndex / (allSteps.length - 1)) * 100 : 0;
 
     return (
         <div className="flex items-center justify-between relative mb-20">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-border -z-10"></div>
             <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] bg-primary -z-10 transition-all duration-700" style={{ width: `${progressWidth}%` }}></div>
             
-            {activeSteps.map(s => (
+            {allSteps.map(s => (
                 <div key={s.num} className="flex flex-col items-center gap-4">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border ${
                         step >= s.num ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20' : 'bg-surface border-border text-text-muted'
@@ -35,10 +68,23 @@ const StepIndicator = ({ step, metode }) => {
     );
 };
 
+// Helper: resolve display step number for "visit" type which skips step 3 (Lokasi)
+// Internal step numbers: 1=Layanan, 2=Desain, 3=Lokasi(HS only)/Jadwal(visit), 4=Jadwal(HS)/Konfirmasi(visit), 5=Konfirmasi(HS)
+// For visit: step 1->1, 2->2, 4->3, 5->4 (map internal to display)
+const getDisplayStep = (step, metode) => {
+    if (metode !== 'home_service') {
+        // visit: internal step 4 = display step 3, internal step 5 = display step 4
+        if (step === 4) return 3;
+        if (step === 5) return 4;
+    }
+    return step;
+};
+
 const OrderForm = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const { toast } = useToast();
     
     useEffect(() => {
         if (user && (!user.phone_wa || !user.alamat)) {
@@ -53,7 +99,7 @@ const OrderForm = () => {
         metode: location.state?.method || '',
         tanggal: '',
         catatan: location.state?.galleryItem ? `Pemesanan model: ${location.state.galleryItem.title}. ` : '',
-        alamat_kunjungan: user?.alamat || '',
+        alamat_kunjungan: '',
         gallery_image_path: location.state?.galleryItem?.image_path || '',
         latitude: '',
         longitude: '',
@@ -87,11 +133,7 @@ const OrderForm = () => {
         }
     }, [location.state, formData.metode]);
 
-    useEffect(() => {
-        if (user?.alamat && !formData.alamat_kunjungan) {
-            setFormData(prev => ({ ...prev, alamat_kunjungan: user.alamat }));
-        }
-    }, [user, formData.alamat_kunjungan]);
+    
 
     useEffect(() => {
         if (step === 3 && formData.alamat_kunjungan && !mapsVerified) {
@@ -170,12 +212,12 @@ const OrderForm = () => {
         if (!file) return;
         
         if (!file.type.startsWith('image/')) {
-            alert('File harus berupa gambar (JPG, JPEG, PNG).');
+            toast.error('File harus berupa gambar (JPG, JPEG, PNG).');
             return;
         }
 
         if (file.size > 2 * 1024 * 1024) {
-            alert('Ukuran gambar tidak boleh lebih dari 2MB.');
+            toast.error('Ukuran gambar tidak boleh lebih dari 2MB.');
             return;
         }
 
@@ -188,12 +230,12 @@ const OrderForm = () => {
         if (!file) return;
         
         if (!file.type.startsWith('image/')) {
-            alert('File harus berupa gambar (JPG, JPEG, PNG).');
+            toast.error('File harus berupa gambar (JPG, JPEG, PNG).');
             return;
         }
 
         if (file.size > 4 * 1024 * 1024) {
-            alert('Ukuran gambar tidak boleh lebih dari 4MB.');
+            toast.error('Ukuran gambar tidak boleh lebih dari 4MB.');
             return;
         }
 
@@ -201,35 +243,45 @@ const OrderForm = () => {
         setDpProofPreview(URL.createObjectURL(file));
     };
 
-    const handleVerifyMaps = () => {
-        if (!formData.alamat_kunjungan) {
-            alert("Harap masukkan alamat kunjungan terlebih dahulu.");
+
+    const handleGetCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error('Fitur lokasi tidak didukung pada browser Anda.');
             return;
         }
         setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
             setMapsVerified(true);
-            
-            // Mocking geolocation or getting actual
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    setFormData(prev => ({...prev, latitude: position.coords.latitude, longitude: position.coords.longitude}));
-                // eslint-disable-next-line no-unused-vars
-                }, (err) => {
-                    setFormData(prev => ({...prev, latitude: -6.20876, longitude: 106.82020}));
-                });
-            } else {
-                setFormData(prev => ({...prev, latitude: -6.20876, longitude: 106.82020}));
+
+            // Reverse geocoding — ambil nama alamat dari koordinat
+            try {
+                const res = await axios.get(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+                );
+                const alamat = res.data?.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                setFormData(prev => ({ ...prev, alamat_kunjungan: alamat, latitude: lat, longitude: lng }));
+                setSearchQuery(alamat);
+                toast.location(`Lokasi terdeteksi! 📍 Alamat otomatis terisi.`);
+            } catch {
+                const fallback = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                setFormData(prev => ({ ...prev, alamat_kunjungan: fallback, latitude: lat, longitude: lng }));
+                setSearchQuery(fallback);
+                toast.location(`Lokasi terdeteksi! 📍 Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`);
+            } finally {
+                setIsLoading(false);
             }
-            
-            alert("Koordinat GPS berhasil diverifikasi! 🟢");
-        }, 1500);
+        }, () => {
+            setIsLoading(false);
+            toast.error('Gagal mendapatkan lokasi. Pastikan izin lokasi diizinkan di browser Anda.');
+        });
     };
 
     const nextStep = () => {
         if (step === 1) {
-            if (!formData.metode) return alert("Pilih metode layanan terlebih dahulu.");
+            if (!formData.metode) { toast.warning('Pilih metode layanan terlebih dahulu.'); return; }
             setStep(2);
             return;
         }
@@ -242,13 +294,13 @@ const OrderForm = () => {
             return;
         }
         if (step === 3) {
-            if (!formData.alamat_kunjungan) return alert("Masukkan alamat lengkap kunjungan.");
-            if (!mapsVerified) return alert("Harap sematkan koordinat pin Google Maps untuk alamat kunjungan.");
+            if (!formData.alamat_kunjungan) { toast.warning('Masukkan alamat lengkap kunjungan.'); return; }
+            if (!mapsVerified) { toast.warning('Harap sematkan koordinat pin peta untuk alamat kunjungan.'); return; }
             setStep(4);
             return;
         }
         if (step === 4) {
-            if (!formData.tanggal) return alert("Pilih tanggal jadwal kedatangan.");
+            if (!formData.tanggal) { toast.warning('Pilih tanggal jadwal kedatangan.'); return; }
             
             // Lock session logic
             setIsLoading(true);
@@ -262,7 +314,7 @@ const OrderForm = () => {
                 // eslint-disable-next-line no-unused-vars
                 .catch(err => {
                     setIsLoading(false);
-                    alert("Gagal mengunci jadwal, mungkin kuota sudah penuh. Silakan pilih tanggal lain.");
+                    toast.error('Gagal mengunci jadwal, kuota mungkin sudah penuh. Silakan pilih tanggal lain.');
                     fetchQuotas(currentMonth, currentYear);
                 });
             return;
@@ -279,7 +331,7 @@ const OrderForm = () => {
             // Lock expired
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsLocked(false);
-            alert("Waktu reservasi Anda telah habis (10 Menit). Silakan pilih jadwal kembali.");
+            toast.warning('Waktu reservasi Anda telah habis (10 menit). Silakan pilih jadwal kembali.');
             setStep(4);
             fetchQuotas(currentMonth, currentYear);
         }
@@ -340,11 +392,13 @@ const OrderForm = () => {
         return new Date(referenceDate.date).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
     };
 
+    const displayStep = getDisplayStep(step, formData.metode);
+
     const renderStep1 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-12">
-                <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 01</span>
-                <h2 className="text-4xl font-display font-bold text-text-primary">Pilih Metode Layanan</h2>
+            <div className="text-center mb-10">
+                <span className="text-primary text-xs font-medium mb-2 block">Tahap 1 dari {formData.metode === 'home_service' ? '5' : '4'}</span>
+                <h2 className="text-2xl font-semibold text-text-primary">Pilih Metode Layanan</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
                 <button 
@@ -354,9 +408,9 @@ const OrderForm = () => {
                     <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'home_service' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
                         <Home className="w-6 h-6" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold text-text-primary mb-4">Home Service</h3>
-                    <p className="text-text-secondary font-body text-sm mb-8 leading-relaxed">Penjahit kami yang datang ke lokasi Anda untuk konsultasi dan pengukuran badan. Bedanya, penjahit dekat ke rumah pelanggan.</p>
-                    <div className="text-[11px] uppercase tracking-widest text-primary font-bold font-sans border-t border-border pt-6">Memerlukan DP (Tanda Jadi)</div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-3">Home Service</h3>
+                    <p className="text-text-secondary text-sm mb-6 leading-relaxed">Penjahit kami yang datang ke lokasi Anda untuk konsultasi dan pengukuran badan. Bedanya, penjahit dekat ke rumah pelanggan.</p>
+                    <div className="text-xs text-primary font-medium border-t border-border pt-4">Memerlukan DP (Tanda Jadi)</div>
                 </button>
                 
                 <button 
@@ -366,9 +420,9 @@ const OrderForm = () => {
                     <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'visit' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
                         <Store className="w-6 h-6" />
                     </div>
-                    <h3 className="text-2xl font-display font-bold text-text-primary mb-4">In-Store (Kunjungan Studio)</h3>
-                    <p className="text-text-secondary font-body text-sm mb-8 leading-relaxed">Datang ke studio kami untuk pengukuran langsung dan diskusi desain. Pada In-Store, pelanggan datang ke toko, bukan penjahit yang datang ke rumah.</p>
-                    <div className="text-[11px] uppercase tracking-widest text-text-muted font-bold font-sans border-t border-border pt-6">Reservasi Tanpa DP</div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-3">In-Store (Kunjungan Studio)</h3>
+                    <p className="text-text-secondary text-sm mb-6 leading-relaxed">Datang ke studio kami untuk pengukuran langsung dan diskusi desain. Pada In-Store, pelanggan datang ke toko, bukan penjahit yang datang ke rumah</p>
+                    <div className="text-xs text-text-muted font-medium border-t border-border pt-4">Reservasi Tanpa DP</div>
                 </button>
             </div>
         </div>
@@ -376,28 +430,28 @@ const OrderForm = () => {
 
     const renderStep2 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-12">
-                <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 02</span>
-                <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Visi Desain & Referensi</h2>
-                <p className="text-text-secondary font-body text-sm max-w-lg mx-auto">Deskripsikan keinginan model baju Anda dan unggah gambar referensi jika ada.</p>
+            <div className="text-center mb-10">
+                <span className="text-primary text-xs font-medium mb-2 block">Tahap 2 dari {formData.metode === 'home_service' ? '5' : '4'}</span>
+                <h2 className="text-2xl font-semibold text-text-primary mb-2">Desain &amp; Referensi</h2>
+                <p className="text-text-secondary text-sm max-w-lg mx-auto">Deskripsikan keinginan model baju Anda dan unggah gambar referensi jika ada</p>
             </div>
 
             <div className="mb-10 max-w-xl mx-auto">
-                <label className="text-text-secondary text-sm font-bold mb-3 block">Deskripsi Visi Desain Anda</label>
+                <label className="text-text-secondary text-sm font-medium mb-2 block">Deskripsi Desain (Opsional)</label>
                 <textarea
                     value={formData.catatan}
                     onChange={(e) => setFormData({...formData, catatan: e.target.value})}
                     rows={6}
-                    placeholder="Tuliskan inspirasi model baju, bahan kain, warna, atau detail lain yang Anda inginkan..."
+                    placeholder="Tuliskan inspirasi model baju, bahan kain, warna, atau detail lain yang Anda inginkan (Opsional)..."
                     className="w-full rounded-3xl border border-border px-5 py-4 text-text-primary bg-white focus:border-primary focus:outline-none resize-none font-body text-sm shadow-sm"
                 />
-                <p className="text-[11px] text-text-muted mt-3">Opsional: Deskripsikan keinginan desain agar penjahit bisa menyiapkan lebih baik.</p>
+                <p className="text-[11px] text-text-muted mt-3">Opsional: Deskripsikan keinginan desain agar penjahit bisa menyiapkan lebih baik (boleh dikosongkan)</p>
             </div>
 
             <div className="mb-10 max-w-xl mx-auto">
                 {selectedGalleryItem ? (
                     <div className="bg-surface border border-border rounded-[2rem] p-8 shadow-sm">
-                        <span className="text-primary text-[10px] uppercase tracking-widest block mb-4 font-bold font-sans">Desain Terpilih dari Galeri</span>
+                        <span className="text-primary text-xs font-semibold block mb-3">Desain Terpilih dari Galeri</span>
                         <div className="flex gap-6 items-center">
                             <img 
                                 src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `http://localhost:8000/storage/${selectedGalleryItem.image_path}`} 
@@ -405,9 +459,9 @@ const OrderForm = () => {
                                 className="w-24 h-32 object-cover rounded-2xl border border-border shadow-md"
                             />
                             <div className="flex-grow">
-                                <h4 className="font-display font-bold text-xl text-text-primary mb-2">{selectedGalleryItem.title}</h4>
-                                <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] uppercase tracking-widest font-bold rounded-lg font-sans">
-                                    {selectedGalleryItem.category || 'Koleksi Eksklusif'}
+                                <h4 className="font-semibold text-base text-text-primary mb-2">{selectedGalleryItem.title}</h4>
+                                <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-lg">
+                                    {selectedGalleryItem.category || 'Koleksi'}
                                 </span>
                                 {(!location.state?.galleryItem) && (
                                     <button 
@@ -416,9 +470,9 @@ const OrderForm = () => {
                                             setSelectedGalleryItem(null);
                                             setFormData(prev => ({ ...prev, gallery_image_path: '' }));
                                         }} 
-                                        className="block mt-4 text-[11px] text-red-500 font-bold uppercase tracking-widest hover:underline"
+                                        className="block mt-3 text-xs text-red-500 font-medium hover:underline"
                                     >
-                                        Ganti Pilihan Desain
+                                        Ganti Desain
                                     </button>
                                 )}
                             </div>
@@ -427,7 +481,7 @@ const OrderForm = () => {
                 ) : (
                     <div className="space-y-8">
                         <div className="border border-border rounded-[2rem] p-8 bg-white shadow-sm">
-                            <span className="text-[11px] uppercase tracking-widest text-text-muted block mb-4 font-bold font-sans">Pilihan A: Unggah Gambar Referensi Sendiri</span>
+                            <span className="text-sm font-medium text-text-secondary block mb-3">Pilihan A: Unggah Gambar Referensi Sendiri</span>
                             <div className="flex flex-col items-center">
                                 <label className={`w-full border-2 border-dashed rounded-[2rem] p-10 flex flex-col items-center text-center cursor-pointer transition-all duration-300 ${designPreview ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-surface'}`}>
                                     <input 
@@ -441,19 +495,19 @@ const OrderForm = () => {
                                     ) : (
                                         <div className="flex flex-col items-center text-text-muted">
                                             <UploadCloud className="w-8 h-8 mb-2" />
-                                            <span className="text-xs font-bold uppercase tracking-widest font-sans text-text-primary">Pilih Gambar Referensi</span>
-                                            <span className="text-[9px] uppercase tracking-widest font-sans mt-1">JPG, PNG (Maks. 2MB)</span>
+                                            <span className="text-xs font-medium text-text-primary">Pilih Gambar Referensi</span>
+                                            <span className="text-[11px] text-text-muted mt-1">JPG, PNG (Maks. 2MB)</span>
                                         </div>
                                     )}
                                 </label>
                                 {designFile && (
-                                    <button type="button" onClick={() => { setDesignFile(null); setDesignPreview(null); }} className="text-xs text-red-500 mt-3 font-bold uppercase tracking-widest hover:underline">Hapus Gambar</button>
+                                    <button type="button" onClick={() => { setDesignFile(null); setDesignPreview(null); }} className="text-xs text-red-500 mt-2 font-medium hover:underline">Hapus Gambar</button>
                                 )}
                             </div>
                         </div>
 
                         <div className="border border-border rounded-[2rem] p-8 bg-white shadow-sm">
-                            <span className="text-[11px] uppercase tracking-widest text-text-muted block mb-4 font-bold font-sans">Pilihan B: Pilih dari Galeri Era Jahit</span>
+                            <span className="text-sm font-medium text-text-secondary block mb-3">Pilihan B: Pilih dari Galeri Era Jahit</span>
                             {galleryList.length === 0 ? (
                                 <p className="text-xs text-text-muted italic">Memuat galeri karya...</p>
                             ) : (
@@ -489,75 +543,252 @@ const OrderForm = () => {
         </div>
     );
 
-    const renderStep3 = () => (
-        <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-12">
-                <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 03</span>
-                <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Lokasi Kunjungan</h2>
-                <p className="text-text-secondary font-body text-sm max-w-lg mx-auto">Tentukan alamat lengkap untuk sesi kunjungan Home Service kami.</p>
-            </div>
-            
-            {formData.metode === 'home_service' && (
-                <div className="mb-12 max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-8 border border-border rounded-[2rem] shadow-sm">
-                    <h3 className="font-display font-bold text-lg text-text-primary mb-2 flex items-center gap-3">
-                        <span className="w-6 h-[2px] bg-primary"></span> Detail Lokasi Kunjungan
-                    </h3>
+    // Location search states
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearchingLocation, setIsSearchingLocation] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchTimeoutRef = useRef(null);
 
-                    <div>
-                        <label className="text-text-secondary text-sm font-bold mb-3 block">Alamat Kunjungan Lengkap (Wajib Valid)</label>
-                        <textarea
-                            value={formData.alamat_kunjungan}
-                            onChange={(e) => setFormData({...formData, alamat_kunjungan: e.target.value})}
-                            rows={3}
-                            placeholder="Jl. Raya Utama No. 1 RT 02/03, Kel. Suka Jaya, Kec. Raya..."
-                            className="w-full rounded-2xl border border-border px-5 py-4 text-text-primary bg-white focus:border-primary focus:outline-none resize-none font-body text-sm"
-                        />
-                    </div>
+    // Dynamic Leaflet Map event listener for map click
+    const MapEventsHandler = () => {
+        useMapEvents({
+            click(e) {
+                const { lat, lng } = e.latlng;
+                setFormData(prev => ({ ...prev, latitude: lat.toFixed(6), longitude: lng.toFixed(6) }));
+                setMapsVerified(true);
+            }
+        });
+        return null;
+    };
 
-                    <div className="bg-surface border border-border p-6 rounded-2xl">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-                            <div>
-                                <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block">Status Pin GPS</span>
-                                <span className={`text-xs font-bold flex items-center gap-2 ${mapsVerified ? 'text-green-600' : 'text-red-500'}`}>
-                                    <span className={`w-2 h-2 rounded-full ${mapsVerified ? 'bg-green-600 animate-ping' : 'bg-red-500'}`}></span>
-                                    {mapsVerified ? 'Koordinat Terverifikasi Google Maps' : 'Belum Tersemat Pin Peta'}
-                                </span>
+    // Address search using OpenStreetMap Nominatim API
+    const handleSearchAddressChange = (e) => {
+        const val = e.target.value;
+        setSearchQuery(val);
+
+        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+        if (val.trim().length < 3) {
+            setSearchResults([]);
+            setShowSuggestions(false);
+            return;
+        }
+
+        setIsSearchingLocation(true);
+        searchTimeoutRef.current = setTimeout(async () => {
+            try {
+                const res = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&limit=5&countrycodes=id`);
+                setSearchResults(res.data || []);
+                setShowSuggestions(true);
+            } catch (err) {
+                console.error("Gagal mencari lokasi:", err);
+            } finally {
+                setIsSearchingLocation(false);
+            }
+        }, 400);
+    };
+
+    const handleSelectLocationResult = (result) => {
+        const lat = parseFloat(result.lat).toFixed(6);
+        const lng = parseFloat(result.lon).toFixed(6);
+        setFormData(prev => ({
+            ...prev,
+            alamat_kunjungan: result.display_name,
+            latitude: lat,
+            longitude: lng
+        }));
+        setSearchQuery(result.display_name);
+        setShowSuggestions(false);
+        setMapsVerified(true);
+    };
+
+    const renderStep3 = () => {
+        const mapLat = parseFloat(formData.latitude) || -0.9247587;
+        const mapLng = parseFloat(formData.longitude) || 100.3632561;
+
+        return (
+            <div className="animate-in fade-in slide-in-from-right-8 duration-700">
+                <div className="text-center mb-12">
+                    <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 03</span>
+                    <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Lokasi Kunjungan</h2>
+                    <p className="text-text-secondary font-body text-sm max-w-lg mx-auto">Tentukan alamat lengkap dan pin point titik lokasi untuk sesi kunjungan Home Service kami.</p>
+                </div>
+                
+                {formData.metode === 'home_service' && (
+                    <div className="mb-12 max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-8 border border-border rounded-[2rem] shadow-sm">
+                        <h3 className="font-display font-bold text-lg text-text-primary mb-2 flex items-center gap-3">
+                            <span className="w-6 h-[2px] bg-primary"></span> Detail Lokasi Kunjungan
+                        </h3>
+
+                        {/* Search Location Bar with Autocomplete Suggestions */}
+                        <div className="relative">
+                            <label className="text-text-secondary text-sm font-bold mb-2 block">Cari Alamat Kunjungan</label>
+                            <div className="relative flex items-center">
+                                <Search className="w-5 h-5 text-text-muted absolute left-4 pointer-events-none" />
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={handleSearchAddressChange}
+                                    onFocus={() => searchResults.length > 0 && setShowSuggestions(true)}
+                                    placeholder="Ketik nama tempat atau jalan (contoh: Universitas Andalas)..."
+                                    className="w-full rounded-2xl border border-border pl-12 pr-10 py-3.5 text-text-primary bg-white focus:border-primary focus:outline-none font-body text-sm shadow-sm"
+                                />
+                                {isSearchingLocation && (
+                                    <Loader2 className="w-5 h-5 text-primary animate-spin absolute right-4" />
+                                )}
+                                {!isSearchingLocation && searchQuery && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setSearchResults([]);
+                                            setShowSuggestions(false);
+                                            setFormData(prev => ({ ...prev, alamat_kunjungan: '' }));
+                                            setMapsVerified(false);
+                                        }}
+                                        className="absolute right-4 text-text-muted hover:text-text-primary"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                )}
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleVerifyMaps}
-                                className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all border ${mapsVerified ? 'bg-green-50 border-green-200 text-green-700' : 'bg-primary text-white border-primary hover:bg-primary-dark shadow-md'}`}
-                            >
-                                {mapsVerified ? 'Ubah Pin Maps' : 'Sematkan Pin Google Maps'}
-                            </button>
+
+                            {/* Dropdown Suggestions List */}
+                            {showSuggestions && searchResults.length > 0 && (
+                                <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-border rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-border/50 animate-in fade-in zoom-in-95 duration-200">
+                                    {searchResults.map((item, idx) => (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => handleSelectLocationResult(item)}
+                                            className="w-full text-left px-5 py-3 hover:bg-primary-bg/50 transition-colors flex items-start gap-3 group"
+                                        >
+                                            <MapPin className="w-4 h-4 text-primary shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                                            <div>
+                                                <p className="text-xs font-bold text-text-primary group-hover:text-primary">{item.display_name.split(',')[0]}</p>
+                                                <p className="text-[11px] text-text-muted line-clamp-1">{item.display_name}</p>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Alamat terpilih — ditampilkan sebagai chip di bawah search */}
+                            {formData.alamat_kunjungan && !showSuggestions && (
+                                <div className="mt-3 flex items-start gap-2 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl">
+                                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                                    <p className="text-xs text-text-primary font-medium leading-relaxed">{formData.alamat_kunjungan}</p>
+                                </div>
+                            )}
                         </div>
-                        {mapsVerified && (
-                            <div className="w-full h-40 rounded-xl bg-gray-200 overflow-hidden relative border border-border shadow-inner animate-in zoom-in-95 duration-500">
-                                <iframe 
-                                    title="Google Maps Mockup"
-                                    src={`https://maps.google.com/maps?q=${encodeURIComponent(formData.alamat_kunjungan)}&t=&z=15&ie=UTF8&iwloc=&output=embed`} 
-                                    className="w-full h-full border-0 grayscale opacity-80"
-                                    allowFullScreen="" 
-                                    loading="lazy"
-                                ></iframe>
-                                <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>
-                                <div className="absolute bottom-2 left-2 bg-text-primary/80 text-[10px] text-white/90 px-2 py-1 rounded font-mono">
-                                    Lat: {formData.latitude || '-6.20876'}, Lng: {formData.longitude || '106.82020'} (GPS OK)
+
+                        <div className="bg-surface border border-border p-6 rounded-2xl">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                                <div>
+                                    <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block">Lokasi Barang (Pin Point Peta)</span>
+                                    <span className={`text-xs font-bold flex items-center gap-2 ${mapsVerified ? 'text-green-600' : 'text-red-500'}`}>
+                                        <span className={`w-2 h-2 rounded-full ${mapsVerified ? 'bg-green-600 animate-ping' : 'bg-red-500'}`}></span>
+                                        {mapsVerified ? 'Koordinat Terverifikasi & Dapat Digeser' : 'Belum Tersemat Pin Peta'}
+                                    </span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleGetCurrentLocation}
+                                        className="px-4 py-2 text.xs font-bold rounded-xl transition-all border bg-white text-primary border-primary hover:bg-primary/10 shadow-sm flex items-center gap-2"
+                                    >
+                                        <MapPin className="w-4 h-4 text-primary" /> Gunakan GPS Saya
+                                    </button>
                                 </div>
                             </div>
-                        )}
+
+                            {/* Interactive Color Map (Leaflet) with Draggable Pin */}
+                            <div className="w-full h-80 rounded-2xl overflow-hidden relative border border-border shadow-md mt-3 z-0">
+                                <MapContainer 
+                                    center={[mapLat, mapLng]} 
+                                    zoom={15} 
+                                    scrollWheelZoom={true} 
+                                    style={{ height: '100%', width: '100%' }}
+                                >
+                                    <MapViewUpdater center={[mapLat, mapLng]} />
+                                    <MapEventsHandler />
+                                    <TileLayer
+                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    <Marker 
+                                        position={[mapLat, mapLng]} 
+                                        draggable={true}
+                                        icon={customMarkerIcon}
+                                        eventHandlers={{
+                                            dragend: (e) => {
+                                                const marker = e.target;
+                                                const position = marker.getLatLng();
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    latitude: position.lat.toFixed(6),
+                                                    longitude: position.lng.toFixed(6)
+                                                }));
+                                                setMapsVerified(true);
+                                            }
+                                        }}
+                                    />
+                                </MapContainer>
+                                <div className="absolute bottom-3 left-3 z-[1000] bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-border shadow-sm text-xs font-mono text-text-primary flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    <span>{mapLat.toFixed(6)}, {mapLng.toFixed(6)}</span>
+                                    <span className="text-[10px] text-text-muted font-sans">(Geser pin atau klik peta)</span>
+                                </div>
+                            </div>
+
+                            {/* Manual Coordinates Input */}
+                            <div className="mt-4 pt-4 border-t border-border">
+                                <span className="text-[11px] font-bold text-text-primary block mb-2">Koordinat GPS (Manual)</span>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-[10px] text-text-muted font-mono block mb-1">Latitude</label>
+                                        <input 
+                                            type="number"
+                                            step="any"
+                                            value={formData.latitude}
+                                            onChange={(e) => {
+                                                setFormData(prev => ({ ...prev, latitude: e.target.value }));
+                                                setMapsVerified(true);
+                                            }}
+                                            placeholder="-0.9247587"
+                                            className="w-full rounded-xl border border-border px-3 py-2 text-xs font-mono bg-white focus:border-primary focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] text-text-muted font-mono block mb-1">Longitude</label>
+                                        <input 
+                                            type="number"
+                                            step="any"
+                                            value={formData.longitude}
+                                            onChange={(e) => {
+                                                setFormData(prev => ({ ...prev, longitude: e.target.value }));
+                                                setMapsVerified(true);
+                                            }}
+                                            placeholder="100.3632561"
+                                            className="w-full rounded-xl border border-border px-3 py-2 text-xs font-mono bg-white focus:border-primary focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
+                )}
+            </div>
+        );
+    };
 
     const renderStep4 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-12">
-                <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 04</span>
-                <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Jadwal Pertemuan</h2>
-                <p className="text-text-secondary font-body text-sm max-w-lg mx-auto">Pilih tanggal yang tersedia untuk sesi desain utama atau pengukuran.</p>
+            <div className="text-center mb-10">
+                <span className="text-primary text-xs font-medium mb-2 block">Tahap {displayStep} dari {formData.metode === 'home_service' ? '5' : '4'}</span>
+                <h2 className="text-2xl font-semibold text-text-primary mb-2">Jadwal Pertemuan</h2>
+                <p className="text-text-secondary text-sm max-w-lg mx-auto">Pilih tanggal yang tersedia untuk sesi desain utama atau pengukuran.</p>
             </div>
 
             <div className="max-w-4xl mx-auto bg-surface rounded-[2rem] border border-border p-6 shadow-sm">
@@ -585,8 +816,8 @@ const OrderForm = () => {
                             </button>
                         </div>
                         <div>
-                            <span className="block text-[11px] uppercase tracking-widest text-text-muted font-bold">Bulan</span>
-                            <span className="text-lg font-bold text-text-primary">{getCalendarTitle()}</span>
+                            <span className="block text-xs text-text-muted mb-0.5">Bulan</span>
+                            <span className="text-base font-semibold text-text-primary">{getCalendarTitle()}</span>
                         </div>
                     </div>
                 </div>
@@ -627,9 +858,9 @@ const OrderForm = () => {
                                 >
                                     {d ? (
                                         <>
-                                            <span className="text-[11px] uppercase tracking-widest font-bold font-sans">{d.day}</span>
-                                            <span className="text-3xl font-display font-bold my-2">{d.num}</span>
-                                            <span className={`text-[10px] uppercase tracking-widest px-2 py-1 rounded-full font-bold ${d.is_past ? 'bg-gray-100 text-gray-500 border border-gray-200' : d.is_closure ? 'bg-amber-50 text-amber-600 border border-amber-100' : d.disabled ? 'bg-red-50 text-red-600 border border-red-100' : formData.tanggal === d.date ? 'bg-white/20 text-white border border-white/30' : 'bg-surface border border-border text-text-muted'}`}>
+                                            <span className="text-[11px] font-medium text-text-muted">{d.day}</span>
+                                            <span className="text-3xl font-bold my-2">{d.num}</span>
+                                            <span className={`text-[10px] px-2 py-1 rounded-full font-medium ${d.is_past ? 'bg-gray-100 text-gray-500 border border-gray-200' : d.is_closure ? 'bg-amber-50 text-amber-600 border border-amber-100' : d.disabled ? 'bg-red-50 text-red-600 border border-red-100' : formData.tanggal === d.date ? 'bg-white/20 text-white border border-white/30' : 'bg-surface border border-border text-text-muted'}`}>
                                                 {d.is_past ? 'Lampau' : d.is_closure ? 'Tutup' : d.disabled ? 'Penuh' : `Sisa ${d.available_slots}`}
                                             </span>
                                         </>
@@ -677,9 +908,11 @@ const OrderForm = () => {
 
         return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-12">
-                <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 05</span>
-                <h2 className="text-4xl font-display font-bold text-text-primary">Konfirmasi & Pembayaran DP</h2>
+            <div className="text-center mb-10">
+                <span className="text-primary text-xs font-medium mb-2 block">Tahap {displayStep} dari {formData.metode === 'home_service' ? '5' : '4'}</span>
+                <h2 className="text-2xl font-semibold text-text-primary">
+                    {formData.metode === 'home_service' ? 'Konfirmasi & Pembayaran DP' : 'Konfirmasi Pesanan'}
+                </h2>
             </div>
             
             <div className="bg-white p-10 md:p-14 border border-border rounded-[2.5rem] max-w-3xl mx-auto shadow-sm">
@@ -700,15 +933,15 @@ const OrderForm = () => {
                 )}
 
                 <div className="flex justify-between items-center pb-8 border-b border-border mb-8">
-                    <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest font-bold">Metode Layanan</span>
-                    <span className="font-display font-bold text-primary text-xl">
+                    <span className="text-text-muted text-xs">Metode Layanan</span>
+                    <span className="font-semibold text-primary text-base">
                         {formData.metode === 'home_service' ? 'Home Service' : 'In-Store'}
                     </span>
                 </div>
                 
                 <div className="flex justify-between items-center pb-8 border-b border-border mb-12">
-                    <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest font-bold">Tanggal Sesi</span>
-                    <span className="font-display font-bold text-text-primary text-xl">
+                    <span className="text-text-muted text-xs">Tanggal Sesi</span>
+                    <span className="font-semibold text-text-primary text-base">
                         {new Date(formData.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </span>
                 </div>
@@ -716,10 +949,10 @@ const OrderForm = () => {
 
                 {formData.metode === 'home_service' && formData.alamat_kunjungan && (
                     <div className="flex flex-col pb-8 border-b border-border mb-12 gap-2 text-left">
-                        <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest font-bold">Alamat Kunjungan</span>
+                        <span className="text-text-muted text-xs mb-1">Alamat Kunjungan</span>
                         <span className="font-body text-text-primary text-sm leading-relaxed bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm">
                             {formData.alamat_kunjungan}
-                            <span className="block mt-3 text-green-600 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
+                            <span className="block mt-2 text-green-600 text-xs font-medium flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-green-600 animate-ping"></span>📍 Koordinat Terverifikasi Google Maps
                             </span>
                         </span>
@@ -728,14 +961,14 @@ const OrderForm = () => {
 
                 {formData.catatan && (
                     <div className="mb-12 text-left">
-                        <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest block mb-4 font-bold">Visi Desain</span>
+                        <span className="text-text-muted text-xs block mb-2">Catatan Desain</span>
                         <p className="bg-surface p-8 border border-border text-text-secondary font-body italic text-sm leading-relaxed rounded-[1.5rem] shadow-sm">{formData.catatan}</p>
                     </div>
                 )}
 
                 {designPreview && (
                     <div className="mb-12 text-left">
-                        <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest block mb-4 font-bold">Referensi Gambar Desain</span>
+                        <span className="text-text-muted text-xs block mb-2">Referensi Gambar Desain</span>
                         <div className="bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm inline-block">
                             <img src={designPreview} alt="Referensi Desain" className="max-h-48 object-contain rounded-xl" />
                         </div>
@@ -744,7 +977,7 @@ const OrderForm = () => {
 
                 {selectedGalleryItem && (
                     <div className="mb-12 text-left">
-                        <span className="text-text-muted font-sans text-[11px] uppercase tracking-widest block mb-4 font-bold">Referensi Desain dari Galeri</span>
+                        <span className="text-text-muted text-xs block mb-2">Referensi Desain dari Galeri</span>
                         <div className="bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm inline-block">
                             <img 
                                 src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `http://localhost:8000/storage/${selectedGalleryItem.image_path}`} 
@@ -760,32 +993,32 @@ const OrderForm = () => {
                         <div className="flex items-center gap-4 mb-6 border-b border-primary/10 pb-4">
                             <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-bold">Rp</div>
                             <div>
-                                <h3 className="font-display font-bold text-lg text-text-primary">Pembayaran DP Home Service</h3>
+                                <h3 className="font-semibold text-base text-text-primary">Pembayaran DP Home Service</h3>
                                 <p className="text-xs text-text-muted">Jaminan pesanan kunjungan alamat oleh penjahit</p>
                             </div>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-8 mb-8">
                             <div>
-                                <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block mb-2">Transfer Bank Mandiri</span>
+                                <span className="text-xs text-text-muted font-medium block mb-1">Transfer Bank Mandiri</span>
                                 <span className="text-text-primary font-mono font-bold text-lg tracking-wider block">123-00-0987654-1</span>
                                 <span className="text-xs text-text-muted block mt-1">a/n Era Jahit Studio</span>
                             </div>
                             <div>
-                                <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block mb-2">Jumlah DP yang Harus Dibayar</span>
-                                <span className="text-primary font-display font-bold text-2xl block">
+                                <span className="text-xs text-text-muted font-medium block mb-1">Jumlah DP yang Harus Dibayar</span>
+                                <span className="text-primary font-bold text-xl block">
                                     Rp {globalDpAmount.toLocaleString('id-ID')}
                                 </span>
                             </div>
                         </div>
 
                         <div className="mb-6 bg-white p-6 rounded-2xl border border-primary/10">
-                            <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block mb-4">Unggah Bukti Transfer</span>
+                            <span className="text-xs text-text-muted font-medium block mb-3">Unggah Bukti Transfer</span>
                             <div className="flex flex-col md:flex-row items-center gap-6">
                                 <label className="flex-1 w-full py-8 border-2 border-dashed border-border hover:border-primary rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-surface group">
                                     <UploadCloud className="w-8 h-8 text-text-muted group-hover:text-primary mb-3 transition-colors" />
-                                    <span className="text-xs font-sans font-bold uppercase tracking-wider text-text-primary group-hover:text-primary transition-colors">Pilih File Bukti</span>
-                                    <span className="text-[10px] text-text-muted mt-2">Maksimal 4MB (JPG, PNG)</span>
+                                    <span className="text-xs font-medium text-text-primary group-hover:text-primary transition-colors">Pilih File Bukti</span>
+                                    <span className="text-[11px] text-text-muted mt-1">Maksimal 4MB (JPG, PNG)</span>
                                     <input 
                                         type="file" 
                                         className="hidden" 
@@ -839,7 +1072,7 @@ const OrderForm = () => {
                     data.append('dp_proof', dpProofFile);
                 } else {
                     setIsLoading(false);
-                    alert("Harap unggah bukti transfer DP terlebih dahulu untuk menyelesaikan pemesanan Home Service.");
+                    toast.warning('Harap unggah bukti transfer DP terlebih dahulu untuk menyelesaikan pesanan Home Service.');
                     return;
                 }
             }
@@ -865,7 +1098,8 @@ const OrderForm = () => {
             }, 1000);
         } catch (err) {
             console.error(err);
-            alert(err.response?.data?.message || "Gagal membuat pesanan.");
+            setIsLoading(false);
+            toast.error(err.response?.data?.message || 'Gagal membuat pesanan. Silakan coba lagi.');
         }
     };
 
@@ -932,7 +1166,7 @@ const OrderForm = () => {
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Reservasi Berhasil</span>
                         <h2 className="text-4xl font-display font-bold text-text-primary mb-4">Silakan Kunjungi Studio Kami</h2>
                         <p className="text-text-secondary font-body text-sm max-w-md mx-auto mb-12 leading-relaxed">
-                            Pesanan Anda telah terdaftar. Kami menunggu kedatangan Anda untuk melakukan pengukuran langsung dan diskusi detail desain.
+                            Pesanan Anda telah terdaftar Kami menunggu kedatangan Anda untuk melakukan pengukuran langsung dan diskusi detail desain.
                         </p>
 
                         <div className="grid md:grid-cols-2 gap-8 text-left bg-surface p-10 border border-border rounded-[2rem] mb-10">
@@ -957,13 +1191,13 @@ const OrderForm = () => {
                             </h4>
                             <p className="text-text-secondary font-body text-sm leading-relaxed mb-6">
                                 <strong>Era Jahit Studio</strong><br />
-                                Jl. Kemang Raya No. 45, RT.12/RW.5, Bangka, Kec. Mampang Prapatan, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12730
+                                Jl. Sungai Balang, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat
                             </p>
                             
                             <div className="w-full h-64 rounded-2xl bg-gray-200 overflow-hidden relative border border-border shadow-inner mb-6">
                                 <iframe 
                                     title="Google Maps Studio"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1415510619864!2d106.81525041476926!3d-6.258284995470125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1a02931b643%3A0xe104cfedbd9b646c!2sJl.%20Kemang%20Raya%20No.45%2C%20RT.12%2FRW.5%2C%20Bangka%2C%20Kec.%20Mampang%20Prpt.%2C%20Kota%20Jakarta%20Selatan%2C%20Daerah%20Khusus%20Ibukota%20Jakarta%2012730!5e0!3m2!1sid!2sid!4v1620000000000!5m2!1sid!2sid" 
+                                    src="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" 
                                     className="w-full h-full border-0 grayscale opacity-90"
                                     allowFullScreen="" 
                                     loading="lazy"
@@ -972,7 +1206,7 @@ const OrderForm = () => {
                             </div>
 
                             <a 
-                                href="https://www.google.com/maps/search/?api=1&query=Jl.+Kemang+Raya+No.45+Jakarta+Selatan"
+                                href="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,261.95h,65.63t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D24.36674356233864%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D261.9512668509286!7i16384!8i8192!4m15!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m5!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3Dhttps://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full py-4 border border-border hover:border-primary text-text-primary hover:text-primary transition-all flex items-center justify-center gap-3 font-sans text-xs font-bold uppercase tracking-widest rounded-xl bg-surface hover:bg-white shadow-sm"
@@ -997,12 +1231,12 @@ const OrderForm = () => {
         <div className="min-h-screen bg-surface py-32">
             <div className="container mx-auto px-4 max-w-5xl">
                 
-                <button onClick={() => navigate('/dashboard')} className="flex items-center gap-3 text-text-muted text-[11px] uppercase tracking-[0.2em] font-bold hover:text-primary transition-all mb-16 font-sans group">
-                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> Kembali ke Dashboard
+                <button onClick={() => step > 1 ? prevStep() : navigate(-1)} className="flex items-center gap-3 text-text-muted text-[11px] uppercase tracking-[0.2em] font-bold hover:text-primary transition-all mb-16 font-sans group">
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> Kembali
                 </button>
  
                 <div className="bg-white p-10 md:p-20 rounded-[3rem] border border-border shadow-2xl">
-                    <StepIndicator step={step} metode={formData.metode} />
+                    <StepIndicator step={displayStep} metode={formData.metode} />
                     
                     <div className="min-h-[40vh] my-16">
                         {step === 1 && renderStep1()}
@@ -1021,22 +1255,25 @@ const OrderForm = () => {
                             Tahap Sebelumnya
                         </button>
                         
-                        {step < 5 ? (
-                            <button 
-                                onClick={nextStep}
-                                className="px-12 py-5 bg-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-primary-dark transition-all flex items-center gap-3 shadow-xl shadow-primary/20 rounded-xl font-sans"
-                            >
-                                Lanjutkan <ChevronRight className="w-5 h-5" />
-                            </button>
-                        ) : (
-                            <button 
-                                onClick={submitOrder}
-                                disabled={isLoading}
-                                className="px-12 py-5 bg-text-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-black transition-all flex items-center gap-3 shadow-xl shadow-black/10 rounded-xl font-sans disabled:opacity-50"
-                            >
-                                {isLoading ? "Memproses..." : <><Save className="w-5 h-5"/> Buat Pesanan Sekarang</>}
-                            </button>
-                        )}
+                        {(() => {
+                            const isLastStep = step === 5;
+                            return isLastStep ? (
+                                <button 
+                                    onClick={submitOrder}
+                                    disabled={isLoading}
+                                    className="px-12 py-5 bg-text-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-black transition-all flex items-center gap-3 shadow-xl shadow-black/10 rounded-xl font-sans disabled:opacity-50"
+                                >
+                                    {isLoading ? "Memproses..." : <><Save className="w-5 h-5"/> Buat Pesanan Sekarang</>}
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={nextStep}
+                                    className="px-12 py-5 bg-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-primary-dark transition-all flex items-center gap-3 shadow-xl shadow-primary/20 rounded-xl font-sans"
+                                >
+                                    Lanjutkan <ChevronRight className="w-5 h-5" />
+                                </button>
+                            );
+                        })()}
                     </div>
                 </div>
 

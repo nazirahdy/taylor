@@ -9,24 +9,33 @@ use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Api\MeasurementController;
 use Illuminate\Support\Facades\Route;
 
-// =====================
-// PUBLIC ROUTES
-// =====================
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Public gallery
+// Google OAuth
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+// Email Verification
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+
+// Forgot / Reset Password
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+
 Route::get('/gallery', [GalleryController::class, 'index']);
 
-// Public chat widget for guest messages
+
 Route::get('/chat', [ChatController::class, 'guestIndex']);
 Route::post('/chat', [ChatController::class, 'guestStore']);
 
-// Quota availability (public so order form can check before auth)
+
 Route::get('/quota', [QuotaController::class, 'index']);
 
 
-// Global Home Service settings (DP amount)
+
 Route::get('/home-service-settings', function () {
     $settings = \App\Models\HomeServiceSetting::first();
     return response()->json([
@@ -35,7 +44,7 @@ Route::get('/home-service-settings', function () {
     ]);
 });
 
-// Order tracking (public - accessible by order id)
+
 Route::get('/orders/{id}/track', [OrderController::class, 'track']);
 
 // =====================
@@ -45,7 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::get('/me', [AuthController::class, 'me']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/profile/password', [AuthController::class, 'updatePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
+
 
     // Measurements (CRUD)
     Route::get('/measurements', [MeasurementController::class, 'show']);

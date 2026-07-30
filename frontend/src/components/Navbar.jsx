@@ -20,13 +20,37 @@ const Navbar = () => {
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 0);
+
+            // ScrollSpy logic
+            if (location.pathname === '/') {
+                const sections = ['beranda', 'about', 'services', 'gallery', 'faq', 'contact'];
+                let current = '';
+                
+                // Reverse array to find the lowest section that is above the threshold
+                for (let i = sections.length - 1; i >= 0; i--) {
+                    const element = document.getElementById(sections[i]);
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        if (rect.top <= 200) {
+                            current = `#${sections[i]}`;
+                            break;
+                        }
+                    }
+                }
+
+                if (current && current !== activeSection) {
+                    setActiveSection(current);
+                } else if (window.scrollY === 0) {
+                    setActiveSection('#beranda');
+                }
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
         handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [location.pathname, activeSection]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -35,9 +59,9 @@ const Navbar = () => {
 
     const navItems = [
         { name: 'Beranda', path: '/', hash: '#beranda' },
+        { name: 'Tentang', path: '/', hash: '#about' },
         { name: 'Layanan', path: '/', hash: '#services' },
         { name: 'Galeri', path: '/', hash: '#gallery' },
-        { name: 'Tentang', path: '/', hash: '#about' },
         { name: 'Kontak', path: '/', hash: '#contact' }
     ];
 
@@ -165,13 +189,6 @@ const Navbar = () => {
                                 </div>
                             </div>
                         )}
-                        
-                        <a href="tel:+62751456789" className={`flex items-center gap-4 transition-all text-[11px] font-bold uppercase tracking-widest font-sans group ${isTransparent ? 'text-white hover:text-primary' : 'text-text-secondary hover:text-primary'}`}>
-                            <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all group-hover:rotate-12 ${isTransparent ? 'bg-white/10 border-white/20 group-hover:bg-primary group-hover:border-primary' : 'bg-surface border-border group-hover:bg-primary/5 group-hover:border-primary'}`}>
-                                <Phone className={`w-4 h-4 transition-transform ${isTransparent ? 'text-white group-hover:text-white' : 'text-primary'}`} />
-                            </div>
-                            <span>Hubungi</span>
-                        </a>
                     </div>
 
                     {/* Mobile Toggle */}

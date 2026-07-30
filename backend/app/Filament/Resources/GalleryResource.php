@@ -42,9 +42,12 @@ class GalleryResource extends Resource
                         Forms\Components\Textarea::make('description')
                             ->label('Deskripsi')
                             ->columnSpanFull(),
-                        Forms\Components\FileUpload::make('image_path')
-                            ->label('Foto Karya')
+                        Forms\Components\FileUpload::make('images')
+                            ->label('Semua Foto')
                             ->image()
+                            ->multiple()
+                            ->deletable(true)
+                            ->reorderable(true)
                             ->directory('galleries')
                             ->maxSize(10240)
                             ->required(),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
     return (
@@ -21,15 +21,12 @@ const Footer = () => {
                         <Link to="/contact" className="px-12 py-5 bg-white text-primary font-bold rounded-2xl hover:bg-surface transition-all flex items-center gap-3 shadow-2xl font-sans text-sm uppercase tracking-widest">
                             Hubungi Sekarang <ArrowUpRight className="w-5 h-5" />
                         </Link>
-                        <a href="tel:+62751456789" className="px-12 py-5 bg-white/10 backdrop-blur-md border border-white/30 text-white font-bold rounded-2xl hover:bg-white/20 transition-all flex items-center gap-3 font-sans text-sm uppercase tracking-widest">
-                            Telepon Studio <ArrowUpRight className="w-5 h-5" />
-                        </a>
                     </div>
                 </div>
             </div>
 
             {/* Main Footer */}
-            <div className="bg-text-primary text-white pt-[240px] pb-16">
+            <div className="bg-primary text-white pt-[240px] pb-16">
                 <div className="container mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20 mb-24">
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-4 mb-10 group">
@@ -41,8 +38,8 @@ const Footer = () => {
                             Meningkatkan kepercayaan diri melalui busana yang dijahit dengan presisi dan kualitas premium.
                         </p>
                         <div className="flex gap-5">
-                            {[Instagram, Facebook, Twitter, Mail].map((Icon, i) => (
-                                <a key={i} href="#" className="w-12 h-12 border border-white/10 rounded-2xl flex items-center justify-center hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
+                            {[Instagram, Facebook, Mail].map((Icon, i) => (
+                                <a key={i} href="#" className="w-12 h-12 border border-white/10 rounded-2xl flex items-center justify-center hover:border-white hover:text-white hover:bg-white/10 transition-all group text-white/70">
                                     <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 </a>
                             ))}
@@ -50,45 +47,45 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-primary mb-10">Studio</h4>
-                        <ul className="space-y-5 text-white/40 font-body text-sm">
-                            <li><Link to="/#about" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Tentang Kami</Link></li>
-                            <li><Link to="/#services" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Layanan Kami</Link></li>
-                            <li><Link to="/#gallery" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Portofolio</Link></li>
-                            <li><Link to="/#contact" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Kontak</Link></li>
+                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-white mb-10">Studio</h4>
+                        <ul className="space-y-5 text-white/60 font-body text-sm">
+                            <li><Link to="/#about" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Tentang Kami</Link></li>
+                            <li><Link to="/#services" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Layanan Kami</Link></li>
+                            <li><Link to="/#gallery" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Portofolio</Link></li>
+                            <li><Link to="/#contact" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Kontak</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-primary mb-10">Keahlian</h4>
-                        <ul className="space-y-5 text-white/40 font-body text-sm">
-                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Busana Pria & Wanita</li>
-                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Seragam Perusahaan</li>
-                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Kebaya & Gaun Pesta</li>
-                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-primary transition-all"></span> Jahit Custom</li>
+                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-white mb-10">Keahlian</h4>
+                        <ul className="space-y-5 text-white/60 font-body text-sm">
+                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Busana Pria & Wanita</li>
+                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Seragam Perusahaan</li>
+                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Kebaya & Gaun Pesta</li>
+                            <li className="hover:text-white cursor-pointer transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-4 h-[1px] bg-white transition-all"></span> Jahit Custom</li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-primary mb-10">Hubungi Kami</h4>
-                        <ul className="space-y-8 text-white/40 font-body text-sm">
+                        <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.3em] text-white mb-10">Hubungi Kami</h4>
+                        <ul className="space-y-8 text-white/70 font-body text-sm">
                             <li className="flex items-start gap-5 group">
-                                <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-all">
-                                    <MapPin className="w-4 h-4 text-primary" />
+                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-all">
+                                    <MapPin className="w-4 h-4 text-white" />
                                 </div>
-                                <span className="pt-1">Era Jahit HQ, Jl. Jend. Sudirman,<br />Jakarta Pusat, ID</span>
+                                <span className="pt-1">Era Jahit Jl.Sungai Balang,<br />Kota Padang Sumatera Barat</span>
                             </li>
                             <li className="flex items-center gap-5 group">
-                                <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-all">
-                                    <Phone className="w-4 h-4 text-primary" />
+                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-all">
+                                    <Phone className="w-4 h-4 text-white" />
                                 </div>
-                                <span>+62 21 539 2525</span>
+                                <span>+6281267976080</span>
                             </li>
                             <li className="flex items-center gap-5 group">
-                                <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-all">
-                                    <Mail className="w-4 h-4 text-primary" />
+                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-all">
+                                    <Mail className="w-4 h-4 text-white" />
                                 </div>
-                                <span>info@erajahit.com</span>
+                                <span>erajahit@gmail.com</span>
                             </li>
                         </ul>
                     </div>
@@ -98,9 +95,9 @@ const Footer = () => {
                     <p className="text-white/20 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
                         © 2026 Era Jahit — Penjahit & Konveksi Profesional.
                     </p>
-                    <div className="flex gap-10 text-white/20 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
-                        <a href="#" className="hover:text-primary transition-colors">Kebijakan Privasi</a>
-                        <a href="#" className="hover:text-primary transition-colors">Syarat & Ketentuan</a>
+                    <div className="flex gap-10 text-white/40 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
+                        <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
+                        <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
                     </div>
                 </div>
             </div>

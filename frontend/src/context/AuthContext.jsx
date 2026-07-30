@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// Setup base URL for axios based on Laravel API
+
 axios.defaults.baseURL = 'http://localhost:8000/api';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
@@ -21,17 +21,17 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
             delete axios.defaults.headers.common['Authorization'];
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [token]);
 
     const fetchUser = async () => {
         try {
             const res = await axios.get('/me'); 
-            // Ambil nested data jika ada (misal res.data.data), atau langsung res.data
+            
             setUser(res.data?.data || res.data);
         } catch (err) {
             console.error("Gagal load user:", err);
-            // Jangan langsung delete token kalo errornya bukan 401
+            
             if (err.response && err.response.status === 401) {
                 logout();
             }
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            if (token) await axios.post('/logout'); // panggil API logout jika ada
+            if (token) await axios.post('/logout'); 
         } catch (e) {
              console.error(e);
         } finally {
@@ -69,6 +69,7 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

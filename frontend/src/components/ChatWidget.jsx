@@ -20,7 +20,7 @@ const ChatWidget = () => {
     
     const sessionIdRef = useRef(null);
     
-    const scrollRef = useRef();
+    
 
     // Initialize or update session reference when user changes (login/logout)
     useEffect(() => {

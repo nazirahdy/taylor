@@ -54,7 +54,7 @@ const ManagePassword = () => {
                     </button>
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Keamanan</span>
                     <h1 className="text-4xl md:text-5xl font-display font-bold text-text-primary mb-4">Pengaturan Sandi</h1>
-                    <p className="text-text-secondary font-body">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.</p>
+                    <p className="text-text-secondary font-body">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun</p>
                 </div>
 
                 <div className="bg-surface border border-border p-8 md:p-12 rounded-[2.5rem] shadow-sm">

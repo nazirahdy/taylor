@@ -8,7 +8,7 @@ const Contact = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formatWa = `6281234567890`; // Ganti dengan NO WA Asli Admin Era Jahit
+        const formatWa = `6281234567890`; 
         const textEnc = encodeURIComponent(`Halo, saya *${nama}* (${nomorWa}). \n\n${pesan}`);
         window.open(`https://wa.me/${formatWa}?text=${textEnc}`, '_blank');
     };
@@ -26,7 +26,7 @@ const Contact = () => {
                     </h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
                         Ada pertanyaan soal jenis bahan, desain, atau estimasi harga? 
-                        Tim Era Jahit siap membantu Anda melalui saluran komunikasi kami.
+                        Tim Era Jahit siap membantu Anda melalui saluran komunikasi kami
                     </p>
                 </div>
             </section>
@@ -40,7 +40,7 @@ const Contact = () => {
                             <div>
                                 <h3 className="text-3xl font-display font-bold mb-6 text-text-primary">Informasi Studio</h3>
                                 <p className="text-text-secondary leading-relaxed mb-10 font-body">
-                                    Kunjungi studio kami untuk konsultasi langsung dan melihat koleksi bahan pilihan bersama tim penjahit kami.
+                                    Kunjungi studio kami untuk konsultasi langsung dan melihat koleksi bahan pilihan bersama tim penjahit kami
                                 </p>
                             </div>
 
@@ -53,9 +53,7 @@ const Contact = () => {
                                     <div>
                                         <h4 className="text-lg font-display font-bold mb-2">Lokasi Studio</h4>
                                         <p className="text-text-secondary text-sm leading-relaxed mb-4 font-body">Jl. Khatib Sulaiman, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat</p>
-                                        <a href="https://maps.google.com" className="text-primary font-bold text-[11px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all font-sans">
                                             <Map className="w-4 h-4" /> Buka di Maps <ChevronRight className="w-3 h-3" />
-                                        </a>
                                     </div>
                                 </div>
 
@@ -66,7 +64,7 @@ const Contact = () => {
                                     <div>
                                         <h4 className="text-lg font-display font-bold mb-2">Kontak Langsung</h4>
                                         <p className="text-text-primary font-bold mb-1 font-sans">+62 812-3456-7890</p>
-                                        <p className="text-text-secondary text-sm font-body">halo@erajahit.com</p>
+                                        <p className="text-text-secondary text-sm font-body">erajahit@gmail.com</p>
                                     </div>
                                 </div>
 
@@ -90,7 +88,7 @@ const Contact = () => {
                         <div className="lg:col-span-3 bg-surface p-10 md:p-14 rounded-[2.5rem] border border-border animate-fade-in delay-200 shadow-sm">
                             <h2 className="text-3xl font-display font-bold mb-6">Kirim Pesan</h2>
                             <p className="text-text-secondary mb-12 leading-relaxed font-body">
-                                Gunakan formulir ini untuk konsultasi cepat. Pesan Anda akan diteruskan langsung ke WhatsApp admin Era Jahit.
+                                Gunakan formulir ini untuk konsultasi cepat Pesan Anda akan diteruskan langsung ke WhatsApp admin Era Jahit
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-10">
@@ -137,7 +135,7 @@ const Contact = () => {
             {/* Map Section */}
             <div className="w-full h-[600px] relative mt-20 border-t border-border">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m3!1d3989.261622792613!2d100.366258!3d-0.9329124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b92b6a9c14bb%3A0xedbf86b1fb002fbc!2sKota%20Padang%2C%20Sumatera%20Barat!5e0!3m2!1sid!2sid!4v1713437599023!5m2!1sid!2sid" 
+                    src="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" 
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 

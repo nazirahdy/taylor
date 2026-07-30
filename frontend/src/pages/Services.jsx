@@ -32,10 +32,10 @@ const Services = () => {
             <section className="pt-48 pb-32 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 text-center animate-fade-in relative z-10">
-                    <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Keahlian Kami</span>
+                    <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block"></span>
                     <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 text-text-primary">Layanan Jahit</h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
-                        Kami menyediakan dua metode layanan yang dirancang sesuai kebutuhan Anda, memadukan keahlian tradisional dengan sentuhan modern untuk busana yang sempurna.
+                        Kami menyediakan dua metode layanan yang dirancang sesuai kebutuhan Anda, memadukan keahlian tradisional dengan sentuhan modern untuk busana yang sempurna
                     </p>
                 </div>
             </section>
@@ -45,16 +45,16 @@ const Services = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
                     {/* Method 1: Home Service */}
-                    <div className="bg-surface p-12 md:p-16 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up">
-                        <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500">
-                            <User className="w-10 h-10" />
+                    <div className="bg-surface p-8 md:p-10 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up">
+                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                            <User className="w-8 h-8" />
                         </div>
-                        <h2 className="text-4xl font-display font-bold mb-6">Home Service</h2>
-                        <p className="text-text-secondary mb-12 leading-relaxed text-lg font-body">
-                            Layanan penjahit kami di mana tukang jahit datang ke lokasi Anda untuk konsultasi dan pengukuran badan. Bedanya, pada Home Service penjahit yang datang, sedangkan pada kunjungan studio Anda datang ke toko.
+                        <h2 className="text-3xl font-display font-bold mb-4">Home Service</h2>
+                        <p className="text-text-secondary mb-8 leading-relaxed text-base font-body">
+                            Layanan penjahit kami di mana tukang jahit datang ke lokasi Anda untuk konsultasi dan pengukuran badan. Bedanya, pada Home Service penjahit yang datang, sedangkan pada kunjungan studio Anda datang ke toko
                         </p>
 
-                        <div className="space-y-8 mb-16 flex-grow text-left">
+                        <div className="space-y-6 mb-10 flex-grow text-left">
                             <h4 className="text-[11px] uppercase tracking-widest font-bold text-primary border-b border-border pb-4 font-sans">Prosedur &amp; Proses</h4>
                             <div className="flex items-start gap-5">
                                 <div className="w-10 h-10 bg-white border border-border rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm">
@@ -62,7 +62,7 @@ const Services = () => {
                                 </div>
                                 <div>
                                     <p className="text-text-primary font-bold font-sans">DP Diperlukan</p>
-                                    <p className="text-text-muted text-sm mt-1 font-body">Uang muka (DP) diperlukan untuk mengamankan jadwal kunjungan penjahit kami.</p>
+                                    <p className="text-text-muted text-sm mt-1 font-body">Uang muka (DP) diperlukan untuk mengamankan jadwal kunjungan penjahit kami</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-5">
@@ -71,7 +71,7 @@ const Services = () => {
                                 </div>
                                 <div>
                                     <p className="text-text-primary font-bold font-sans">Cakupan Wilayah</p>
-                                    <p className="text-text-muted text-sm mt-1 font-body">Tersedia untuk wilayah kota dan daerah tertentu sesuai kesepakatan.</p>
+                                    <p className="text-text-muted text-sm mt-1 font-body">Tersedia untuk wilayah kota dan daerah tertentu sesuai kesepakatan</p>
                                 </div>
                             </div>
                         </div>
@@ -82,16 +82,16 @@ const Services = () => {
                     </div>
 
                     {/* Method 2: In-Store */}
-                    <div className="bg-surface p-12 md:p-16 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up delay-200">
-                        <div className="w-20 h-20 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500">
-                            <Store className="w-10 h-10" />
+                    <div className="bg-surface p-8 md:p-10 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up delay-200">
+                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                            <Store className="w-8 h-8" />
                         </div>
-                        <h2 className="text-4xl font-display font-bold mb-6">In-Store (Kunjungan Studio)</h2>
-                        <p className="text-text-secondary mb-12 leading-relaxed text-lg font-body">
-                            Kunjungi studio kami untuk pengalaman desain kolaboratif dan pengukuran oleh penjahit kami di tempat. Bedanya, pada In-Store pelanggan datang ke toko, bukan penjahit yang datang ke rumah.
+                        <h2 className="text-3xl font-display font-bold mb-4">In-Store (Kunjungan Studio)</h2>
+                        <p className="text-text-secondary mb-8 leading-relaxed text-base font-body">
+                            Kunjungi studio kami untuk pengalaman desain kolaboratif dan pengukuran oleh penjahit kami di tempat. Bedanya, pada In-Store pelanggan datang ke toko, bukan penjahit yang datang ke rumah
                         </p>
 
-                        <div className="space-y-8 mb-16 flex-grow text-left">
+                        <div className="space-y-6 mb-10 flex-grow text-left">
                             <h4 className="text-[11px] uppercase tracking-widest font-bold text-primary border-b border-border pb-4 font-sans">Prosedur &amp; Proses</h4>
                             <div className="flex items-start gap-5">
                                 <div className="w-10 h-10 bg-white border border-border rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm">
@@ -99,7 +99,7 @@ const Services = () => {
                                 </div>
                                 <div>
                                     <p className="text-text-primary font-bold font-sans">Reservasi Prioritas</p>
-                                    <p className="text-text-muted text-sm mt-1 font-body">Reservasi diperlukan untuk memastikan perhatian penuh dari tim penjahit utama kami.</p>
+                                    <p className="text-text-muted text-sm mt-1 font-body">Reservasi diperlukan untuk memastikan perhatian penuh dari tim penjahit utama kami</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-5">
@@ -108,7 +108,7 @@ const Services = () => {
                                 </div>
                                 <div>
                                     <p className="text-text-primary font-bold font-sans">Akses Koleksi Penuh</p>
-                                    <p className="text-text-muted text-sm mt-1 font-body">Akses gratis ke seluruh koleksi bahan dan sampel kain eksklusif selama sesi Anda.</p>
+                                    <p className="text-text-muted text-sm mt-1 font-body">Akses gratis ke seluruh koleksi bahan dan sampel kain eksklusif selama sesi Anda</p>
                                 </div>
                             </div>
                         </div>

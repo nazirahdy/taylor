@@ -11,14 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Login extends BaseLogin
 {
-    /**
-     * Override authenticate:
-     * - Jika login sebagai OWNER di /admin/login:
-     *   1. Auth via web guard sementara
-     *   2. Redirect ke /owner-bridge (route biasa, bukan Livewire)
-     *      yang akan switch ke guard 'owner' secara reliable, lalu ke /owner
-     * - Jika login sebagai ADMIN, proses normal ke /admin.
-     */
+
     public function authenticate(): ?LoginResponse
     {
         try {
@@ -39,32 +32,36 @@ class Login extends BaseLogin
         $credentials = $this->getCredentialsFromFormData($data);
         $remember = $data['remember'] ?? false;
 
-        // --- Cek apakah credentials milik OWNER ---
-        // Coba auth via web guard dulu untuk verifikasi
+
         if (Auth::guard('web')->attempt($credentials, $remember)) {
             $user = Auth::guard('web')->user();
 
             if ($user->role === 'owner') {
-                // Session sudah tersimpan via web guard.
-                // Arahkan ke /owner-bridge yang akan switch guard & redirect ke /owner
                 session()->regenerate();
                 $this->redirect(route('owner.bridge'));
                 return null;
             }
 
-            // Bukan owner — cek akses admin
+            if ($user->role === 'admin') {
+                $panel = Filament::getCurrentPanel();
+                if ($panel && $panel->getId() === 'owner') {
+                    session()->regenerate();
+                    $this->redirect('/admin');
+                    return null;
+                }
+            }
+
             $panel = Filament::getCurrentPanel();
             if ($panel && !$user->canAccessPanel($panel)) {
                 Auth::guard('web')->logout();
                 $this->throwFailureValidationException();
             }
 
-            // Admin valid → login normal
             session()->regenerate();
             return app(LoginResponse::class);
         }
 
-        // Credentials salah → tampil error
+        
         $this->throwFailureValidationException();
     }
 }

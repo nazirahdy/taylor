@@ -60,7 +60,7 @@ const Dashboard = () => {
                     <div className="animate-fade-in">
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Portal Pesanan</span>
                         <h1 className="text-4xl md:text-6xl font-display font-bold text-text-primary mb-2">Selamat Datang, {user?.name?.split(' ')[0] || 'Pelanggan'}</h1>
-                        <p className="text-text-secondary font-body text-sm">Pantau progres jahitan Anda dan kelola konsultasi desain busana Anda.</p>
+                        <p className="text-text-secondary font-body text-sm">Pantau progres jahitan Anda dan kelola konsultasi desain busana Anda</p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0 animate-fade-in">
                         <Link to="/profile/edit" className="px-6 py-4 border border-border text-text-primary rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-surface transition-all font-sans">
@@ -81,7 +81,7 @@ const Dashboard = () => {
                             </div>
                             <div>
                                 <h4 className="text-red-900 font-bold mb-1 uppercase tracking-widest text-xs font-sans">Perlu Tindakan: Profil Belum Lengkap</h4>
-                                <p className="text-red-700 text-sm font-body leading-relaxed">Harap lengkapi nomor WhatsApp dan alamat Anda untuk dapat melakukan pemesanan.</p>
+                                <p className="text-red-700 text-sm font-body leading-relaxed">Harap lengkapi nomor WhatsApp dan alamat Anda untuk dapat melakukan pemesanan</p>
                             </div>
                         </div>
                         <Link to="/profile/edit" className="px-6 py-3 bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all font-sans shadow-lg shadow-red-200">Lengkapi Profil</Link>
@@ -134,7 +134,7 @@ const Dashboard = () => {
                                 ) : orders.length === 0 ? (
                                     <tr>
                                         <td colSpan="5" className="p-20 text-center text-text-muted italic">
-                                            Belum ada riwayat pesanan. Mulai pesanan busana Anda di atas.
+                                            Belum ada riwayat pesanan. Mulai pesanan busana Anda di atas
                                         </td>
                                     </tr>
                                 ) : (

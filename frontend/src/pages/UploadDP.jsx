@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UploadCloud, FileImage, AlertCircle, CheckCircle2, ChevronLeft } from 'lucide-react';
+import { useToast } from '../components/Toast';
 
 const UploadDP = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { toast } = useToast();
     
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -74,7 +76,7 @@ const UploadDP = () => {
         try {
             await axios.post(`/orders/${id}/dp`, formData, { headers: { 'Content-Type': 'multipart/form-data' }});
             
-            alert("Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.");
+            toast.success('Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.');
             navigate(`/dashboard`);
         } catch (err) {
             console.error(err);

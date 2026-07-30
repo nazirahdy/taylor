@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Loader2, Activity } from 'lucide-react';
+import { useToast } from '../components/Toast';
 import OrderInfo from '../components/order/OrderInfo';
 import ProgressTracker from '../components/order/ProgressTracker';
 
 const OrderDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const { toast } = useToast();
     
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +22,7 @@ const OrderDetail = () => {
             setOrder(res.data?.data || res.data);
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan memuat detail pesanan.");
+            toast.error('Terjadi kesalahan memuat detail pesanan.');
         } finally {
             setIsLoading(false);
         }
@@ -54,7 +55,7 @@ const OrderDetail = () => {
     if (!order) {
         return (
             <div className="min-h-screen bg-white flex items-center justify-center text-text-muted font-body">
-                Data pesanan tidak ditemukan di arsip studio.
+                Data pesanan tidak ditemukan di arsip studio
             </div>
         );
     }

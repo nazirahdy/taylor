@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../Toast';
 import { Send, Loader2, MessageSquare, User } from 'lucide-react';
 
 const ChatBoard = ({ orderId }) => {
     const { user } = useAuth();
+    const { toast } = useToast();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -36,10 +38,10 @@ const ChatBoard = ({ orderId }) => {
     useEffect(() => {
         if (orderId) {
             fetchMessages();
-            const pollingId = setInterval(fetchMessages, 5000); // Polling faster for better UX
+            const pollingId = setInterval(fetchMessages, 5000); 
             return () => clearInterval(pollingId);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [orderId]);
 
     const handleSendMessage = async (e) => {
@@ -49,7 +51,6 @@ const ChatBoard = ({ orderId }) => {
         const messageText = newMessage.trim();
         if (!messageText || isLoading || !orderId) return;
 
-        // Optimistic UI update
         const optimisticId = Date.now();
         const optimisticMessage = {
             id: optimisticId,
@@ -69,7 +70,7 @@ const ChatBoard = ({ orderId }) => {
                 message: messageText 
             });
             
-            // Update the optimistic message with real data from server
+
             if (res.data?.success) {
                 setMessages(prev => prev.map(m => m.id === optimisticId ? res.data.data : m));
             } else {
@@ -77,11 +78,11 @@ const ChatBoard = ({ orderId }) => {
             }
         } catch (err) {
             console.error("Gagal mengirim chat:", err);
-            // Remove optimistic message if failed
+
             setMessages(prev => prev.filter(m => m.id !== optimisticId));
-            // Re-fill the input so user doesn't lose their message
+
             setNewMessage(messageText);
-            alert("Pesan gagal terkirim. Silakan coba lagi.");
+            toast.error('Pesan gagal terkirim. Silakan coba lagi.');
         } finally {
             setIsLoading(false);
         }

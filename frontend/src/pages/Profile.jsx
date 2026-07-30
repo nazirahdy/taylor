@@ -18,10 +18,13 @@ const Profile = () => {
         lingkar_badan: '',
         lingkar_pinggang: '',
         lingkar_pinggul: '',
+        lingkar_pangkal_lengan: '',
+        panjang_tangan: '',
         panjang_baju: '',
-        panjang_lengan: '',
-        lebar_bahu: '',
         panjang_rok: '',
+        lebar_dada: '',
+        lebar_punggung: '',
+        lebar_bahu: '',
         tinggi_badan: '',
         notes: ''
     });
@@ -50,7 +53,11 @@ const Profile = () => {
         try {
             const res = await axios.get('/measurements');
             if (res.data) {
-                setMeasurements(res.data.data || res.data);
+                const data = res.data.data || res.data;
+                setMeasurements({
+                    ...data,
+                    panjang_tangan: data.panjang_tangan ?? data.panjang_lengan ?? ''
+                });
             }
         } catch (err) {
             console.error("Gagal memuat ukuran:", err);
@@ -118,7 +125,7 @@ const Profile = () => {
                     <div>
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Akun Saya</span>
                         <h1 className="text-4xl md:text-6xl font-display font-bold text-text-primary mb-4">Profil & Data Ukuran</h1>
-                        <p className="text-text-secondary font-body max-w-2xl mx-auto md:mx-0">Kelola data pribadi, ukuran badan, dan keamanan akun Anda.</p>
+                        <p className="text-text-secondary font-body max-w-2xl mx-auto md:mx-0">Kelola data pribadi, ukuran badan, dan keamanan akun Anda</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link 
@@ -169,6 +176,9 @@ const Profile = () => {
                                 <div>
                                     <label className={labelClass}>Alamat Lengkap</label>
                                     <textarea value={alamat} onChange={(e) => setAlamat(e.target.value)} rows="3" className={`${inputClass} resize-none`} />
+                                    <p className="text-[11px] text-text-muted mt-2 leading-relaxed">
+                                     Alamat ini disimpan sebagai data profil Anda. Saat melakukan pemesanan Home Service, Anda akan diminta mengisi ulang alamat kunjungan secara terpisah
+                                    </p>
                                 </div>
                                 <button type="submit" disabled={isLoadingProfile} className="w-full py-5 bg-primary text-white font-bold uppercase tracking-widest text-[11px] hover:bg-primary-dark transition-all flex justify-center items-center gap-2 rounded-xl shadow-xl shadow-primary/20 font-sans">
                                     {isLoadingProfile ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Save className="w-4 h-4"/> Simpan Profil</>}
@@ -232,10 +242,13 @@ const Profile = () => {
                                         { id: 'lingkar_badan', label: 'Lingkar Badan' },
                                         { id: 'lingkar_pinggang', label: 'Lingkar Pinggang' },
                                         { id: 'lingkar_pinggul', label: 'Lingkar Pinggul' },
+                                        { id: 'lingkar_pangkal_lengan', label: 'Lingkar Pangkal Lengan' },
+                                        { id: 'panjang_tangan', label: 'Panjang Tangan' },
                                         { id: 'panjang_baju', label: 'Panjang Baju' },
-                                        { id: 'panjang_lengan', label: 'Panjang Lengan' },
+                                        { id: 'panjang_rok', label: 'Panjang Rok' },
+                                        { id: 'lebar_dada', label: 'Lebar Dada' },
+                                        { id: 'lebar_punggung', label: 'Lebar Punggung' },
                                         { id: 'lebar_bahu', label: 'Lebar Bahu' },
-                                        { id: 'panjang_rok', label: 'Panjang Rok / Celana' },
                                         { id: 'tinggi_badan', label: 'Tinggi Badan' },
                                     ].map((field) => {
                                         const value = measurements[field.id];

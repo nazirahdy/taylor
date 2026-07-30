@@ -55,6 +55,7 @@ class QuotaController extends Controller
             $maxOrders = $defaultMax;
             
             $remaining = $this->getWeeklyRemainingFromOrders($current, $maxOrders);
+            $dailyUsed = $this->getDailyUsedOrders($current);
             
             $isOpen = !$isWeekend && !$isPast && $globalIsOpen && $remaining > 0;
 
@@ -87,7 +88,7 @@ class QuotaController extends Controller
                 'disabled' => !$isOpen,
                 'quota_type' => 'weekly',
                 'max_orders' => $maxOrders,
-                'current_orders' => $maxOrders - $remaining,
+                'current_orders' => $dailyUsed,
                 'available_slots' => $availableSlots,
                 'is_weekend' => $isWeekend,
                 'remaining' => $remaining,
@@ -127,6 +128,27 @@ class QuotaController extends Controller
         $lockedCount = $lockedThisWeek->count();
 
         return max(0, $weeklyMaxOrders - ($usedThisWeek + $lockedCount));
+    }
+
+    protected function getDailyUsedOrders(Carbon $date): int
+    {
+        $dateStr = $date->format('Y-m-d');
+
+        $usedToday = \App\Models\Order::where('quota_date', $dateStr)
+            ->whereNotIn('status', ['cancelled', 'rejected'])
+            ->count();
+
+        // Calculate locks
+        $lockedToday = \App\Models\QuotaLock::where('quota_date', $dateStr)
+            ->where('expires_at', '>', now());
+
+        if (Auth::check()) {
+            $lockedToday->where('user_id', '!=', Auth::id());
+        }
+
+        $lockedCount = $lockedToday->count();
+
+        return $usedToday + $lockedCount;
     }
 
     /**

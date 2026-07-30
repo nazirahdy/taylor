@@ -34,27 +34,27 @@ const FAQ = () => {
     const faqData = [
         {
             q: "Berapa lama waktu pengerjaan busana di Era Jahit?",
-            a: "Waktu pengerjaan standar berkisar antara 2 hingga 4 minggu, tergantung jenis busana dan kerumitan desain. Ini mencakup proses konsultasi, pemotongan pola, menjahit, dan fitting. Desainer Anda akan memberikan estimasi waktu yang lebih detail saat sesi pertama."
+            a: "Waktu pengerjaan standar berkisar antara 2 hingga 4 minggu, tergantung jenis busana dan kerumitan desain. Ini mencakup proses konsultasi, pemotongan pola, menjahit, dan fitting. Desainer Anda akan memberikan estimasi waktu yang lebih detail saat sesi pertama"
         },
         {
             q: "Bagaimana cara kerja layanan 'Home Service'?",
-            a: "Penjahit ahli kami akan datang ke lokasi Anda untuk melakukan pengukuran presisi dan konsultasi desain langsung. Sesi ini sangat penting untuk memastikan hasil akhir busana yang sempurna. Uang muka (DP) diperlukan untuk mengkonfirmasi jadwal kunjungan."
+            a: "Penjahit ahli kami akan datang ke lokasi Anda untuk melakukan pengukuran presisi dan konsultasi desain langsung. Sesi ini sangat penting untuk memastikan hasil akhir busana yang sempurna. Uang muka (DP) diperlukan untuk mengkonfirmasi jadwal kunjungan"
         },
         {
             q: "Apakah tersedia layanan desain busana sepenuhnya kustom?",
-            a: "Tentu saja. Kami bangga menciptakan busana kustom yang sepenuhnya disesuaikan dengan selera dan ukuran Anda. Tim kami bekerja sama dengan klien untuk merancang busana yang mencerminkan gaya dan kebutuhan unik masing-masing pelanggan."
+            a: "Tentu saja. Kami bangga menciptakan busana kustom yang sepenuhnya disesuaikan dengan selera dan ukuran Anda. Tim kami bekerja sama dengan klien untuk merancang busana yang mencerminkan gaya dan kebutuhan unik masing-masing pelanggan"
         },
         {
             q: "Bagaimana saya bisa memantau progres jahitan saya?",
-            a: "Melalui portal pesanan Era Jahit, Anda memiliki akses langsung ke dashboard pesanan. Di sana, Anda bisa memantau setiap tahapan pengerjaan, mulai dari konsultasi, pemilihan bahan, hingga fitting pertama, serta berkomunikasi langsung dengan tim jahit via fitur chat."
+            a: "Melalui portal pesanan Era Jahit, Anda memiliki akses langsung ke dashboard pesanan. Di sana, Anda bisa memantau setiap tahapan pengerjaan, mulai dari konsultasi, pemilihan bahan, hingga fitting pertama, serta berkomunikasi langsung dengan tim jahit via fitur chat"
         },
         {
             q: "Bahan apa saja yang tersedia di Era Jahit?",
-            a: "Kami menyediakan beragam pilihan bahan premium, mulai dari katun berkualitas, linen, batik, hingga kain sutra dan bahan formal eksklusif. Koleksi bahan kami diperbarui secara berkala sesuai tren busana terkini."
+            a: "Kami menyediakan beragam pilihan bahan premium, mulai dari katun berkualitas, linen, batik, hingga kain sutra dan bahan formal eksklusif. Koleksi bahan kami diperbarui secara berkala sesuai tren busana terkini"
         },
         {
             q: "Apakah ada garansi untuk hasil jahitan?",
-            a: "Ya, kami memberikan garansi perbaikan selama 30 hari setelah busana diserahkan. Jika ada bagian yang perlu disesuaikan atau diperbaiki, kami siap menanganinya tanpa biaya tambahan. Kepuasan Anda adalah prioritas utama kami."
+            a: "Ya, kami memberikan garansi perbaikan selama 30 hari setelah busana diserahkan. Jika ada bagian yang perlu disesuaikan atau diperbaiki, kami siap menanganinya tanpa biaya tambahan. Kepuasan Anda adalah prioritas utama kami"
         }
     ];
 
@@ -71,7 +71,7 @@ const FAQ = () => {
                             <h1 className="text-6xl md:text-8xl font-display font-bold leading-none mb-8 text-text-primary">Pertanyaan Umum</h1>
                             <div className="h-1.5 w-24 bg-primary rounded-full mb-8"></div>
                             <p className="text-text-secondary text-lg leading-relaxed max-w-xl font-body">
-                                Temukan jawaban atas pertanyaan umum seputar layanan, proses, dan pemesanan busana di Era Jahit.
+                                Temukan jawaban atas pertanyaan umum seputar layanan, proses, dan pemesanan busana di Era Jahit
                             </p>
                         </div>
                         <div className="hidden lg:block animate-fade-in delay-400">
@@ -97,7 +97,7 @@ const FAQ = () => {
                         <div className="relative z-10 max-w-2xl">
                             <h2 className="text-3xl md:text-5xl font-display font-bold mb-6 italic text-text-primary">Masih punya pertanyaan?</h2>
                             <p className="text-text-secondary text-lg mb-12 font-body leading-relaxed">
-                                Jika pertanyaan Anda belum terjawab di sini, tim Era Jahit siap membantu Anda secara langsung melalui halaman kontak kami.
+                                Jika pertanyaan Anda belum terjawab di sini, tim Era Jahit siap membantu Anda secara langsung melalui halaman kontak kami
                             </p>
                             
                             <Link 

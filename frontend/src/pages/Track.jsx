@@ -161,12 +161,12 @@ const Track = () => {
                                     <div className="space-y-12 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-white/5">
                                         
                                         {[
-                                            { key: 'confirmed', label: 'Dikonfirmasi', desc: 'Pesanan telah dikonfirmasi dan disetujui oleh admin.' },
-                                            { key: 'pola_pemotongan', label: 'Pola & Pemotongan', desc: 'Proses pembuatan pola dan pemotongan bahan kain.' },
-                                            { key: 'pola_penjahitan', label: 'Pola Penjahitan', desc: 'Tahap perancangan pola jahitan detail.' },
-                                            { key: 'proses_menjahit', label: 'Proses Menjahit', desc: 'Pekerjaan menjahit kain sedang dilakukan.' },
-                                            { key: 'finishing', label: 'Finishing', desc: 'Tahap penyelesaian akhir dan quality check.' },
-                                            { key: 'selesai_penyerahan', label: 'Selesai & Penyerahan', desc: 'Busana selesai dan siap diserahkan kepada pelanggan.' }
+                                            { key: 'confirmed', label: 'Dikonfirmasi', desc: 'Pesanan telah dikonfirmasi dan disetujui oleh admin' },
+                                            { key: 'pola_pemotongan', label: 'Pola & Pemotongan', desc: 'Proses pembuatan pola dan pemotongan bahan kain' },
+                                            { key: 'pola_penjahitan', label: 'Pola Penjahitan', desc: 'Tahap perancangan pola jahitan detail' },
+                                            { key: 'proses_menjahit', label: 'Proses Menjahit', desc: 'Pekerjaan menjahit kain sedang dilakukan' },
+                                            { key: 'finishing', label: 'Finishing', desc: 'Tahap penyelesaian akhir dan quality check' },
+                                            { key: 'selesai_penyerahan', label: 'Selesai & Penyerahan', desc: 'Busana selesai dan siap diserahkan kepada pelanggan' }
                                         ].map((stage, idx) => {
                                             const STAGES_ORDER = ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'];
                                             const currentIdx = STAGES_ORDER.indexOf(order.status);

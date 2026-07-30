@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
         return [
             'quota_date' => 'required|date|after_or_equal:today',
             'method' => 'required|in:home_service,visit',
-            'design_notes' => 'required|string|min:5',
+            'design_notes' => 'nullable|string',
             'design_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'gallery_image_path' => 'nullable|string',
             'alamat' => 'nullable|string|min:5',
@@ -33,9 +33,7 @@ class OrderRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get custom error messages for validator rules.
-     */
+    
     public function messages(): array
     {
         return [

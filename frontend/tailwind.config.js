@@ -13,8 +13,9 @@ export default {
                 'accent-hover': '#D4AF37',
             },
             fontFamily: {
-                'display': ['"Playfair Display"', 'serif'],
-                'sans': ['Montserrat', 'sans-serif'],
+                'display': ['"Inter"', 'sans-serif'],
+                'sans': ['"Inter"', 'sans-serif'],
+                'body': ['"Inter"', 'sans-serif'],
             },
             animation: {
                 'slide-up': 'slideUp 0.5s ease-out forwards',

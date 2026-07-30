@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Filament\Pages\Auth\Login as OwnerLogin;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -26,11 +27,11 @@ class OwnerPanelProvider extends PanelProvider
             ->id('owner')
             ->path('owner')
             ->authGuard('owner')
-            ->login()
+            ->login(OwnerLogin::class)
             ->brandLogo(asset('images/logo.png'))
             ->brandLogoHeight('3rem')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#79D12A'),
             ])
             ->discoverResources(in: app_path('Filament/Owner/Resources'), for: 'App\\Filament\\Owner\\Resources')
             ->discoverPages(in: app_path('Filament/Owner/Pages'), for: 'App\\Filament\\Owner\\Pages')

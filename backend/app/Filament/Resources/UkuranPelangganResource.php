@@ -26,7 +26,8 @@ class UkuranPelangganResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->role === 'admin';
+        $user = auth()->user() ?? auth('web')->user();
+        return $user?->role === 'admin';
     }
     protected static ?string $slug = 'ukuran-pelanggan';
 
@@ -89,7 +90,7 @@ class UkuranPelangganResource extends Resource
                     ->getStateUsing(fn (User $record): bool => (bool) $record->measurement)
                     ->icon(fn (bool $state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                     ->color(fn (bool $state): string => $state ? 'success' : 'danger')
-                    ->tooltip(fn (bool $state): string => $state ? 'Data ukuran sudah lengkap' : 'Belum ada data ukuran')
+                    ->tooltip(fn (bool $state): string => $state ? 'Data ukuran sudah ada' : 'Belum ada data ukuran')
                     ->sortable(false),
             ])
             ->defaultSort('name')
@@ -100,97 +101,72 @@ class UkuranPelangganResource extends Resource
                     ->icon('heroicon-o-pencil-square')
                     ->color('warning')
                     ->modalHeading(fn (User $record) => '✏️ Ukuran Badan — ' . $record->name)
-                    ->modalDescription('Masukkan atau perbarui data ukuran badan pelanggan. Data ini akan langsung tersinkron dan terlihat di halaman profil pelanggan.')
+                    ->modalDescription('Masukkan atau perbarui 11 data ukuran badan pelanggan.')
                     ->modalWidth('5xl')
                     ->fillForm(function (User $record): array {
                         $m = $record->measurement;
                         return [
-                            'lingkar_badan'    => $m?->lingkar_badan,
-                            'lingkar_pinggang' => $m?->lingkar_pinggang,
-                            'lingkar_pinggul'  => $m?->lingkar_pinggul,
-                            'panjang_baju'     => $m?->panjang_baju,
-                            'panjang_lengan'   => $m?->panjang_lengan,
-                            'lebar_bahu'       => $m?->lebar_bahu,
-                            'panjang_rok'      => $m?->panjang_rok,
-                            'tinggi_badan'     => $m?->tinggi_badan,
-                            'notes'            => $m?->notes,
+                            'lingkar_badan'          => $m?->lingkar_badan,
+                            'lingkar_pinggang'       => $m?->lingkar_pinggang,
+                            'lingkar_pinggul'        => $m?->lingkar_pinggul,
+                            'lingkar_pangkal_lengan' => $m?->lingkar_pangkal_lengan,
+                            'panjang_tangan'         => $m?->panjang_tangan ?? $m?->panjang_lengan,
+                            'panjang_baju'           => $m?->panjang_baju,
+                            'panjang_rok'            => $m?->panjang_rok,
+                            'lebar_dada'             => $m?->lebar_dada,
+                            'lebar_punggung'         => $m?->lebar_punggung,
+                            'lebar_bahu'             => $m?->lebar_bahu,
+                            'tinggi_badan'           => $m?->tinggi_badan,
+                            'notes'                  => $m?->notes,
                         ];
                     })
                     ->form([
                         Forms\Components\Section::make('📏 Data Ukuran Tubuh')
                             ->description('Semua satuan dalam Centimeter (CM). Kosongkan jika belum diukur.')
                             ->schema([
-                                Forms\Components\TextInput::make('tinggi_badan')
-                                    ->label('Tinggi Badan')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 160.00'),
-
                                 Forms\Components\TextInput::make('lingkar_badan')
                                     ->label('Lingkar Badan')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 85.50'),
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 85.50'),
 
                                 Forms\Components\TextInput::make('lingkar_pinggang')
                                     ->label('Lingkar Pinggang')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 70.00'),
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 70.00'),
 
                                 Forms\Components\TextInput::make('lingkar_pinggul')
                                     ->label('Lingkar Pinggul')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 92.00'),
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 92.00'),
+
+                                Forms\Components\TextInput::make('lingkar_pangkal_lengan')
+                                    ->label('Lingkar Pangkal Lengan')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 32.00'),
+
+                                Forms\Components\TextInput::make('panjang_tangan')
+                                    ->label('Panjang Tangan')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 55.00'),
 
                                 Forms\Components\TextInput::make('panjang_baju')
                                     ->label('Panjang Baju')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 60.00'),
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 60.00'),
 
-                                Forms\Components\TextInput::make('panjang_lengan')
-                                    ->label('Panjang Lengan')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 55.00'),
+                                Forms\Components\TextInput::make('panjang_rok')
+                                    ->label('Panjang Rok')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 100.00'),
+
+                                Forms\Components\TextInput::make('lebar_dada')
+                                    ->label('Lebar Dada')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 34.00'),
+
+                                Forms\Components\TextInput::make('lebar_punggung')
+                                    ->label('Lebar Punggung')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 36.00'),
 
                                 Forms\Components\TextInput::make('lebar_bahu')
                                     ->label('Lebar Bahu')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 38.00'),
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 38.00'),
 
-                                Forms\Components\TextInput::make('panjang_rok')
-                                    ->label('Panjang Rok / Celana')
-                                    ->numeric()
-                                    ->step(0.01)
-                                    ->minValue(0)
-                                    ->maxValue(999.99)
-                                    ->suffix('cm')
-                                    ->placeholder('cth: 100.00'),
+                                Forms\Components\TextInput::make('tinggi_badan')
+                                    ->label('Tinggi Badan')
+                                    ->numeric()->step(0.01)->minValue(0)->maxValue(999.99)->suffix('cm')->placeholder('cth: 160.00'),
                             ])->columns(2),
 
                         Forms\Components\Section::make('📝 Catatan Penjahit')
@@ -207,15 +183,18 @@ class UkuranPelangganResource extends Resource
                         Measurement::updateOrCreate(
                             ['user_id' => $record->id],
                             [
-                                'lingkar_badan'    => $data['lingkar_badan'] ?: null,
-                                'lingkar_pinggang' => $data['lingkar_pinggang'] ?: null,
-                                'lingkar_pinggul'  => $data['lingkar_pinggul'] ?: null,
-                                'panjang_baju'     => $data['panjang_baju'] ?: null,
-                                'panjang_lengan'   => $data['panjang_lengan'] ?: null,
-                                'lebar_bahu'       => $data['lebar_bahu'] ?: null,
-                                'panjang_rok'      => $data['panjang_rok'] ?: null,
-                                'tinggi_badan'     => $data['tinggi_badan'] ?: null,
-                                'notes'            => $data['notes'] ?: null,
+                                'lingkar_badan'          => $data['lingkar_badan'] ?: null,
+                                'lingkar_pinggang'       => $data['lingkar_pinggang'] ?: null,
+                                'lingkar_pinggul'        => $data['lingkar_pinggul'] ?: null,
+                                'lingkar_pangkal_lengan' => $data['lingkar_pangkal_lengan'] ?: null,
+                                'panjang_tangan'         => $data['panjang_tangan'] ?: null,
+                                'panjang_baju'           => $data['panjang_baju'] ?: null,
+                                'panjang_rok'            => $data['panjang_rok'] ?: null,
+                                'lebar_dada'             => $data['lebar_dada'] ?: null,
+                                'lebar_punggung'         => $data['lebar_punggung'] ?: null,
+                                'lebar_bahu'             => $data['lebar_bahu'] ?: null,
+                                'tinggi_badan'           => $data['tinggi_badan'] ?: null,
+                                'notes'                  => $data['notes'] ?: null,
                             ]
                         );
 

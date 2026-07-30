@@ -41,6 +41,35 @@ class OrderResource extends Resource
                 Forms\Components\DatePicker::make('quota_date')->label('Tanggal Janji Temu'),
             ])->columns(3),
 
+            Forms\Components\Section::make('Alamat & Lokasi Pelanggan / Kunjungan')->schema([
+                Forms\Components\Placeholder::make('alamat_profil')
+                    ->label('Alamat Utama Pelanggan (Profil)')
+                    ->content(fn (?Order $record) => $record?->user?->alamat ?? '-'),
+                Forms\Components\Placeholder::make('visit_address')
+                    ->label('Alamat Kunjungan Home Service (Order)')
+                    ->content(fn (?Order $record) => $record?->visit_address ?? $record?->user?->alamat ?? '-'),
+                Forms\Components\Placeholder::make('gps_coordinates')
+                    ->label('Koordinat GPS & Peta')
+                    ->content(function (?Order $record) {
+                        if (!$record || !$record->latitude || !$record->longitude) {
+                            return 'Belum tersemat koordinat GPS';
+                        }
+                        $lat = $record->latitude;
+                        $lng = $record->longitude;
+                        $mapsUrl = "https://www.google.com/maps/search/?api=1&query={$lat},{$lng}";
+                        return new \Illuminate\Support\HtmlString("
+                            <div class='space-y-2'>
+                                <div class='font-mono text-sm text-gray-700'>Lat: {$lat}, Lng: {$lng}</div>
+                                <div>
+                                    <a href='{$mapsUrl}' target='_blank' class='inline-flex items-center gap-1 text-primary-600 hover:underline font-bold text-sm'>
+                                        📍 Buka di Google Maps
+                                    </a>
+                                </div>
+                            </div>
+                        ");
+                    }),
+            ])->columns(3),
+
             Forms\Components\Section::make('Detail Desain')->schema([
                 Forms\Components\Textarea::make('design_notes')->label('Catatan Desain')->columnSpanFull(),
                 Forms\Components\FileUpload::make('design_image_path')
@@ -140,6 +169,12 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')->searchable()->label('Pelanggan'),
 
                 Tables\Columns\TextColumn::make('user.phone_wa')->label('WhatsApp')->searchable(),
+                Tables\Columns\TextColumn::make('visit_address')
+                    ->label('Alamat Kunjungan / Pelanggan')
+                    ->searchable()
+                    ->wrap()
+                    ->limit(50)
+                    ->getStateUsing(fn (Order $record) => $record->visit_address ?? $record->user?->alamat ?? '-'),
                 Tables\Columns\TextColumn::make('method')->badge()
                     ->color(fn ($state) => match($state) {
                         'home_service' => 'primary', 'visit' => 'success', default => 'gray',
@@ -213,23 +248,6 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('confirm')
-                    ->label('Konfirmasi')->icon('heroicon-o-check-badge')->color('success')
-                    ->requiresConfirmation()
-                    ->visible(fn (Order $record) => in_array($record->status, ['pending', 'dp_uploaded']))
-                    ->action(function (Order $record) {
-                        $record->update([
-                            'status' => 'confirmed',
-                        ]);
-                        $dp = $record->payments()->where('type', 'dp')->first();
-                        if ($dp && !$dp->verified_at) {
-                            $dp->update([
-                                'status' => 'verified',
-                                'verified_at' => Carbon::now(),
-                            ]);
-                        }
-                        Notification::make()->title('Pesanan dikonfirmasi')->success()->send();
-                    }),
                 Tables\Actions\Action::make('reject')
                     ->label('Tolak')->icon('heroicon-o-x-circle')->color('danger')
                     ->form([

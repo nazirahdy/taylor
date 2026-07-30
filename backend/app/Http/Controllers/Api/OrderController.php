@@ -79,7 +79,8 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        // Check active orders limit
+        // Check active orders limit disabled per request
+        /*
         $activeOrdersCount = Order::where('user_id', $user->id)
             ->whereNotIn('status', ['selesai_penyerahan', 'cancelled', 'rejected'])
             ->count();
@@ -90,6 +91,7 @@ class OrderController extends Controller
                 'message' => 'Anda memiliki terlalu banyak pesanan aktif (Maksimal 3). Harap selesaikan pesanan sebelumnya.'
             ], 422);
         }
+        */
 
         // Check daily quota and weekly/monthly store closure rules
         $requiredDate = Carbon::createFromFormat('Y-m-d', $request->quota_date);
@@ -177,6 +179,9 @@ class OrderController extends Controller
             'order_date' => now()->toDateString(),
             'quota_date' => $request->quota_date,
             'method' => $request->method,
+            'visit_address' => $request->input('alamat_kunjungan') ?? $request->input('alamat'),
+            'latitude' => $request->input('latitude'),
+            'longitude' => $request->input('longitude'),
             'design_notes' => $request->design_notes,
             'design_image_path' => $designImagePath,
             'status' => $status,

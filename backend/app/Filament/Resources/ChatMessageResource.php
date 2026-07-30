@@ -60,38 +60,24 @@ class ChatMessageResource extends Resource
                 ->whereIn('id', function ($sub) {
                     $sub->selectRaw('MAX(id)')
                         ->from('chat_messages')
-                        ->groupByRaw('IFNULL(order_id, 0), IFNULL(session_id, "0")');
+                        ->groupByRaw('COALESCE(order_id, 0), COALESCE(session_id, "0")');
                 })
-                ->with('order', 'sender')
+                ->with(['order.user', 'sender'])
             )
             ->columns([
                 Tables\Columns\TextColumn::make('nama_pelanggan')
                     ->label('Nama Pelanggan')
                     ->state(function (ChatMessage $record) {
-                        // Cari pesan dari non-admin dalam sesi yang sama
-                        $customerMsg = ChatMessage::where(function ($q) use ($record) {
-                                if ($record->order_id) {
-                                    $q->where('order_id', $record->order_id);
-                                } else {
-                                    $q->where('session_id', $record->session_id);
-                                }
-                            })
-                            ->where(function ($q) {
-                                $q->whereNull('sender_id')
-                                  ->orWhereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'));
-                            })
-                            ->whereRaw("LOWER(COALESCE(sender_name, '')) != 'admin'")
-                            ->select('sender_id', 'sender_name')
-                            ->first();
-
-                        if ($customerMsg) {
-                            if ($customerMsg->sender_id) {
-                                return $customerMsg->sender->name ?? $customerMsg->sender_name;
-                            }
-                            return $customerMsg->sender_name ?: 'Tamu';
+                        if ($record->sender && $record->sender->role !== 'admin') {
+                            return $record->sender->name;
                         }
-
-                        return 'Tamu';
+                        if ($record->order && $record->order->user) {
+                            return $record->order->user->name;
+                        }
+                        if ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
+                            return $record->sender_name;
+                        }
+                        return 'Pelanggan';
                     })
                     ->searchable(query: function (Builder $query, string $search) {
                         $query->whereHas('sender', fn ($q) => $q->where('name', 'like', "%{$search}%"))
@@ -103,27 +89,9 @@ class ChatMessageResource extends Resource
                     ->wrap(),
                 Tables\Columns\TextColumn::make('read_status')
                     ->label('Status Baca')
-                    ->state(function (ChatMessage $record) {
-                        // Count unread messages from non-admin senders in the same conversation
-                        $unread = ChatMessage::where(function ($q) use ($record) {
-                                if ($record->order_id) {
-                                    $q->where('order_id', $record->order_id);
-                                } else {
-                                    $q->where('session_id', $record->session_id);
-                                }
-                            })
-                            ->where('is_read', false)
-                            ->where(function ($q) {
-                                $q->whereNull('sender_id')
-                                  ->orWhereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'));
-                            })
-                            ->whereRaw("LOWER(COALESCE(sender_name, '')) != 'admin'")
-                            ->count();
-
-                        return $unread > 0 ? "Belum Dibaca ($unread)" : 'Sudah Dibaca';
-                    })
+                    ->state(fn (ChatMessage $record) => $record->is_read ? 'Sudah Dibaca' : 'Belum Dibaca')
                     ->badge()
-                    ->color(fn ($state) => str_contains($state, 'Belum Dibaca') ? 'danger' : 'success'),
+                    ->color(fn ($state) => $state === 'Belum Dibaca' ? 'danger' : 'success'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Waktu')
                     ->dateTime()
@@ -143,29 +111,16 @@ class ChatMessageResource extends Resource
                         ]);
                     })
                     ->modalHeading(function (ChatMessage $record) {
-                        $customerMsg = ChatMessage::where(function ($q) use ($record) {
-                                if ($record->order_id) {
-                                    $q->where('order_id', $record->order_id);
-                                } else {
-                                    $q->where('session_id', $record->session_id);
-                                }
-                            })
-                            ->where(function ($q) {
-                                $q->whereNull('sender_id')
-                                  ->orWhereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'));
-                            })
-                            ->whereRaw("LOWER(COALESCE(sender_name, '')) != 'admin'")
-                            ->select('sender_id', 'sender_name')
-                            ->first();
-
-                        if ($customerMsg) {
-                            if ($customerMsg->sender_id) {
-                                return 'Chat - ' . ($customerMsg->sender->name ?? $customerMsg->sender_name ?? 'Tamu');
-                            }
-                            return 'Chat - ' . ($customerMsg->sender_name ?: 'Tamu');
+                        if ($record->sender && $record->sender->role !== 'admin') {
+                            return 'Chat - ' . $record->sender->name;
                         }
-
-                        return 'Chat - Tamu';
+                        if ($record->order && $record->order->user) {
+                            return 'Chat - ' . $record->order->user->name;
+                        }
+                        if ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
+                            return 'Chat - ' . $record->sender_name;
+                        }
+                        return 'Chat - Pelanggan';
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)

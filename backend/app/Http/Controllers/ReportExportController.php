@@ -7,77 +7,14 @@ use App\Models\Order;
 use App\Models\Payment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\OmzetExport;
+
 use App\Exports\OwnerReportExport;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
 
 class ReportExportController extends Controller
 {
-    public function exportOmzet(Request $request)
-    {
-        $format = $request->get('format', 'pdf');
-        $startDate = $request->get('start_date');
-        $endDate = $request->get('end_date');
 
-        $query = Order::whereIn('status', ['selesai_penyerahan'])
-                    ->with('user');
-
-        if ($startDate) {
-            $query->where('order_date', '>=', $startDate);
-        }
-        if ($endDate) {
-            $query->where('order_date', '<=', $endDate);
-        }
-
-        $orders = $query->get();
-        
-        $totalOmzet = $orders->sum('estimated_price');
-
-        if ($format === 'excel') {
-            return Excel::download(new OmzetExport($orders, $totalOmzet), 'Laporan_Omzet.xlsx');
-        } elseif ($format === 'pdf') {
-            $pdf = Pdf::loadView('exports.omzet_pdf', compact('orders', 'totalOmzet', 'startDate', 'endDate'));
-            return $pdf->download('Laporan_Omzet.pdf');
-        } elseif ($format === 'word') {
-            $phpWord = new PhpWord();
-            $section = $phpWord->addSection();
-            
-            $section->addText("Laporan Omzet", ['bold' => true, 'size' => 16]);
-            if ($startDate || $endDate) {
-                $start = $startDate ?? 'Awal';
-                $end = $endDate ?? 'Akhir';
-                $section->addText("Periode: $start sampai $end");
-            } else {
-                $section->addText("Periode: Semua Data");
-            }
-            $section->addText("Total Omzet: Rp " . number_format($totalOmzet, 0, ',', '.'), ['bold' => true, 'size' => 14]);
-            $section->addText("");
-
-            $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 50]);
-            $table->addRow();
-            $table->addCell(2000)->addText("No. Pesanan", ['bold' => true]);
-            $table->addCell(2000)->addText("Tanggal", ['bold' => true]);
-            $table->addCell(3000)->addText("Pelanggan", ['bold' => true]);
-            $table->addCell(2000)->addText("Harga", ['bold' => true]);
-
-            foreach ($orders as $order) {
-                $table->addRow();
-                $table->addCell(2000)->addText($order->order_number);
-                $table->addCell(2000)->addText($order->order_date->format('d M Y'));
-                $table->addCell(3000)->addText($order->user->name ?? '-');
-                $table->addCell(2000)->addText("Rp " . number_format($order->estimated_price, 0, ',', '.'));
-            }
-
-            $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-            $tempFile = tempnam(sys_get_temp_dir(), 'word');
-            $objWriter->save($tempFile);
-
-            return response()->download($tempFile, 'Laporan_Omzet.docx')->deleteFileAfterSend(true);
-        }
-        
-        return abort(404);
-    }
 
     public function exportReport(Request $request)
     {

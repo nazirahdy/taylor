@@ -33,7 +33,7 @@ const ManageProfile = () => {
             await axios.put('/profile', { name, phone_wa: cleanNoWA, alamat });
             updateUserState({ name, phone_wa: cleanNoWA, alamat });
             setMsgMode('profile-success');
-            setMsgText('Profil berhasil diubah.');
+            setMsgText('Profil berhasil diubah');
         } catch (err) {
             setMsgMode('profile-error');
             setMsgText(err.response?.data?.message || 'Gagal mengubah profil.');
@@ -55,7 +55,7 @@ const ManageProfile = () => {
                     </button>
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Akun Saya</span>
                     <h1 className="text-4xl md:text-5xl font-display font-bold text-text-primary mb-4">Kelola Profil</h1>
-                    <p className="text-text-secondary font-body">Perbarui data pribadi dan informasi kontak Anda agar kami dapat memberikan layanan terbaik.</p>
+                    <p className="text-text-secondary font-body">Perbarui data pribadi dan informasi kontak Anda agar kami dapat memberikan layanan terbaik</p>
                 </div>
 
                 <div className="bg-surface border border-border p-8 md:p-12 rounded-[2.5rem] shadow-sm">

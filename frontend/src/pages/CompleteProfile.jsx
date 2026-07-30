@@ -27,9 +27,9 @@ const CompleteProfile = () => {
             return;
         }
 
-        const cleanNoWA = phone_wa.replace(/\D/g, ''); // Hapus semua karakter non-angka
+        const cleanNoWA = phone_wa.replace(/\D/g, ''); 
         if (cleanNoWA.length < 10) {
-            setError('Format nomor WhatsApp tidak valid. Masukkan minimal 10 angka.');
+            setError('Format nomor WhatsApp tidak valid. Masukkan minimal 10 angka');
             return;
         }
 
@@ -52,7 +52,7 @@ const CompleteProfile = () => {
             if (err.response && err.response.data.message) {
                 setError(err.response.data.message);
             } else {
-                setError('Gagal melengkapi profil. Pastikan koneksi dan format benar.');
+                setError('Gagal melengkapi profil. Pastikan koneksi dan format benar');
             }
         } finally {
             setIsLoading(false);
@@ -64,8 +64,8 @@ const CompleteProfile = () => {
             <div className="w-full max-w-lg px-4">
                 <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 overflow-hidden">
                     <div className="bg-primary/5 p-8 border-b border-primary/10">
-                        <h2 className="text-2xl font-black font-display text-gray-900 mb-2">Selangkah Lagi...</h2>
-                        <p className="text-gray-500 font-medium">Lengkapi biodata kontak dan pengiriman Anda sebelum melakukan pemesanan pertama.</p>
+                        <h2 className="text-2xl font-black font-display text-gray-900 mb-2">Selangkah Lagi</h2>
+                        <p className="text-gray-500 font-medium">Lengkapi biodata kontak dan pengiriman Anda sebelum melakukan pemesanan pertama</p>
                     </div>
 
                     <div className="p-8">
@@ -73,7 +73,7 @@ const CompleteProfile = () => {
                         <div className="mb-6 p-4 rounded-xl bg-blue-50 text-blue-700 flex items-start gap-3 border border-blue-100">
                             <Info className="w-5 h-5 shrink-0 mt-0.5 text-blue-500" />
                             <span className="text-sm font-medium leading-relaxed">
-                                <b>Sistem Notifikasi:</b> Berikan Nomor WhatsApp aktif karena seluruh notifikasi tahapan status pesanan jahitan Anda akan dikirim ke nomor tersebut.
+                                <b>Sistem Notifikasi:</b> Berikan Nomor WhatsApp aktif karena seluruh notifikasi tahapan status pesanan jahitan Anda akan dikirim ke nomor tersebut
                             </span>
                         </div>
 
@@ -93,7 +93,7 @@ const CompleteProfile = () => {
                                     value={user?.name || ''}
                                     disabled
                                 />
-                                <span className="text-xs text-gray-400 mt-1 block">Ini diambil dari data pendaftaran Anda.</span>
+                                <span className="text-xs text-gray-400 mt-1 block">Ini diambil dari data pendaftaran Anda</span>
                             </div>
 
                             <div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CheckCircle2, Loader2, Activity, Clock } from 'lucide-react';
 
-// Stage definition — must match exact values sent from backend
+
 const STANDARD_STAGES = [
     {
         key: 'pending',
@@ -77,7 +77,6 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
     
     // Determine completed and active stages
     const latestCompletedIndex = currentIdx;
-    const activeIndex = currentIdx;
     const displayActiveIndex = currentIdx;
 
     return (
@@ -89,7 +88,7 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
                 <div>
                     <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-text-primary font-sans">Progres Pesanan</h3>
                     <p className="text-[10px] text-text-muted mt-0.5">
-                        {isFullyDone ? 'Pesanan telah selesai ✅' : `${latestCompletedIndex + 1} dari ${STANDARD_STAGES.length} tahap selesai`}
+                        {isFullyDone ? 'Pesanan telah selesai ' : `${latestCompletedIndex + 1} dari ${STANDARD_STAGES.length} tahap selesai`}
                     </p>
                 </div>
             </div>
@@ -114,7 +113,6 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
                 {STANDARD_STAGES.map((stage, index) => {
                     const isCompleted = completedStageKeys.has(stage.key);
                     const isActive = !isCompleted && index === displayActiveIndex;
-                    const isPending = !isCompleted && !isActive;
 
                     const logData = progressList.find(p =>
                         (p.stage || p.status || '').trim() === stage.key

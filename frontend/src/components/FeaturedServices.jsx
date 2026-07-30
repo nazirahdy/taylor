@@ -17,11 +17,11 @@ const FeaturedServices = () => {
           <div className="max-w-2xl">
             <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-6 block font-sans">Keahlian Kami</span>
             <h2 className="text-5xl md:text-7xl font-display font-bold text-text-primary leading-tight">
-              Gaya <span className="italic font-light">Busana</span> Pilihan untuk Anda.
+              Gaya <span className="italic font-light">Busana</span> Pilihan untuk Anda
             </h2>
           </div>
           <p className="text-text-secondary text-lg max-w-sm font-body leading-relaxed border-l border-border pl-8">
-            Setiap kategori mewakili filosofi busana yang unik, dirancang khusus untuk mencerminkan kepribadian Anda.
+            Setiap kategori mewakili filosofi busana yang unik, dirancang khusus untuk mencerminkan kepribadian Anda
           </p>
         </div>
 

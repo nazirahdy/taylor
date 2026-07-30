@@ -18,6 +18,10 @@ import Measurements from './pages/Measurements';
 import OrderForm from './pages/OrderForm';
 import UploadDP from './pages/UploadDP';
 import OrderDetail from './pages/OrderDetail';
+import GoogleCallback from './pages/GoogleCallback';
+import VerifyEmail from './pages/VerifyEmail';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
@@ -47,6 +51,10 @@ function App() {
               
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/auth/google/callback" element={<GoogleCallback />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               <Route path="/complete-profile" element={
                 <ProtectedRoute>

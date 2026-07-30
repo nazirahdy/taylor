@@ -23,8 +23,10 @@ class LatestOrders extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('ID Pesanan'),
-                Tables\Columns\TextColumn::make('customer_name')
-                    ->label('Pelanggan'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Pelanggan')
+                    ->searchable()
+                    ->default('-'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->colors([
