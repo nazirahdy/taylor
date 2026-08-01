@@ -30,7 +30,9 @@ import { ToastProvider } from './components/Toast';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  return user ? children : <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" />;
+  if (!user.email_verified_at) return <Navigate to="/verify-email" />;
+  return children;
 };
 
 function App() {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, Loader2, ArrowLeft, CheckCircle2, Fingerprint, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Loader2, ArrowLeft, CheckCircle2, Fingerprint, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -13,6 +13,8 @@ const Register = () => {
         password: '',
         password_confirmation: ''
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -155,21 +157,41 @@ const Register = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="space-y-2">
                                     <label className="text-[11px] uppercase tracking-[0.2em] text-primary font-bold ml-1 block">Kata Sandi</label>
-                                    <input
-                                        type="password" name="password" required
-                                        className="w-full px-5 py-4 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary transition-all placeholder:text-text-muted/50 font-body text-sm"
-                                        placeholder="Min. 8 Karakter"
-                                        onChange={handleChange}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? 'text' : 'password'} name="password" required
+                                            className="w-full px-5 py-4 pr-11 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary transition-all placeholder:text-text-muted/50 font-body text-sm"
+                                            placeholder="Min. 8 Karakter"
+                                            onChange={handleChange}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((prev) => !prev)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors"
+                                            tabIndex={-1}
+                                        >
+                                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] uppercase tracking-[0.2em] text-primary font-bold ml-1 block">Konfirmasi Sandi</label>
-                                    <input
-                                        type="password" name="password_confirmation" required
-                                        className="w-full px-5 py-4 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary transition-all placeholder:text-text-muted/50 font-body text-sm"
-                                        placeholder="Ulangi Kata Sandi"
-                                        onChange={handleChange}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPasswordConfirmation ? 'text' : 'password'} name="password_confirmation" required
+                                            className="w-full px-5 py-4 pr-11 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary transition-all placeholder:text-text-muted/50 font-body text-sm"
+                                            placeholder="Ulangi Kata Sandi"
+                                            onChange={handleChange}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPasswordConfirmation((prev) => !prev)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors"
+                                            tabIndex={-1}
+                                        >
+                                            {showPasswordConfirmation ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 

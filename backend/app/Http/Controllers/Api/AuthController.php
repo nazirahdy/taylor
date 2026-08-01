@@ -68,6 +68,17 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
+        if (!$user->hasVerifiedEmail()) {
+            Auth::logout();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Email Anda belum diverifikasi. Silakan cek inbox email Anda untuk link verifikasi.',
+                'error_code' => 'EMAIL_NOT_VERIFIED',
+            ], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -219,6 +230,48 @@ class AuthController extends Controller
                 'message' => 'Gagal mengirim email: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Kirim ulang email verifikasi tanpa perlu login
+     * (dipakai saat user belum bisa login karena belum verifikasi)
+     */
+    public function resendEmailVerificationPublic(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Jangan bocorkan apakah email terdaftar atau tidak
+        if (!$user) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Jika email terdaftar dan belum diverifikasi, tautan verifikasi baru sudah dikirim.'
+            ]);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email ini sudah terverifikasi. Silakan login.'
+            ], 400);
+        }
+
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim email: ' . $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jika email terdaftar dan belum diverifikasi, tautan verifikasi baru sudah dikirim.'
+        ]);
     }
 
     /**

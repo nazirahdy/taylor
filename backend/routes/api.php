@@ -19,6 +19,7 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 
 // Email Verification
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+Route::post('/email/resend-public', [AuthController::class, 'resendEmailVerificationPublic']);
 
 // Forgot / Reset Password
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);

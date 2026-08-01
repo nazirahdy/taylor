@@ -2,16 +2,29 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, Loader2, ArrowLeft, ShieldCheck, Key, User } from 'lucide-react';
+import { AlertCircle, Loader2, ArrowLeft, ShieldCheck, Key, User, Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [needsVerification, setNeedsVerification] = useState(false);
+    const [resendStatus, setResendStatus] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    const handleResendVerification = async () => {
+        setResendStatus('sending');
+        try {
+            await axios.post('/email/resend-public', { email });
+            setResendStatus('sent');
+        } catch (err) {
+            setResendStatus('error');
+        }
+    };
 
     const handleGoogleLogin = async () => {
         try {
@@ -27,6 +40,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setNeedsVerification(false);
+        setResendStatus('');
         if (!email || !password) {
             setError('Credentials cannot be empty.');
             return;
@@ -46,6 +61,9 @@ const Login = () => {
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Authorization failed. Verify your credentials.');
+            if (err.response?.data?.error_code === 'EMAIL_NOT_VERIFIED') {
+                setNeedsVerification(true);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -90,9 +108,27 @@ const Login = () => {
                         </div>
 
                         {error && (
-                            <div className="mb-10 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex items-start gap-4 text-[13px] font-body shadow-sm">
-                                <AlertCircle className="w-6 h-6 shrink-0 text-red-500" />
-                                <span>{error}</span>
+                            <div className="mb-10 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex flex-col gap-3 text-[13px] font-body shadow-sm">
+                                <div className="flex items-start gap-4">
+                                    <AlertCircle className="w-6 h-6 shrink-0 text-red-500" />
+                                    <span>{error}</span>
+                                </div>
+                                {needsVerification && (
+                                    <div className="pl-10">
+                                        {resendStatus === 'sent' ? (
+                                            <span className="text-green-600 font-bold text-xs">Email verifikasi baru sudah dikirim, silakan cek inbox Anda.</span>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleResendVerification}
+                                                disabled={resendStatus === 'sending'}
+                                                className="text-primary font-bold text-xs uppercase tracking-widest underline underline-offset-4 disabled:opacity-50"
+                                            >
+                                                {resendStatus === 'sending' ? 'Mengirim...' : 'Kirim ulang email verifikasi'}
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -115,14 +151,24 @@ const Login = () => {
                                 <label className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-primary font-bold ml-1 font-sans">
                                     <Key className="w-4 h-4" /> Kata Sandi
                                 </label>
-                                <input
-                                    type="password"
-                                    className="w-full px-5 py-3.5 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        className="w-full px-5 py-3.5 pr-12 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors"
+                                        tabIndex={-1}
+                                    >
+                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="flex justify-between items-center text-[10px] uppercase tracking-widest font-bold font-sans">
