@@ -66,7 +66,7 @@ class ChatMessageResource extends Resource
             )
             ->columns([
                 Tables\Columns\TextColumn::make('nama_pelanggan')
-                    ->label('Nama Pelanggan')
+                    ->label('Name')
                     ->state(function (ChatMessage $record) {
                         if ($record->sender && $record->sender->role !== 'admin') {
                             return $record->sender->name;
@@ -111,16 +111,55 @@ class ChatMessageResource extends Resource
                         ]);
                     })
                     ->modalHeading(function (ChatMessage $record) {
+                        $name = null;
                         if ($record->sender && $record->sender->role !== 'admin') {
-                            return 'Chat - ' . $record->sender->name;
+                            $name = $record->sender->name;
+                        } elseif ($record->order && $record->order->user) {
+                            $name = $record->order->user->name;
+                        } elseif ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
+                            $name = $record->sender_name;
                         }
-                        if ($record->order && $record->order->user) {
-                            return 'Chat - ' . $record->order->user->name;
+
+                        if (!$name && $record->order_id) {
+                            $order = \App\Models\Order::with('user')->find($record->order_id);
+                            if ($order?->user) {
+                                $name = $order->user->name;
+                            }
                         }
-                        if ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
-                            return 'Chat - ' . $record->sender_name;
+
+                        if (!$name && $record->session_id) {
+                            $customerMsg = ChatMessage::where('session_id', $record->session_id)
+                                ->where(function ($q) {
+                                    $q->whereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'))
+                                      ->orWhereNull('sender_id');
+                                })
+                                ->with('sender')
+                                ->first();
+
+                            if ($customerMsg?->sender) {
+                                $name = $customerMsg->sender->name;
+                            } elseif ($customerMsg?->sender_name && strtolower($customerMsg->sender_name) !== 'admin') {
+                                $name = $customerMsg->sender_name;
+                            }
                         }
-                        return 'Chat - Pelanggan';
+
+                        if (!$name) {
+                            $name = 'Pelanggan';
+                        }
+
+                        $initial = strtoupper(substr($name, 0, 1));
+
+                        return new \Illuminate\Support\HtmlString("
+                            <div class=\"flex items-center gap-3\">
+                                <div class=\"w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-sm shrink-0\" style=\"background-color: #79D12A;\">
+                                    {$initial}
+                                </div>
+                                <div class=\"flex flex-col text-left\">
+                                    <span class=\"font-bold text-base text-gray-900 leading-tight\">{$name}</span>
+                                    <span class=\"text-[10px] text-gray-500 font-normal uppercase tracking-wider\">Pelanggan</span>
+                                </div>
+                            </div>
+                        ");
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)
@@ -137,15 +176,8 @@ class ChatMessageResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::where('is_read', false)
-            ->where(function ($query) {
-                $query->whereNull('sender_id')
-                      ->orWhereHas('sender', function ($q) {
-                          $q->where('role', '!=', 'admin');
-                      });
-            })
-            ->count();
-            
+        $count = ChatMessage::unreadFromCustomersCount();
+
         return $count > 0 ? (string) $count : null;
     }
 

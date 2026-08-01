@@ -70,7 +70,7 @@ const GallerySection = () => {
         : models.filter(m => (m.kategori || m.category || 'Eksklusif') === activeFilter);
 
     return (
-        <section className="bg-white py-32" id="gallery">
+        <section className="bg-white py-25 scroll-mt-16" id="gallery">
             <div className="container mx-auto px-4 md:px-12 text-center mb-10 animate-fade-in">
                 <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Portofolio Kami</span>
                 <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h2>

@@ -21,10 +21,10 @@ const HeroSection = () => {
       </span>
       <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-[0.9] mb-10 drop-shadow-2xl">
         Menciptakan <span className="italic font-light">Karakter</span><br />
-        Busana Anda.
+        Busana Anda
       </h1>
         <p className="text-white/70 text-lg md:text-xl font-body max-w-2xl mb-14 leading-relaxed drop-shadow-lg">
-          Di Era Jahit, kami mendefinisikan ulang kemewahan melalui jahitan tangan yang presisi, mengubah visi busana Anda menjadi karya yang menginspirasi.
+          Di Era Jahit, kami mendefinisikan ulang kemewahan melalui jahitan tangan yang presisi, mengubah visi busana Anda menjadi karya yang menginspirasi
         </p>
         <div className="flex flex-wrap justify-center gap-8">
           <Link to="/gallery" className="px-12 py-5 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/30 flex items-center gap-3 font-sans text-[11px] uppercase tracking-widest group">

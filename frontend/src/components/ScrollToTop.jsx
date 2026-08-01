@@ -1,13 +1,15 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+
+if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+}
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
 
-    useEffect(() => {
-        setTimeout(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }, 0);
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0);
     }, [pathname]);
 
     return null;

@@ -28,6 +28,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'avatar',
         'phone_wa',
         'alamat',
+        'latitude',
+        'longitude',
         'password',
         'role',
     ];
@@ -52,6 +54,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'latitude' => 'decimal:8',
+            'longitude' => 'decimal:8',
         ];
     }
 

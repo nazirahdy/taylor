@@ -71,7 +71,13 @@ const Navbar = () => {
             const hash = item.hash || '#beranda';
             const element = document.querySelector(hash);
             if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+                if (hash === '#beranda') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const navbarOffset = 65;
+                    const y = element.getBoundingClientRect().top + window.pageYOffset - navbarOffset;
+                    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+                }
                 setActiveSection(hash);
                 window.history.pushState(null, '', item.path + item.hash);
                 setIsMobileMenuOpen(false);

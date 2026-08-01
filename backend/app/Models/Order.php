@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Order extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'order_number',
         'user_id',
@@ -22,6 +24,7 @@ class Order extends Model
         'rejected_reason',
         'status',
         'financial_breakdown',
+        'is_read',
     ];
 
     protected $casts = [
@@ -29,6 +32,7 @@ class Order extends Model
         'quota_date' => 'date',
         'estimated_price' => 'decimal:2',
         'financial_breakdown' => 'array',
+        'is_read' => 'boolean',
     ];
 
     // Eager-load payments relationship by default to optimize performance and accessor retrieval
@@ -57,7 +61,19 @@ class Order extends Model
 
         static::created(function (Order $order) {
             // Notifikasi otomatis ke Admin
-            app(\App\Services\WhatsAppService::class)->notifyAdminNewOrder($order->load('user'));
+            $order->load('user');
+            app(\App\Services\WhatsAppService::class)->notifyAdminNewOrder($order);
+
+            // Jangan notifikasi admin atas pesanan yang dibuatnya sendiri lewat panel admin
+            if (auth()->user()?->role !== 'admin') {
+                \App\Services\AdminNotifier::notify(
+                    title: 'Pesanan Baru Masuk',
+                    body: "{$order->order_number} dari {$order->user?->name}",
+                    url: \App\Filament\Resources\OrderResource\Pages\ViewOrder::getUrl([$order->id], isAbsolute: false),
+                    icon: 'heroicon-o-shopping-bag',
+                    status: 'info',
+                );
+            }
         });
 
         static::updated(function (Order $order) {
@@ -112,6 +128,24 @@ class Order extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Pesanan Home Service dengan DP yang sudah diupload tapi belum diverifikasi admin.
+     */
+    public static function pendingHomeServiceDpQuery()
+    {
+        return static::query()
+            ->where('method', 'home_service')
+            ->where(function ($q) {
+                $q->where('status', 'dp_uploaded')
+                    ->orWhereHas('payments', function ($pq) {
+                        $pq->where('type', 'dp')->where('status', 'pending');
+                    });
+            })
+            ->whereDoesntHave('payments', function ($pq) {
+                $pq->where('type', 'dp')->where('status', 'verified');
+            });
     }
 
     /* VIRTUAL ACCESSORS for backward compatibility */

@@ -57,9 +57,12 @@ const ChatWidget = () => {
 
         localStorage.setItem(getStorageKey(), sessionIdRef.current);
         queueMicrotask(fetchMessages); // Fetch on mount
-        const interval = setInterval(fetchMessages, 3000);
+        // Poll fast while the widget is open (live chat), much slower in the
+        // background (just to keep the unread badge fresh) to avoid hammering
+        // the server on every page of the site.
+        const interval = setInterval(fetchMessages, isOpen ? 3000 : 20000);
         return () => clearInterval(interval);
-    }, [fetchMessages, getStorageKey, sessionInitialized]);
+    }, [fetchMessages, getStorageKey, sessionInitialized, isOpen]);
 
     const chatBodyRef = useRef(null);
 
@@ -119,9 +122,18 @@ const ChatWidget = () => {
                     className="bg-white w-80 md:w-96 h-[500px] shadow-2xl rounded-2xl flex flex-col border border-gray-100 animate-slide-up relative overflow-hidden"
                 >
                     <div className="bg-primary text-white p-4 rounded-t-2xl flex justify-between items-center border-b border-white/10">
-                        <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                            <span className="font-bold">Chat dengan Era Jahit</span>
+                        <div className="flex items-center gap-3">
+                            {/* Era Jahit avatar */}
+                            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden">
+                                <span className="text-primary font-bold text-base select-none">EJ</span>
+                            </div>
+                            <div className="leading-tight">
+                                <span className="font-bold block text-sm">Era Jahit</span>
+                                <span className="flex items-center gap-1 text-[10px] text-green-200">
+                                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse inline-block"></span>
+                                    Online
+                                </span>
+                            </div>
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}

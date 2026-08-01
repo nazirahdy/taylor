@@ -40,7 +40,7 @@ const Login = () => {
             if (user.role === 'owner' || user.role === 'admin') {
                 navigate('/');
             } else if (!user.phone_wa || !user.alamat) {
-                navigate('/complete-profile');
+                navigate('/profile/edit');
             } else {
                 navigate('/');
             }
@@ -82,7 +82,7 @@ const Login = () => {
                 </div>
 
                 {/* Form — flex-1 + flex center agar konten benar-benar di tengah sisa ruang */}
-                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-10">
+                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-17">
                     <div className="w-full max-w-md animate-fade-in">
                         <div className="mb-14">
                             <h2 className="text-5xl font-display font-bold mb-5 text-text-primary">Selamat Datang</h2>

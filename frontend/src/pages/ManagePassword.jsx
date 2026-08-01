@@ -19,6 +19,7 @@ const ManagePassword = () => {
         if (newPassword !== confirmPassword) {
             setMsgMode('pw-error');
             setMsgText('Konfirmasi password tidak cocok.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
         setIsLoadingPw(true);
@@ -38,6 +39,7 @@ const ManagePassword = () => {
             setMsgText(err.response?.data?.message || 'Gagal mengubah password.');
         } finally {
             setIsLoadingPw(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 

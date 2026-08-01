@@ -65,14 +65,14 @@ const Gallery = () => {
         <div className="bg-white min-h-screen text-text-primary pb-20">
 
             {/* HERO SECTION GALLERY */}
-            <section className="relative pt-48 pb-16 overflow-hidden bg-surface">
-                <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-primary/10 via-amber-500/5 to-transparent"></div>
+            <section className="relative pt-48 pb-32 overflow-hidden bg-surface">
+                <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Portofolio Kami</span>
                     <h1 className="text-6xl md:text-8xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
-                        Jelajahi koleksi busana pilihan dari Era Jahit
-                        Biarkan setiap karya menginspirasi desain busana impian Anda
+                        Jelajahi koleksi busana pilihan dari Era Jahit.<br />
+                        Setiap karya mencerminkan dedikasi kami pada kualitas dan keindahan.
                     </p>
                 </div>
             </section>

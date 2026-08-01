@@ -20,25 +20,8 @@ class VerifyHomeServiceDpWidget extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                // Tampilkan semua pesanan home_service yang sudah upload DP tapi belum diverifikasi
-                Order::query()
-                    ->where('method', 'home_service')
-                    ->where(function ($q) {
-                        // Pesanan dengan status dp_uploaded (DP sudah diupload, belum diverifikasi)
-                        $q->where('status', 'dp_uploaded')
-                            // ATAU pesanan yang punya payment dp dengan status pending
-                            ->orWhereHas('payments', function ($pq) {
-                                $pq->where('type', 'dp')
-                                   ->where('status', 'pending');
-                            });
-                    })
-                    // Jangan tampilkan yang sudah diverifikasi (payment dp verified)
-                    ->whereDoesntHave('payments', function ($pq) {
-                        $pq->where('type', 'dp')
-                           ->where('status', 'verified');
-                    })
-            )
+            ->query(Order::pendingHomeServiceDpQuery())
+            ->recordAction('verify_dp')
             ->defaultSort('updated_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
@@ -48,7 +31,7 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                     ->weight('bold')
                     ->copyable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Pelanggan')
+                    ->label('Name')
                     ->searchable()
                     ->icon('heroicon-m-user'),
                 Tables\Columns\TextColumn::make('user.phone_wa')
@@ -75,7 +58,8 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                     ->icon('heroicon-m-calendar'),
                 Tables\Columns\TextColumn::make('dp_amount')
                     ->label('Jumlah DP')
-                    ->money('IDR', locale: 'id')
+                    ->getStateUsing(fn (Order $record) => $record->dp_amount)
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.'))
                     ->sortable()
                     ->color('primary'),
                 Tables\Columns\ImageColumn::make('dp_proof_path')
@@ -84,11 +68,6 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                     ->height(80)
                     ->width(80)
                     ->defaultImageUrl(fn () => null),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Tgl Daftar')
-                    ->dateTime('d M Y, H:i')
-                    ->sortable()
-                    ->toggleable(),
             ])
             ->filters([
                 //

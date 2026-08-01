@@ -8,13 +8,13 @@ const ContactSection = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formatWa = `6281234567890`;
+        const formatWa = `6281267976080`;
         const textEnc = encodeURIComponent(`Halo, saya *${nama}* (${nomorWa}). \n\n${pesan}`);
         window.open(`https://wa.me/${formatWa}?text=${textEnc}`, '_blank');
     };
 
     return (
-        <section className="bg-white py-20" id="contact">
+        <section className="bg-white py-20 scroll-mt-16" id="contact">
             <div className="container mx-auto px-4 md:px-12">
                 <div className="text-center mb-14 animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block font-sans">Hubungi Kami</span>
@@ -45,7 +45,7 @@ const ContactSection = () => {
                                 <div>
                                     <h4 className="text-base font-display font-bold mb-1.5">Lokasi Studio</h4>
                                     <p className="text-text-secondary text-sm leading-relaxed mb-3 font-body">Jl. Sungai Balang, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat</p>
-                                    <a href="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,261.95h,65.63t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D24.36674356233864%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D261.9512668509286!7i16384!8i8192!4m15!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m5!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3Dhttps://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" className="text-primary font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all font-sans" target="_blank" rel="noreferrer">
+                                    <a href="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,261.95h,65.63t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D24.370000000000005%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D261.95!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyOC4wIKXMDSoASAFQAw%3D%3D" className="text-primary font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all font-sans" target="_blank" rel="noreferrer">
                                         <Map className="w-3 h-3" /> Buka di Maps <ChevronRight className="w-3 h-3" />
                                     </a>
                                 </div>
@@ -57,7 +57,7 @@ const ContactSection = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-base font-display font-bold mb-1.5">Kontak Langsung</h4>
-                                    <p className="text-text-primary font-bold text-sm mb-1 font-sans">+62 812-3456-7890</p>
+                                    <p className="text-text-primary font-bold text-sm mb-1 font-sans">+62 812-6797-6080</p>
                                     <p className="text-text-secondary text-sm font-body">erajahit@gmail.com</p>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@ const ContactSection = () => {
             {/* Map */}
             <div className="w-full h-80 relative mt-16 border-t border-border">
                 <iframe
-                    src="https://maps.google.com/maps?q=Jalan%20Sungai%20Balang,%20Kota%20Padang&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}

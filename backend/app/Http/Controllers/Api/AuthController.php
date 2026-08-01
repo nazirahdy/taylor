@@ -63,7 +63,7 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kredensial tidak sesuai'
+                'message' => 'Password tidak sesuai'
             ], 401);
         }
 
@@ -112,17 +112,18 @@ class AuthController extends Controller
         $user = $request->user();
 
         $request->validate([
-            'name'     => 'nullable|string|max:255',
-            'phone_wa' => ['nullable', 'string', 'regex:/^(\+62|62|0)[0-9]{9,12}$/', 'unique:users,phone_wa,' . $user->id],
-            'email'    => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
-            'alamat'   => 'nullable|string',
+            'name'      => 'nullable|string|max:255',
+            'phone_wa'  => ['nullable', 'string', 'regex:/^(\+62|62|0)[0-9]{9,12}$/'],
+            'email'     => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
+            'alamat'    => 'nullable|string',
+            'latitude'  => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ], [
             'phone_wa.regex'  => 'Format nomor WhatsApp tidak valid',
-            'phone_wa.unique' => 'Nomor WhatsApp sudah terdaftar',
             'email.unique'    => 'Email sudah terdaftar',
         ]);
 
-        $user->update($request->only('name', 'phone_wa', 'email', 'alamat'));
+        $user->update($request->only('name', 'phone_wa', 'email', 'alamat', 'latitude', 'longitude'));
 
         return response()->json([
             'success' => true,

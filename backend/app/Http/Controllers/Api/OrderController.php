@@ -79,20 +79,6 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        // Check active orders limit disabled per request
-        /*
-        $activeOrdersCount = Order::where('user_id', $user->id)
-            ->whereNotIn('status', ['selesai_penyerahan', 'cancelled', 'rejected'])
-            ->count();
-
-        if ($activeOrdersCount >= 3) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda memiliki terlalu banyak pesanan aktif (Maksimal 3). Harap selesaikan pesanan sebelumnya.'
-            ], 422);
-        }
-        */
-
         // Check daily quota and weekly/monthly store closure rules
         $requiredDate = Carbon::createFromFormat('Y-m-d', $request->quota_date);
         $closure = StoreClosure::where('is_active', true)
@@ -412,14 +398,14 @@ class OrderController extends Controller
         if ($order->estimated_price <= 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Estimasi harga harus diatur sebelum pesanan dapat dikonfirmasi.'
+                'message' => 'Estimasi harga harus diatur sebelum pesanan dapat dikonfirmasi'
             ], 422);
         }
 
         if ($order->method === 'home_service' && !$order->dp_proof_path) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pesanan Home Service membutuhkan bukti DP sebelum konfirmasi.'
+                'message' => 'Pesanan Home Service membutuhkan bukti DP sebelum konfirmasi'
             ], 422);
         }
 

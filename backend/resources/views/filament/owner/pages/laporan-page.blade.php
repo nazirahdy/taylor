@@ -13,8 +13,8 @@
             Pembayaran DP
         </x-filament::tabs.item>
         
-        <x-filament::tabs.item 
-            wire:click="$set('activeTab', 'pelunasan')" 
+        <x-filament::tabs.item
+            wire:click="$set('activeTab', 'pelunasan')"
             :active="$activeTab === 'pelunasan'">
             Pelunasan Pembayaran
         </x-filament::tabs.item>

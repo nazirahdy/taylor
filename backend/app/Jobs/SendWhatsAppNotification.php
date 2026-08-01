@@ -36,18 +36,23 @@ class SendWhatsAppNotification implements ShouldQueue
     
     public function handle()
     {
-        $token = env('FONNTE_TOKEN');
+        $token = config('services.fonnte.token') ?? env('FONNTE_TOKEN');
 
         if (empty($token)) {
             Log::error('Fonnte API Token belum terisi. Konfigurasi ulang .env Anda.');
             return;
         }
 
+        $target = preg_replace('/[^0-9]/', '', $this->target);
+        if (str_starts_with($target, '0')) {
+            $target = '62' . substr($target, 1);
+        }
+
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token
             ])->post('https://api.fonnte.com/send', [
-                'target'      => $this->target,
+                'target'      => $target,
                 'message'     => $this->message,
                 'countryCode' => '62',
             ]);

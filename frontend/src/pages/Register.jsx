@@ -61,10 +61,10 @@ const Register = () => {
                     <h1 className="text-7xl font-display font-bold mb-10 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <div className="space-y-6 text-left">
                         {[
-                            "Konsultasi desain busana custom.",
-                            "Pantau progres jahitan secara real-time.",
-                            "Komunikasi langsung dengan penjahit ahli.",
-                            "Kurasi bahan & aksesoris kualitas premium."
+                            "Konsultasi desain busana custom",
+                            "Pantau progres jahitan secara real-time",
+                            "Komunikasi langsung dengan penjahit ahli",
+                            "Kurasi bahan & aksesoris kualitas premium"
                         ].map((item, i) => (
                             <div key={i} className="flex items-center gap-5 text-sm font-body text-text-secondary group">
                                 <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all">
@@ -92,7 +92,7 @@ const Register = () => {
                 </div>
 
                 {/* Form — flex-1 + center agar pas satu layar */}
-                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-6">
+                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-18">
                     <div className="w-full max-w-md animate-fade-in">
 
                         <div className="mb-8 text-center">

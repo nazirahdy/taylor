@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ChatMessage;
+use App\Models\Order;
 
 class AdminChatBoard extends Component
 {
@@ -18,6 +19,35 @@ class AdminChatBoard extends Component
         $this->orderId = $orderId;
         $this->sessionId = $sessionId;
         $this->markAsRead();
+    }
+
+    public function getCustomerNameProperty(): string
+    {
+        // Try to get the customer name from the first non-admin message
+        $firstCustomerMsg = ChatMessage::query()
+            ->when($this->orderId, fn ($q) => $q->where('order_id', $this->orderId))
+            ->when(!$this->orderId && $this->sessionId, fn ($q) => $q->where('session_id', $this->sessionId))
+            ->where(function ($q) {
+                $q->whereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'))
+                  ->orWhereNull('sender_id');
+            })
+            ->with('sender')
+            ->first();
+
+        if ($firstCustomerMsg?->sender) {
+            return $firstCustomerMsg->sender->name;
+        }
+        if ($firstCustomerMsg?->sender_name && strtolower($firstCustomerMsg->sender_name) !== 'admin') {
+            return $firstCustomerMsg->sender_name;
+        }
+
+        // Try to get from order
+        if ($this->orderId) {
+            $order = Order::with('user')->find($this->orderId);
+            if ($order?->user) return $order->user->name;
+        }
+
+        return 'Pelanggan';
     }
 
     public function getMessagesProperty()

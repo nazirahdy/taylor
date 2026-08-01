@@ -22,6 +22,18 @@ class PaymentStatusResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?int $navigationSort = 4;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Order::whereHas('payments', fn ($q) => $q->where('status', 'pending'))->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -36,7 +48,7 @@ class PaymentStatusResource extends Resource
                         ->label('Metode Layanan')
                         ->content(fn (?Order $record) => $record?->method === 'home_service' ? 'Home Service' : 'Booking ke Toko'),
                     Forms\Components\Placeholder::make('customer_name')
-                        ->label('Pelanggan')
+                        ->label('Name')
                         ->content(fn (?Order $record) => $record?->user?->name ?? '-'),
                 ])
                 ->columns(3),
@@ -62,19 +74,25 @@ class PaymentStatusResource extends Resource
                     Forms\Components\TextInput::make('estimated_price')
                         ->label('Estimasi Harga/Total Biaya')
                         ->numeric()
+                        ->stripCharacters(['.', ','])
                         ->prefix('Rp')
+                        ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                         ->helperText('Input angka saja tanpa titik/koma (Contoh: 500000)')
                         ->required()
                         ->live(onBlur: true),
                     Forms\Components\TextInput::make('dp_amount')
                         ->label('Jumlah DP')
                         ->numeric()
+                        ->stripCharacters(['.', ','])
+                        ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                         ->helperText('Tanpa titik/koma')
                         ->prefix('Rp')
                         ->live(onBlur: true),
                     Forms\Components\TextInput::make('final_payment_amount')
                         ->label('Jumlah Pelunasan')
                         ->numeric()
+                        ->stripCharacters(['.', ','])
+                        ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                         ->helperText('Tanpa titik/koma')
                         ->prefix('Rp')
                         ->live(onBlur: true),
@@ -120,13 +138,14 @@ class PaymentStatusResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordAction('edit')
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('No. Pesanan')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Pelanggan')
+                    ->label('Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('method')
                     ->label('Layanan')
@@ -139,31 +158,29 @@ class PaymentStatusResource extends Resource
                     ->formatStateUsing(fn ($state) => $state === 'home_service' ? 'Home Service' : 'Booking ke Toko'),
                 Tables\Columns\TextColumn::make('estimated_price')
                     ->label('Total Biaya')
-                    ->money('IDR', locale: 'id')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('dp_amount')
                     ->label('Jumlah DP')
-                    ->money('IDR', locale: 'id')
-                    ->getStateUsing(fn (Order $record) => $record->dp_amount),
+                    ->getStateUsing(fn (Order $record) => $record->dp_amount)
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.')),
                 Tables\Columns\TextColumn::make('final_payment_amount')
                     ->label('Pelunasan')
-                    ->money('IDR', locale: 'id')
-                    ->getStateUsing(fn (Order $record) => $record->final_payment_amount),
+                    ->getStateUsing(fn (Order $record) => $record->final_payment_amount)
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.')),
                 Tables\Columns\TextColumn::make('sisa_tagihan')
                     ->label('Sisa Tagihan')
                     ->getStateUsing(fn (Order $record) => max(0, $record->estimated_price - $record->dp_amount - $record->final_payment_amount))
-                    ->money('IDR', locale: 'id'),
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.')),
                 Tables\Columns\BadgeColumn::make('payment_status')
                     ->label('Status Pelunasan')
                     ->getStateUsing(fn (Order $record) => $record->payment_status)
                     ->colors([
-                        'gray'    => 'belum_ada',
                         'warning' => 'dp_diunggah',
                         'info'    => 'belum_lunas',
                         'success' => 'lunas',
                     ])
                     ->formatStateUsing(fn ($state) => match($state) {
-                        'belum_ada'   => 'Belum Ada Pembayaran',
                         'dp_diunggah' => 'DP Diunggah',
                         'belum_lunas' => 'Belum Lunas (Ada Sisa)',
                         'lunas'       => 'Lunas ✅',
@@ -180,7 +197,6 @@ class PaymentStatusResource extends Resource
                 Tables\Filters\SelectFilter::make('payment_status_filter')
                     ->label('Status Pelunasan')
                     ->options([
-                        'belum_ada'   => 'Belum Ada Pembayaran',
                         'dp_diunggah' => 'DP Diunggah',
                         'belum_lunas' => 'Belum Lunas',
                         'lunas'       => 'Lunas',
@@ -195,6 +211,10 @@ class PaymentStatusResource extends Resource
                             default       => $query,
                         };
                     }),
+                Tables\Filters\SelectFilter::make('method')->options([
+                    'home_service' => 'Home Service',
+                    'visit'        => 'Booking ke Toko',
+                ]),    
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -255,6 +275,27 @@ class PaymentStatusResource extends Resource
                         }
 
                         return $record->refresh();
+                    })
+                    ->after(function (Order $record, array $data, $livewire) {
+                        $record->refresh();
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
+                            $waService = app(\App\Services\WhatsAppService::class);
+                            $message = $waService->getMessagePaymentUpdated($record);
+                            $url = $waService->generateWaLink($record->user->phone_wa, $message);
+
+                            $livewire->js("window.open('{$url}', '_blank')");
+                            $waService->notifyPaymentStatusUpdated($record);
+
+                            Notification::make()
+                                ->title('Status Pelunasan Diperbarui! ✅')
+                                ->body('Notifikasi WhatsApp telah dikirim dan dialihkan ke WhatsApp.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()->title('Status Pelunasan Diperbarui')->success()->send();
+                        }
                     }),
 
                 // Catat DP Manual (untuk Booking ke Toko atau jika admin mau input langsung)
@@ -270,6 +311,8 @@ class PaymentStatusResource extends Resource
                         Forms\Components\TextInput::make('dp_amount')
                             ->label('Nominal DP')
                             ->numeric()
+                            ->stripCharacters(['.', ','])
+                            ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                             ->helperText('Tanpa titik/koma')
                             ->prefix('Rp')
                             ->required(),
@@ -278,7 +321,7 @@ class PaymentStatusResource extends Resource
                             ->image()
                             ->directory('dp_proofs'),
                     ])
-                    ->action(function (Order $record, array $data) {
+                    ->action(function (Order $record, array $data, $livewire) {
                         $record->payments()->create([
                             'type'           => 'dp',
                             'amount'         => $data['dp_amount'],
@@ -290,7 +333,26 @@ class PaymentStatusResource extends Resource
                         if ($record->status === 'pending') {
                             $record->update(['status' => 'dp_uploaded']);
                         }
-                        Notification::make()->title('DP berhasil dicatat!')->success()->send();
+
+                        $record->refresh();
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
+                            $waService = app(\App\Services\WhatsAppService::class);
+                            $message = $waService->getMessagePaymentUpdated($record);
+                            $url = $waService->generateWaLink($record->user->phone_wa, $message);
+
+                            $livewire->js("window.open('{$url}', '_blank')");
+                            $waService->notifyPaymentStatusUpdated($record);
+
+                            Notification::make()
+                                ->title('DP Berhasil Dicatat! ✅')
+                                ->body('Notifikasi pembayaran DP telah dialihkan ke WhatsApp.')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()->title('DP berhasil dicatat!')->success()->send();
+                        }
                     }),
 
                 // Catat Pelunasan
@@ -302,7 +364,7 @@ class PaymentStatusResource extends Resource
                     ->modalWidth('md')
                     ->visible(fn (Order $record) => in_array($record->payment_status, ['dp_diunggah', 'belum_lunas']) && $record->estimated_price > 0)
                     ->form(function (Order $record) {
-                        $sisa = max(0, $record->estimated_price - $record->dp_amount - $record->final_payment_amount);
+                        $sisa = (int) round(max(0, (float)$record->estimated_price - (float)$record->dp_amount - (float)$record->final_payment_amount));
                         return [
                             Forms\Components\Placeholder::make('info_sisa')
                                 ->label('Sisa Tagihan')
@@ -310,6 +372,8 @@ class PaymentStatusResource extends Resource
                             Forms\Components\TextInput::make('final_payment_amount')
                                 ->label('Nominal Pelunasan')
                                 ->numeric()
+                                ->stripCharacters(['.', ','])
+                                ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                                 ->helperText('Tanpa titik/koma')
                                 ->required()
                                 ->prefix('Rp')
@@ -320,7 +384,7 @@ class PaymentStatusResource extends Resource
                                 ->directory('final_payments'),
                         ];
                     })
-                    ->action(function (Order $record, array $data) {
+                    ->action(function (Order $record, array $data, $livewire) {
                         $existing = $record->payments()->where('type', 'final')->first();
                         if ($existing) {
                             $existing->update([
@@ -340,25 +404,20 @@ class PaymentStatusResource extends Resource
                             ]);
                         }
 
-                        // Siapkan Link WhatsApp jika lunas
                         $record->refresh();
-                        if ($record->is_fully_paid && $record->user?->phone_wa) {
+                        $record->load('user');
+
+                        if ($record->user?->phone_wa) {
                             $waService = app(\App\Services\WhatsAppService::class);
-                            $nom = number_format($data['final_payment_amount'], 0, ',', '.');
-                            $msg = "Halo {$record->user->name} 💵\n"
-                                 . "Terima kasih, pembayaran pelunasan sebesar *Rp {$nom}* untuk pesanan #{$record->id} telah kami terima.\n"
-                                 . "Pesanan Anda kini berstatus LUNAS. Terima kasih! ✨";
-                            
-                            $url = $waService->generateWaLink($record->user->phone_wa, $msg);
+                            $message = $waService->getMessagePaymentUpdated($record);
+                            $url = $waService->generateWaLink($record->user->phone_wa, $message);
+
+                            $livewire->js("window.open('{$url}', '_blank')");
+                            $waService->notifyPaymentStatusUpdated($record);
+
                             Notification::make()
-                                ->title('Pelunasan dicatat!')
-                                ->body('Klik untuk kirim bukti ke WhatsApp.')
-                                ->actions([
-                                    \Filament\Notifications\Actions\Action::make('send_wa')
-                                        ->label('Kirim WA')
-                                        ->url($url, shouldOpenInNewTab: true)
-                                        ->button(),
-                                ])
+                                ->title($record->is_fully_paid ? 'Pelunasan Berhasil! Pesanan Lunas ✅' : 'Pembayaran Sebagian Dicatat ✅')
+                                ->body('Notifikasi pelunasan telah dialihkan ke WhatsApp.')
                                 ->success()
                                 ->send();
                         } else {

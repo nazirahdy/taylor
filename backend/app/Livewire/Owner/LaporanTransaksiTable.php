@@ -5,6 +5,7 @@ namespace App\Livewire\Owner;
 use App\Models\Order;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Actions\Action;
 use Filament\Tables\Actions\Action as TableAction;
@@ -40,7 +42,8 @@ class LaporanTransaksiTable extends Component implements HasForms, HasTable
                         'completed' => 'success', 'rejected' => 'danger', 'cancelled' => 'gray', default => 'gray',
                     }),
                 TextColumn::make('estimated_price')->money('IDR', locale: 'id')->label('Total Harga')->sortable(),
-                TextColumn::make('order_date')->date()->sortable()->label('Tgl Pesan'),
+                TextColumn::make('order_date')->date()->sortable()->label('Tgl Pesan')
+                    ->summarize(Count::make()->label('Jumlah Transaksi')),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -52,23 +55,37 @@ class LaporanTransaksiTable extends Component implements HasForms, HasTable
                         return $query
                             ->when($data['created_from'], fn (Builder $query, $date): Builder => $query->whereDate('order_date', '>=', $date))
                             ->when($data['created_until'], fn (Builder $query, $date): Builder => $query->whereDate('order_date', '<=', $date));
-                    })
+                    }),
+                SelectFilter::make('method')
+                    ->label('Metode')
+                    ->placeholder('Semua')
+                    ->options([
+                        'home_service' => 'Home Service',
+                        'visit'        => 'Booking ke Toko',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (empty($data['value']) || $data['value'] === 'semua') return $query;
+                        return $query->where('method', $data['value']);
+                    }),
             ])
+            ->filtersTriggerAction(
+                fn (TableAction $action) => $action
+                    ->label('Filter')
+                    ->icon('heroicon-o-funnel')
+            )
             ->headerActions([
                 TableAction::make('export_pdf')
                     ->label('Export PDF')
                     ->color('danger')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->form([
-                        DatePicker::make('start_date')->label('Dari Tanggal'),
-                        DatePicker::make('end_date')->label('Sampai Tanggal'),
-                    ])
-                    ->action(function (array $data, $livewire) {
+                    ->action(function ($livewire) {
+                        $filters = $livewire->tableFilters ?? [];
                         $params = http_build_query(array_filter([
                             'type'       => 'transaksi',
                             'format'     => 'pdf',
-                            'start_date' => $data['start_date'] ?? null,
-                            'end_date'   => $data['end_date'] ?? null,
+                            'start_date' => $filters['created_at']['created_from'] ?? null,
+                            'end_date'   => $filters['created_at']['created_until'] ?? null,
+                            'method'     => $filters['method']['value'] ?? 'semua',
                         ]));
                         $url = route('export.reports') . '?' . $params;
                         $livewire->js("window.open('{$url}', '_blank')");
@@ -77,16 +94,14 @@ class LaporanTransaksiTable extends Component implements HasForms, HasTable
                     ->label('Export Excel')
                     ->color('success')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->form([
-                        DatePicker::make('start_date')->label('Dari Tanggal'),
-                        DatePicker::make('end_date')->label('Sampai Tanggal'),
-                    ])
-                    ->action(function (array $data, $livewire) {
+                    ->action(function ($livewire) {
+                        $filters = $livewire->tableFilters ?? [];
                         $params = http_build_query(array_filter([
                             'type'       => 'transaksi',
                             'format'     => 'excel',
-                            'start_date' => $data['start_date'] ?? null,
-                            'end_date'   => $data['end_date'] ?? null,
+                            'start_date' => $filters['created_at']['created_from'] ?? null,
+                            'end_date'   => $filters['created_at']['created_until'] ?? null,
+                            'method'     => $filters['method']['value'] ?? 'semua',
                         ]));
                         $url = route('export.reports') . '?' . $params;
                         $livewire->js("window.open('{$url}', '_blank')");

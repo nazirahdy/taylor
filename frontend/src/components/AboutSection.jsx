@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const AboutSection = () => {
     return (
-        <section className="bg-surface py-20" id="about">
+        <section className="bg-surface py-20 scroll-mt-16" id="about">
             <div className="container mx-auto px-4 md:px-12">
                 
                 {/* Header part */}

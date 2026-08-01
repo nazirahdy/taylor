@@ -23,6 +23,18 @@ class OrderResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Order::where('is_read', false)->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -47,24 +59,21 @@ class OrderResource extends Resource
                     ->content(fn (?Order $record) => $record?->user?->alamat ?? '-'),
                 Forms\Components\Placeholder::make('visit_address')
                     ->label('Alamat Kunjungan Home Service (Order)')
-                    ->content(fn (?Order $record) => $record?->visit_address ?? $record?->user?->alamat ?? '-'),
+                    ->content(fn (?Order $record) => $record?->visit_address ?? $record?->alamat_kunjungan ?? $record?->user?->alamat ?? '-'),
                 Forms\Components\Placeholder::make('gps_coordinates')
-                    ->label('Koordinat GPS & Peta')
+                    ->label('Lokasi Peta')
                     ->content(function (?Order $record) {
                         if (!$record || !$record->latitude || !$record->longitude) {
-                            return 'Belum tersemat koordinat GPS';
+                            return 'Belum tersemat titik peta';
                         }
                         $lat = $record->latitude;
                         $lng = $record->longitude;
                         $mapsUrl = "https://www.google.com/maps/search/?api=1&query={$lat},{$lng}";
                         return new \Illuminate\Support\HtmlString("
-                            <div class='space-y-2'>
-                                <div class='font-mono text-sm text-gray-700'>Lat: {$lat}, Lng: {$lng}</div>
-                                <div>
-                                    <a href='{$mapsUrl}' target='_blank' class='inline-flex items-center gap-1 text-primary-600 hover:underline font-bold text-sm'>
-                                        📍 Buka di Google Maps
-                                    </a>
-                                </div>
+                            <div>
+                                <a href='{$mapsUrl}' target='_blank' class='inline-flex items-center gap-1.5 text-primary-600 hover:underline font-bold text-sm'>
+                                    📍 Buka Titik Lokasi di Google Maps
+                                </a>
                             </div>
                         ");
                     }),
@@ -105,14 +114,43 @@ class OrderResource extends Resource
             ])->columns(2),
 
             Forms\Components\Section::make('Harga & Status')->schema([
-                Forms\Components\TextInput::make('estimated_price')->label('Estimasi Harga/Total Biaya')->numeric()->helperText('Tanpa titik/koma')->prefix('Rp')->live(),
-                Forms\Components\TextInput::make('dp_amount')->label('Jumlah DP')->numeric()->helperText('Tanpa titik/koma')->prefix('Rp')->live(),
+                Forms\Components\TextInput::make('estimated_price')
+                    ->label('Estimasi Harga/Total Biaya')
+                    ->numeric()
+                    ->stripCharacters(['.', ','])
+                    ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
+                    ->helperText('Tanpa titik/koma')
+                    ->prefix('Rp')
+                    ->live(),
+                Forms\Components\TextInput::make('dp_amount')
+                    ->label('Jumlah DP')
+                    ->numeric()
+                    ->stripCharacters(['.', ','])
+                    ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
+                    ->helperText('Tanpa titik/koma')
+                    ->prefix('Rp')
+                    ->live(),
                 Forms\Components\TextInput::make('final_payment_amount')
                     ->label('Jumlah Pelunasan')
                     ->numeric()
+                    ->stripCharacters(['.', ','])
+                    ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                     ->prefix('Rp')
-                    ->live(onBlur: true)
-                    ->helperText(fn (callable $get) => 'Sisa Tagihan: Rp ' . number_format(max(0, (float)($get('estimated_price') ?? 0) - ((float)($get('dp_amount') ?? 0) + (float)($get('final_payment_amount') ?? 0))), 0, ',', '.')),
+                    ->live(onBlur: true),
+                Forms\Components\Placeholder::make('sisa_tagihan')
+                    ->label('Sisa Tagihan')
+                    ->content(function (callable $get) {
+                        $price = (float)($get('estimated_price') ?? 0);
+                        $dp = (float)($get('dp_amount') ?? 0);
+                        $final = (float)($get('final_payment_amount') ?? 0);
+                        $total = $dp + $final;
+
+                        if ($price > 0 && $total >= $price && $total > 0) {
+                            return 'Lunas ✅';
+                        }
+
+                        return 'Rp ' . number_format(max(0, $price - $total), 0, ',', '.');
+                    }),
                 Forms\Components\Placeholder::make('is_fully_paid')
                     ->label('Status Lunas')
                     ->content(function (callable $get) {
@@ -120,7 +158,7 @@ class OrderResource extends Resource
                         $dp = (float)($get('dp_amount') ?? 0);
                         $final = (float)($get('final_payment_amount') ?? 0);
                         $total = $dp + $final;
-                        
+
                         if ($price > 0 && $total >= $price && $total > 0) return '✅ Lunas';
                         if ($final > 0) return '❌ Belum Lunas (Ada Sisa)';
                         return '❌ Belum Lunas';
@@ -147,6 +185,8 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('amount')
                             ->label('Jumlah Biaya')
                             ->numeric()
+                            ->stripCharacters(['.', ','])
+                            ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                             ->prefix('Rp')
                             ->required()
                     ])
@@ -166,7 +206,7 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')->label('No. Pesanan')->sortable(),
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
-                Tables\Columns\TextColumn::make('user.name')->searchable()->label('Pelanggan'),
+                Tables\Columns\TextColumn::make('user.name')->searchable()->label('Name'),
 
                 Tables\Columns\TextColumn::make('user.phone_wa')->label('WhatsApp')->searchable(),
                 Tables\Columns\TextColumn::make('visit_address')
@@ -204,10 +244,15 @@ class OrderResource extends Resource
                         'rejected'           => 'Ditolak',
                         default              => $state,
                     }),
-                Tables\Columns\TextColumn::make('dp_amount')->money('IDR', locale: 'id')->label('Total DP')->sortable(),
+                Tables\Columns\TextColumn::make('dp_amount')
+                    ->label('Total DP')
+                    ->getStateUsing(fn (Order $record) => $record->dp_amount)
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.'))
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('final_payment_amount')
-                    ->money('IDR', locale: 'id')
                     ->label('Pelunasan')
+                    ->getStateUsing(fn (Order $record) => $record->final_payment_amount)
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_fully_paid')
@@ -240,10 +285,7 @@ class OrderResource extends Resource
                     'finishing'          => 'Finishing',
                     'selesai_penyerahan' => 'Selesai & Penyerahan',
                     'rejected'           => 'Ditolak',
-                ]),
-                Tables\Filters\SelectFilter::make('method')->options([
-                    'home_service' => 'Home Service', 'visit' => 'Booking ke Toko',
-                ]),
+                ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -266,25 +308,7 @@ class OrderResource extends Resource
                         $record->update(['status' => 'selesai_penyerahan']);
                         Notification::make()->title('Pesanan selesai & siap diserahkan!')->success()->send();
                     }),
-                Tables\Actions\Action::make('set_progress')
-                    ->label('Update Tahap')->icon('heroicon-o-arrow-path')->color('warning')
-                    ->form([
-                        Forms\Components\Select::make('next_status')
-                            ->label('Pindah ke Tahap')
-                            ->required()
-                            ->options(fn (Order $record) => array_filter([
-                                'confirmed'          => 'Dikonfirmasi',
-                                'pola_pemotongan'    => 'Pola dan Pemotongan',
-                                'pola_penjahitan'    => 'Pola Penjahitan',
-                                'proses_menjahit'    => 'Proses Menjahit',
-                                'finishing'          => 'Finishing',
-                            ], fn($k) => $k !== $record->status, ARRAY_FILTER_USE_KEY)),
-                    ])
-                    ->visible(fn (Order $record) => in_array($record->status, ['confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing']))
-                    ->action(function (Order $record, array $data) {
-                        $record->update(['status' => $data['next_status']]);
-                        Notification::make()->title('Tahap pesanan diperbarui!')->success()->send();
-                    }),
+                
                 Tables\Actions\Action::make('terima_pelunasan')
                     ->label('Catat Pelunasan')
                     ->icon('heroicon-o-banknotes')
@@ -297,6 +321,7 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('final_payment_amount')
                             ->label('Nominal Pelunasan')
                             ->numeric()
+                            ->stripCharacters(['.', ','])
                             ->helperText('Tanpa titik/koma')
                             ->required()
                             ->prefix('Rp')

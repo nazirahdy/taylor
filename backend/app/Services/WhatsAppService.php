@@ -96,10 +96,11 @@ class WhatsAppService
 
     public function sendMessage(string $phone, string $message): void
     {
+        $formattedPhone = $this->formatNumber($phone);
 
-        \Illuminate\Support\Facades\Log::info("WhatsApp Notification [automatic send] to {$phone}: {$message}");
+        \Illuminate\Support\Facades\Log::info("WhatsApp Notification [automatic send] to {$formattedPhone}: {$message}");
 
-        $token = env('FONNTE_TOKEN');
+        $token = config('services.fonnte.token') ?? env('FONNTE_TOKEN');
         if (empty($token) || $token === 'your_fonnte_api_token_here') {
             \Illuminate\Support\Facades\Log::warning("Fonnte API Token belum dikonfigurasi secara benar. Mengabaikan pengiriman otomatis.");
             return;
@@ -107,9 +108,9 @@ class WhatsAppService
 
         try {
             // Jalankan job secara sinkron agar langsung terkirim tanpa perlu antrean queue worker di lokal
-            \App\Jobs\SendWhatsAppNotification::dispatchSync($phone, $message);
+            \App\Jobs\SendWhatsAppNotification::dispatchSync($formattedPhone, $message);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Gagal mengirim WhatsApp otomatis ke {$phone}: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim WhatsApp otomatis ke {$formattedPhone}: " . $e->getMessage());
         }
     }
 
@@ -203,11 +204,42 @@ class WhatsAppService
                  . "Progres pesanan Anda di *Era Jahit Studio* baru saja diperbarui oleh Admin:\n"
                  . "━━━━━━━━━━━━━━━━━━━\n"
                  . "*Nomor Pesanan:* {$order->order_number}\n"
-                 . "*Tahap Progres:* *{$log->stage}* 🪡\n"
+                 . "*Tahap Progres:* *{$log->stage_label}* 🪡\n"
                  . "━━━━━━━━━━━━━━━━━━━\n"
                  . "Pesan Progres dari Admin:{$descriptionStr}\n\n"
                  . "Anda dapat memantau linimasa progres pesanan Anda secara lengkap di aplikasi Era Jahit. Terima kasih! ✨";
 
+        $this->sendMessage($order->user->phone_wa, $message);
+    }
+
+    public function getMessagePaymentUpdated($order): string
+    {
+        $customerName = $order->user?->name ?? 'Pelanggan';
+        $price = (float) $order->estimated_price;
+        $dp = (float) $order->dp_amount;
+        $final = (float) $order->final_payment_amount;
+        $total = $dp + $final;
+        $isLunas = $price > 0 && $total >= $price && $total > 0;
+        $sisa = $isLunas ? 'Lunas ✅' : 'Rp ' . number_format(max(0, $price - $total), 0, ',', '.');
+
+        return "*Halo {$customerName},* \n\n"
+             . "Berikut pembaruan status pembayaran pesanan Anda dari Admin *Era Jahit Studio*:\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "*Nomor Pesanan:* {$order->order_number}\n"
+             . "*Estimasi Harga:* Rp " . number_format($price, 0, ',', '.') . "\n"
+             . "*Jumlah DP:* Rp " . number_format($dp, 0, ',', '.') . "\n"
+             . "*Jumlah Pelunasan:* Rp " . number_format($final, 0, ',', '.') . "\n"
+             . "*Sisa Tagihan:* {$sisa}\n"
+             . "━━━━━━━━━━━━━━━━━━━\n"
+             . "Terima kasih atas kepercayaan Anda kepada Era Jahit Studio!";
+    }
+
+    public function notifyPaymentStatusUpdated($order): void
+    {
+        $order->load('user');
+        if (!$order->user || !$order->user->phone_wa) return;
+
+        $message = $this->getMessagePaymentUpdated($order);
         $this->sendMessage($order->user->phone_wa, $message);
     }
 

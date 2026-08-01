@@ -21,6 +21,20 @@ class ProgressLog extends Model
         'notified_at' => 'datetime',
     ];
 
+    public const STAGE_LABELS = [
+        'confirmed' => 'Dikonfirmasi',
+        'pola_pemotongan' => 'Pola dan Pemotongan',
+        'pola_penjahitan' => 'Pola Penjahitan',
+        'proses_menjahit' => 'Proses Menjahit',
+        'finishing' => 'Finishing',
+        'selesai_penyerahan' => 'Selesai & Penyerahan',
+    ];
+
+    public function getStageLabelAttribute(): string
+    {
+        return self::STAGE_LABELS[$this->stage] ?? $this->stage;
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);

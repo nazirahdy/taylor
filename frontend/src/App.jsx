@@ -11,7 +11,6 @@ import Track from './pages/Track';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import CompleteProfile from './pages/CompleteProfile';
 import ManageProfile from './pages/ManageProfile';
 import ManagePassword from './pages/ManagePassword';
 import Measurements from './pages/Measurements';
@@ -26,6 +25,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatWidget from './components/ChatWidget';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider } from './components/Toast';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -36,7 +36,8 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
         <ScrollToTop />
         <div className="min-h-screen bg-bg font-body selection:bg-primary/30 flex flex-col">
           <Navbar />
@@ -55,12 +56,6 @@ function App() {
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-
-              <Route path="/complete-profile" element={
-                <ProtectedRoute>
-                  <CompleteProfile />
-                </ProtectedRoute>
-              } />
 
               <Route path="/profile/edit" element={
                 <ProtectedRoute>
@@ -109,6 +104,7 @@ function App() {
           <ChatWidget />
         </div>
       </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 }

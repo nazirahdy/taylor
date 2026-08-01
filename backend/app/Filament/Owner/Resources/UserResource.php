@@ -34,7 +34,9 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Informasi Pelanggan')
                     ->schema([
-                        Forms\Components\TextInput::make('name')->required(),
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nama Pelanggan')
+                            ->required(),
                         Forms\Components\TextInput::make('email')->email()->required(),
                         Forms\Components\TextInput::make('phone_wa')
                             ->label('WhatsApp')
@@ -48,21 +50,27 @@ class UserResource extends Resource
                     ->description('Ukuran badan pelanggan yang dikelola oleh admin penjahit.')
                     ->schema([
                         Forms\Components\Placeholder::make('lingkar_badan')->label('Lingkar Badan')
-                            ->content(fn (User $record) => ($record->measurement?->lingkar_badan ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->lingkar_badan ? $record->measurement->lingkar_badan . ' cm' : '-'),
                         Forms\Components\Placeholder::make('lingkar_pinggang')->label('Lingkar Pinggang')
-                            ->content(fn (User $record) => ($record->measurement?->lingkar_pinggang ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->lingkar_pinggang ? $record->measurement->lingkar_pinggang . ' cm' : '-'),
                         Forms\Components\Placeholder::make('lingkar_pinggul')->label('Lingkar Pinggul')
-                            ->content(fn (User $record) => ($record->measurement?->lingkar_pinggul ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->lingkar_pinggul ? $record->measurement->lingkar_pinggul . ' cm' : '-'),
+                        Forms\Components\Placeholder::make('lingkar_pangkal_lengan')->label('Lingkar Pangkal Lengan')
+                            ->content(fn (User $record) => $record->measurement?->lingkar_pangkal_lengan ? $record->measurement->lingkar_pangkal_lengan . ' cm' : '-'),
+                        Forms\Components\Placeholder::make('panjang_tangan')->label('Panjang Tangan')
+                            ->content(fn (User $record) => ($record->measurement?->panjang_tangan ?? $record->measurement?->panjang_lengan) ? ($record->measurement?->panjang_tangan ?? $record->measurement?->panjang_lengan) . ' cm' : '-'),
                         Forms\Components\Placeholder::make('panjang_baju')->label('Panjang Baju')
-                            ->content(fn (User $record) => ($record->measurement?->panjang_baju ?? '-') . ' cm'),
-                        Forms\Components\Placeholder::make('panjang_lengan')->label('Panjang Lengan')
-                            ->content(fn (User $record) => ($record->measurement?->panjang_lengan ?? '-') . ' cm'),
-                        Forms\Components\Placeholder::make('lebar_bahu')->label('Lebar Bahu')
-                            ->content(fn (User $record) => ($record->measurement?->lebar_bahu ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->panjang_baju ? $record->measurement->panjang_baju . ' cm' : '-'),
                         Forms\Components\Placeholder::make('panjang_rok')->label('Panjang Rok / Celana')
-                            ->content(fn (User $record) => ($record->measurement?->panjang_rok ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->panjang_rok ? $record->measurement->panjang_rok . ' cm' : '-'),
+                        Forms\Components\Placeholder::make('lebar_dada')->label('Lebar Dada')
+                            ->content(fn (User $record) => $record->measurement?->lebar_dada ? $record->measurement->lebar_dada . ' cm' : '-'),
+                        Forms\Components\Placeholder::make('lebar_punggung')->label('Lebar Punggung')
+                            ->content(fn (User $record) => $record->measurement?->lebar_punggung ? $record->measurement->lebar_punggung . ' cm' : '-'),
+                        Forms\Components\Placeholder::make('lebar_bahu')->label('Lebar Bahu')
+                            ->content(fn (User $record) => $record->measurement?->lebar_bahu ? $record->measurement->lebar_bahu . ' cm' : '-'),
                         Forms\Components\Placeholder::make('tinggi_badan')->label('Tinggi Badan')
-                            ->content(fn (User $record) => ($record->measurement?->tinggi_badan ?? '-') . ' cm'),
+                            ->content(fn (User $record) => $record->measurement?->tinggi_badan ? $record->measurement->tinggi_badan . ' cm' : '-'),
                         Forms\Components\Placeholder::make('notes')->label('Catatan Penjahit')
                             ->content(fn (User $record) => $record->measurement?->notes ?? '-')
                             ->columnSpanFull(),
@@ -75,6 +83,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nama Pelanggan')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
@@ -99,6 +108,7 @@ class UserResource extends Resource
                     ->options([
                         'admin' => 'Admin',
                         'customer' => 'Pelanggan',
+                        'owner' => 'owner',
                     ]),
             ])
             ->actions([

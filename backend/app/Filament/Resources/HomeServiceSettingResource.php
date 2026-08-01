@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\HomeServiceSettingResource\Pages;
 use App\Models\HomeServiceSetting;
+use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,6 +27,18 @@ class HomeServiceSettingResource extends Resource
         return auth()->user()->role === 'admin';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Order::pendingHomeServiceDpQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -37,6 +50,8 @@ class HomeServiceSettingResource extends Resource
                             ->label('Nominal DP (Rupiah)')
                             ->required()
                             ->numeric()
+                            ->stripCharacters(['.', ','])
+                            ->formatStateUsing(fn ($state) => $state !== null && $state !== '' ? (int) round((float) $state) : null)
                             ->prefix('Rp')
                             ->helperText('Nominal ini akan otomatis tampil di halaman checkout/tahap akhir pemesanan pelanggan untuk layanan Home Service.'),
                     ])
@@ -49,7 +64,7 @@ class HomeServiceSettingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('dp_amount')
                     ->label('Nominal DP Home Service Saat Ini')
-                    ->money('IDR', locale: 'id')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((float) ($state ?? 0), 0, ',', '.'))
                     ->fontFamily('mono')
                     ->size('lg')
                     ->color('primary')

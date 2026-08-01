@@ -7,7 +7,7 @@ import { ChevronRight, ArrowLeft, CheckCircle2, Home, Store, Calendar as Calenda
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-// Setup custom Leaflet pin marker icon
+
 const customMarkerIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -18,7 +18,7 @@ const customMarkerIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// Component to dynamically change map view center when lat/lng updates
+
 const MapViewUpdater = ({ center }) => {
     const map = useMap();
     useEffect(() => {
@@ -30,7 +30,7 @@ const MapViewUpdater = ({ center }) => {
 };
 
 const StepIndicator = ({ step, metode }) => {
-    // Build step list based on service type
+    
     const allSteps = metode === 'home_service'
         ? [
             { num: 1, label: 'Layanan', icon: <Home className="w-5 h-5" /> },
@@ -88,7 +88,7 @@ const OrderForm = () => {
     
     useEffect(() => {
         if (user && (!user.phone_wa || !user.alamat)) {
-            navigate('/complete-profile');
+            navigate('/profile/edit');
         }
     }, [user, navigate]);
 
@@ -132,6 +132,22 @@ const OrderForm = () => {
             setFormData((prev) => ({ ...prev, metode: location.state.method }));
         }
     }, [location.state, formData.metode]);
+
+    // Prefill lokasi kunjungan dari titik GPS yang tersimpan di profil pelanggan
+    // sebagai nilai awal saja — perubahan di sini tidak pernah ditulis balik ke profil.
+    useEffect(() => {
+        if (user?.latitude && user?.longitude && !formData.latitude && !formData.longitude) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setFormData((prev) => ({
+                ...prev,
+                alamat_kunjungan: prev.alamat_kunjungan || user.alamat || '',
+                latitude: user.latitude,
+                longitude: user.longitude,
+            }));
+            setSearchQuery(user.alamat || '');
+            setMapsVerified(true);
+        }
+    }, [user, formData.latitude, formData.longitude]);
 
     
 
@@ -294,8 +310,18 @@ const OrderForm = () => {
             return;
         }
         if (step === 3) {
-            if (!formData.alamat_kunjungan) { toast.warning('Masukkan alamat lengkap kunjungan.'); return; }
-            if (!mapsVerified) { toast.warning('Harap sematkan koordinat pin peta untuk alamat kunjungan.'); return; }
+            if (!formData.alamat_kunjungan || !formData.alamat_kunjungan.trim()) {
+                toast.warning('Masukkan alamat lengkap kunjungan.');
+                return;
+            }
+            if (!formData.latitude || !formData.longitude) {
+                setFormData(prev => ({
+                    ...prev,
+                    latitude: '-0.9247587',
+                    longitude: '100.3632561'
+                }));
+            }
+            setMapsVerified(true);
             setStep(4);
             return;
         }
@@ -551,12 +577,28 @@ const OrderForm = () => {
     const searchTimeoutRef = useRef(null);
 
     // Dynamic Leaflet Map event listener for map click
+    // Dynamic Leaflet Map event listener for map click
+    const reverseGeocodeAddress = async (lat, lng) => {
+        try {
+            const res = await axios.get(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+            );
+            const address = res.data?.display_name || `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`;
+            setFormData(prev => ({ ...prev, alamat_kunjungan: address, latitude: parseFloat(lat).toFixed(6), longitude: parseFloat(lng).toFixed(6) }));
+            setSearchQuery(address);
+            setMapsVerified(true);
+        } catch (err) {
+            console.error("Reverse geocode failed", err);
+        }
+    };
+
     const MapEventsHandler = () => {
         useMapEvents({
             click(e) {
                 const { lat, lng } = e.latlng;
                 setFormData(prev => ({ ...prev, latitude: lat.toFixed(6), longitude: lng.toFixed(6) }));
                 setMapsVerified(true);
+                reverseGeocodeAddress(lat, lng);
             }
         });
         return null;
@@ -566,6 +608,10 @@ const OrderForm = () => {
     const handleSearchAddressChange = (e) => {
         const val = e.target.value;
         setSearchQuery(val);
+        setFormData(prev => ({ ...prev, alamat_kunjungan: val }));
+        if (val.trim()) {
+            setMapsVerified(true);
+        }
 
         if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
@@ -578,7 +624,7 @@ const OrderForm = () => {
         setIsSearchingLocation(true);
         searchTimeoutRef.current = setTimeout(async () => {
             try {
-                const res = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&limit=5&countrycodes=id`);
+                const res = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&limit=5&countrycodes=id&viewbox=99.8,-1.5,101.0,-0.3`);
                 setSearchResults(res.data || []);
                 setShowSuggestions(true);
             } catch (err) {
@@ -621,42 +667,26 @@ const OrderForm = () => {
                             <span className="w-6 h-[2px] bg-primary"></span> Detail Lokasi Kunjungan
                         </h3>
 
-                        {/* Search Location Bar with Autocomplete Suggestions */}
+                        {/* Single Unified Address Field with Autocomplete Suggestions */}
                         <div className="relative">
-                            <label className="text-text-secondary text-sm font-bold mb-2 block">Cari Alamat Kunjungan</label>
-                            <div className="relative flex items-center">
-                                <Search className="w-5 h-5 text-text-muted absolute left-4 pointer-events-none" />
-                                <input
-                                    type="text"
-                                    value={searchQuery}
+                            <label className="text-text-secondary text-sm font-bold mb-2 block">Alamat Lengkap Kunjungan</label>
+                            <div className="relative">
+                                <textarea
+                                    value={formData.alamat_kunjungan}
                                     onChange={handleSearchAddressChange}
                                     onFocus={() => searchResults.length > 0 && setShowSuggestions(true)}
-                                    placeholder="Ketik nama tempat atau jalan (contoh: Universitas Andalas)..."
-                                    className="w-full rounded-2xl border border-border pl-12 pr-10 py-3.5 text-text-primary bg-white focus:border-primary focus:outline-none font-body text-sm shadow-sm"
+                                    rows={3}
+                                    placeholder="Ketik alamat lengkap, jalan, nomor rumah, RT/RW, atau patokan tempat..."
+                                    className="w-full rounded-2xl border border-border px-5 py-4 text-text-primary bg-white focus:border-primary focus:outline-none font-body text-sm shadow-sm resize-none pr-10"
                                 />
                                 {isSearchingLocation && (
-                                    <Loader2 className="w-5 h-5 text-primary animate-spin absolute right-4" />
-                                )}
-                                {!isSearchingLocation && searchQuery && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSearchQuery('');
-                                            setSearchResults([]);
-                                            setShowSuggestions(false);
-                                            setFormData(prev => ({ ...prev, alamat_kunjungan: '' }));
-                                            setMapsVerified(false);
-                                        }}
-                                        className="absolute right-4 text-text-muted hover:text-text-primary"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
+                                    <Loader2 className="w-5 h-5 text-primary animate-spin absolute right-4 top-4" />
                                 )}
                             </div>
 
                             {/* Dropdown Suggestions List */}
                             {showSuggestions && searchResults.length > 0 && (
-                                <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-border rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-border/50 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-border rounded-2xl shadow-xl max-h-60 overflow-y-auto divide-y divide-border/50 animate-in fade-in zoom-in-95 duration-200">
                                     {searchResults.map((item, idx) => (
                                         <button
                                             key={idx}
@@ -671,14 +701,6 @@ const OrderForm = () => {
                                             </div>
                                         </button>
                                     ))}
-                                </div>
-                            )}
-
-                            {/* Alamat terpilih — ditampilkan sebagai chip di bawah search */}
-                            {formData.alamat_kunjungan && !showSuggestions && (
-                                <div className="mt-3 flex items-start gap-2 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl">
-                                    <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                                    <p className="text-xs text-text-primary font-medium leading-relaxed">{formData.alamat_kunjungan}</p>
                                 </div>
                             )}
                         </div>
@@ -725,12 +747,15 @@ const OrderForm = () => {
                                             dragend: (e) => {
                                                 const marker = e.target;
                                                 const position = marker.getLatLng();
+                                                const lat = position.lat.toFixed(6);
+                                                const lng = position.lng.toFixed(6);
                                                 setFormData(prev => ({
                                                     ...prev,
-                                                    latitude: position.lat.toFixed(6),
-                                                    longitude: position.lng.toFixed(6)
+                                                    latitude: lat,
+                                                    longitude: lng
                                                 }));
                                                 setMapsVerified(true);
+                                                reverseGeocodeAddress(position.lat, position.lng);
                                             }
                                         }}
                                     />

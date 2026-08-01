@@ -9,6 +9,10 @@ Route::get('/', function () {
 
 Route::get('/export/reports', [\App\Http\Controllers\ReportExportController::class, 'exportReport'])->name('export.reports')->middleware('auth:owner');
 
+Route::get('/admin/activity-count', [\App\Http\Controllers\Admin\AdminActivityController::class, 'count'])
+    ->middleware('auth:web')
+    ->name('admin.activity-count');
+
 /**
  * Route perantara: dipanggil setelah owner sukses auth via web guard.
  * Tugas route ini: switch ke owner guard, lalu redirect ke /owner dashboard.

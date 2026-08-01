@@ -67,6 +67,37 @@
         table.data-table tr:nth-child(even) td { 
             background-color: #f8fafc; 
         }
+        .summary-container {
+            margin-top: 18px;
+            width: 100%;
+        }
+        .summary-box {
+            display: inline-block;
+            vertical-align: top;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            width: 30%;
+            box-sizing: border-box;
+        }
+        .summary-label {
+            display: block;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            font-weight: bold;
+        }
+        .summary-value {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0f172a;
+            margin-top: 3px;
+        }
         .footer {
             margin-top: 30px;
             font-size: 8px;
@@ -108,6 +139,17 @@
             @endforelse
         </tbody>
     </table>
+
+    @if (!empty($summary))
+        <div class="summary-container">
+            @foreach ($summary as $summaryLabel => $summaryValue)
+                <div class="summary-box">
+                    <span class="summary-label">{{ $summaryLabel }}</span>
+                    <span class="summary-value">{{ $summaryValue }}</span>
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     <div class="footer">
         Dicetak otomatis oleh Taylor System pada {{ now()->format('d M Y H:i') }}

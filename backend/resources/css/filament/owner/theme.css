@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@import '../../../../vendor/filament/filament/resources/css/base.css';
+
+@config 'tailwind.config.js';
+
+/* ============================================================
+   ERA JAHIT — OWNER PANEL PREMIUM THEME
+   Sidebar: deep navy/slate for owner distinction
+   ============================================================ */
+
+:root {
+    --sidebar-bg: #111827;
+    --sidebar-border: rgba(121, 209, 42, 0.12);
+    --sidebar-item-hover: rgba(121, 209, 42, 0.09);
+    --sidebar-item-active: rgba(121, 209, 42, 0.16);
+    --card-bg: #ffffff;
+    --card-border: #e5ecd8;
+    --accent: #79D12A;
+}
+
+/* ---- Global Font ---- */
+html, body, .fi-body {
+    font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+h1, h2, h3, h4, .fi-header-heading, .fi-section-header-heading {
+    font-family: 'Manrope', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* ---- Sidebar ---- */
+.fi-sidebar {
+    background: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.fi-sidebar-header {
+    background: var(--sidebar-bg) !important;
+    border-bottom: 1px solid var(--sidebar-border) !important;
+    padding: 1.25rem 1rem !important;
+}
+
+.fi-sidebar-nav-groups {
+    padding: 0.75rem 0.5rem !important;
+}
+
+.fi-sidebar-item {
+    border-radius: 0.6rem !important;
+    margin-bottom: 2px !important;
+    transition: all 0.18s ease !important;
+}
+
+.fi-sidebar-item-button {
+    border-radius: 0.6rem !important;
+    padding: 0.55rem 0.8rem !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
+    color: rgba(255,255,255,0.58) !important;
+    transition: all 0.18s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background: var(--sidebar-item-hover) !important;
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-button.fi-active,
+.fi-sidebar-item-button[aria-current="page"] {
+    background: var(--sidebar-item-active) !important;
+    color: #79D12A !important;
+    font-weight: 600 !important;
+    box-shadow: inset 2px 0 0 #79D12A;
+}
+
+.fi-sidebar-group-label {
+    color: rgba(255,255,255,0.28) !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.15em !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 0.8rem 0.25rem !important;
+}
+
+.fi-sidebar-item-button svg {
+    color: rgba(255,255,255,0.38) !important;
+    transition: color 0.18s ease !important;
+}
+.fi-sidebar-item-button:hover svg,
+.fi-sidebar-item-button.fi-active svg {
+    color: #79D12A !important;
+}
+
+/* ---- Topbar ---- */
+.fi-topbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e5ecd8 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+/* ---- Main Content ---- */
+.fi-main,
+.fi-main-ctn {
+    background: #f5f7f2 !important;
+}
+
+/* ---- Cards ---- */
+.fi-section,
+.fi-card,
+.fi-wi-stats-overview-stat {
+    background: #ffffff !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+    transition: box-shadow 0.2s ease !important;
+}
+
+.fi-section:hover,
+.fi-card:hover {
+    box-shadow: 0 4px 16px rgba(121, 209, 42, 0.1) !important;
+}
+
+/* ---- Stat Cards ---- */
+.fi-wi-stats-overview-stat {
+    border-left: 3px solid var(--accent) !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+.fi-wi-stats-overview-stat-label {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    color: #6b7280 !important;
+}
+
+.fi-wi-stats-overview-stat-value {
+    font-family: 'Manrope', sans-serif !important;
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    line-height: 1.1 !important;
+}
+
+/* ---- Buttons ---- */
+.fi-btn-primary {
+    background: linear-gradient(135deg, #79D12A 0%, #5faa1e 100%) !important;
+    border: none !important;
+    border-radius: 0.6rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(121, 209, 42, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+.fi-btn-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(121, 209, 42, 0.42) !important;
+}
+
+/* ---- Tables ---- */
+.fi-ta-header-cell {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    color: #6b7280 !important;
+    background: #f9fafb !important;
+}
+
+.fi-ta-row:hover td {
+    background: #f2f9ea !important;
+}
+
+/* ---- Badges ---- */
+.fi-badge {
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    padding: 0.15rem 0.65rem !important;
+}
+
+/* ---- Page Header ---- */
+.fi-header {
+    padding-bottom: 1.5rem !important;
+    border-bottom: 1px solid #e5ecd8 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.fi-header-heading {
+    font-size: 1.6rem !important;
+    color: #111827 !important;
+}
+
+/* ---- Scrollbar ---- */
+.fi-sidebar ::-webkit-scrollbar { width: 4px; }
+.fi-sidebar ::-webkit-scrollbar-track { background: transparent; }
+.fi-sidebar ::-webkit-scrollbar-thumb {
+    background: rgba(121, 209, 42, 0.22);
+    border-radius: 10px;
+}

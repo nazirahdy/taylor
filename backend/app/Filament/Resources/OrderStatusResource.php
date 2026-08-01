@@ -28,6 +28,18 @@ class OrderStatusResource extends Resource
         return auth()->user()->role === 'admin';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Order::where('status', 'pending')->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -80,7 +92,7 @@ class OrderStatusResource extends Resource
                     ->weight('bold')
                     ->copyable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Pelanggan')
+                    ->label('Name')
                     ->searchable()
                     ->icon('heroicon-m-user'),
                 Tables\Columns\TextColumn::make('user.phone_wa')

@@ -21,7 +21,6 @@ class OrderFactory extends Factory
             'design_notes' => fake()->sentence(),
             'status' => 'pending',
             'estimated_price' => 0,
-            'dp_amount' => 0,
         ];
     }
 }

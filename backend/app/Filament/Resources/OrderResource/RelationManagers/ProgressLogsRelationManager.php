@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\ProgressLog;
 use App\Services\WhatsAppService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -24,16 +25,7 @@ class ProgressLogsRelationManager extends RelationManager
                 Forms\Components\Select::make('stage')
                     ->required()
                     ->label('Tahapan')
-                    ->options([
-                        'Konsultasi & Pengukuran'  => 'Konsultasi & Pengukuran',
-                        'Pemilihan Bahan'          => 'Pemilihan Bahan',
-                        'Pola & Pemotongan'        => 'Pola & Pemotongan',
-                        'Pola Penjahitan'          => 'Pola Penjahitan',
-                        'Proses Menjahit'          => 'Proses Menjahit',
-                        'Fitting Pertama'          => 'Fitting Pertama',
-                        'Finishing & Quality Check'=> 'Finishing & Quality Check',
-                        'Selesai & Penyerahan'     => 'Selesai & Penyerahan',
-                    ]),
+                    ->options(ProgressLog::STAGE_LABELS),
                 Forms\Components\Textarea::make('description')
                     ->label('Keterangan')
                     ->maxLength(65535),
@@ -45,7 +37,8 @@ class ProgressLogsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('stage')
             ->columns([
-                Tables\Columns\TextColumn::make('stage'),
+                Tables\Columns\TextColumn::make('stage')
+                    ->formatStateUsing(fn (ProgressLog $record) => $record->stage_label),
                 Tables\Columns\TextColumn::make('description')->limit(50),
                 Tables\Columns\TextColumn::make('notified_at')
                     ->label('WA Terkirim')
@@ -62,18 +55,18 @@ class ProgressLogsRelationManager extends RelationManager
                         return $data;
                     })
                     ->after(function ($record, $livewire) {
-                        // Auto update status order
+                        // Sinkronkan status pesanan dengan tahap yang baru dicatat
                         $order = $record->order;
-                        $order->update(['status' => 'in_progress']);
-                        
+                        $order->update(['status' => $record->stage]);
+
                         if ($order->user?->phone_wa) {
                             $wa = new WhatsAppService();
                             // Kirim otomatis via API
                             $wa->notifyProgressUpdate($record);
-                            
+
                             $url = $wa->generateWaLink(
-                                $order->user->phone_wa, 
-                                $wa->getMessageProgressUpdate($order, $record->stage, $record->description ?? '')
+                                $order->user->phone_wa,
+                                $wa->getMessageProgressUpdate($order, $record->stage_label, $record->description ?? '')
                             );
                             
                             $livewire->js("window.open('{$url}', '_blank')");

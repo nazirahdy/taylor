@@ -23,12 +23,13 @@ class ReportExportController extends Controller
         $startDate = $request->get('start_date');
         $endDate = $request->get('end_date');
         $status = $request->get('status', 'semua');
+        $method = $request->get('method', 'semua');
 
-        $reportData = $this->buildReportData($type, $status, $startDate, $endDate);
+        $reportData = $this->buildReportData($type, $status, $startDate, $endDate, $method);
 
         if ($format === 'excel') {
             return Excel::download(
-                new OwnerReportExport($reportData['title'], $reportData['headers'], $reportData['rows']),
+                new OwnerReportExport($reportData['title'], $reportData['headers'], $reportData['rows'], $reportData['summary'] ?? []),
                 $reportData['filename'] . '.xlsx'
             );
         }
@@ -38,9 +39,10 @@ class ReportExportController extends Controller
                 'title' => $reportData['title'],
                 'headers' => $reportData['headers'],
                 'rows' => $reportData['rows'],
+                'summary' => $reportData['summary'] ?? [],
                 'startDate' => $startDate,
                 'endDate' => $endDate,
-            ]);
+            ])->setPaper('a4', 'landscape');
 
             return $pdf->download($reportData['filename'] . '.pdf');
         }
@@ -58,6 +60,11 @@ class ReportExportController extends Controller
                 $section->addText('Periode: Semua Data');
             }
             $section->addText("Status Filter: " . ucfirst($status));
+
+            foreach ($reportData['summary'] ?? [] as $summaryLabel => $summaryValue) {
+                $section->addText("{$summaryLabel}: {$summaryValue}", ['bold' => true]);
+            }
+
             $section->addText('');
 
             $table = $section->addTable(['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 50]);
@@ -84,7 +91,7 @@ class ReportExportController extends Controller
         return abort(404);
     }
 
-    protected function buildReportData(string $type, string $status, ?string $startDate, ?string $endDate): array
+    protected function buildReportData(string $type, string $status, ?string $startDate, ?string $endDate, string $method = 'semua'): array
     {
         if (! in_array($type, ['pesanan', 'transaksi', 'pelunasan', 'dp'], true)) {
             abort(404);
@@ -95,7 +102,36 @@ class ReportExportController extends Controller
             if ($startDate) $query->where('created_at', '>=', $startDate . ' 00:00:00');
             if ($endDate) $query->where('created_at', '<=', $endDate . ' 23:59:59');
 
+            if ($status === 'verified' || $status === 'lunas') {
+                $query->where('status', 'verified');
+            } elseif ($status === 'pending' || $status === 'belum_lunas') {
+                $query->where('status', '!=', 'verified');
+            }
+
             $items = $query->get();
+            $totalNominal = $items->sum('amount');
+
+            if ($status === 'verified' || $status === 'lunas') {
+                $summary = [
+                    'Total Data DP Terverifikasi' => $items->count() . ' Data',
+                    'Total Nominal DP'            => 'Rp ' . number_format($totalNominal, 0, ',', '.'),
+                ];
+            } elseif ($status === 'pending' || $status === 'belum_lunas') {
+                $summary = [
+                    'Total Data DP Belum Bayar' => $items->count() . ' Data',
+                    'Total Nominal DP'          => 'Rp ' . number_format($totalNominal, 0, ',', '.'),
+                ];
+            } else {
+                $verifiedCount = $items->where('status', 'verified')->count();
+                $pendingCount = $items->where('status', '!=', 'verified')->count();
+
+                $summary = [
+                    'Total Data Transaksi DP' => $items->count() . ' Data',
+                    'Sudah Bayar DP'          => $verifiedCount . ' Data',
+                    'Belum Bayar DP'          => $pendingCount . ' Data',
+                    'Total Nominal DP'        => 'Rp ' . number_format($totalNominal, 0, ',', '.'),
+                ];
+            }
 
             return [
                 'title' => 'Laporan Pembayaran DP',
@@ -105,12 +141,13 @@ class ReportExportController extends Controller
                     return [
                         $payment->order->order_number ?? '-',
                         $payment->order->user->name ?? '-',
-                        $payment->created_at->format('d M Y H:i'),
+                        $payment->created_at ? $payment->created_at->format('d M Y H:i') : '-',
                         $payment->verified_at ? $payment->verified_at->format('d M Y H:i') : '-',
                         'Rp ' . number_format($payment->amount, 0, ',', '.'),
-                        ucfirst($payment->status),
+                        $payment->status === 'verified' ? 'Terverifikasi' : 'Menunggu / Ditolak',
                     ];
                 })->all(),
+                'summary' => $summary,
             ];
         }
 
@@ -127,18 +164,30 @@ class ReportExportController extends Controller
             if ($status && $status !== 'semua') {
                 $query->where('status', $status);
             }
+            if ($method && $method !== 'semua') {
+                $query->where('method', $method);
+            }
         } elseif ($type === 'pelunasan') {
             if ($status === 'lunas') {
                 $query->whereRaw('estimated_price > 0 AND (select coalesce(sum(amount), 0) from payments where order_id = orders.id) >= estimated_price');
             } elseif ($status === 'belum_lunas') {
-                $query->whereRaw('(select coalesce(sum(amount), 0) from payments where order_id = orders.id) < estimated_price');
+                $query->whereRaw('estimated_price <= 0 OR (select coalesce(sum(amount), 0) from payments where order_id = orders.id) < estimated_price');
             }
         }
 
         $items = $query->get();
 
-        return match ($type) {
-            'pesanan', 'transaksi' => [
+        if ($type === 'pesanan' || $type === 'transaksi') {
+            $totalEstimated = $items->sum('estimated_price');
+            $totalDp = $items->sum('dp_amount');
+
+            $summary = [
+                'Total Data Pesanan'   => $items->count() . ' Data',
+                'Total Estimasi Biaya' => 'Rp ' . number_format($totalEstimated, 0, ',', '.'),
+                'Total DP Masuk'       => 'Rp ' . number_format($totalDp, 0, ',', '.'),
+            ];
+
+            return [
                 'title' => 'Laporan Pesanan Pelanggan',
                 'filename' => 'Laporan_Pesanan',
                 'headers' => ['No. Pesanan', 'Tanggal Pesan', 'Pelanggan', 'WhatsApp', 'Metode', 'Status', 'Total DP', 'Lunas', 'Tgl Janji'],
@@ -155,30 +204,80 @@ class ReportExportController extends Controller
                         optional($order->quota_date)->format('d M Y') ?? '-',
                     ];
                 })->all(),
-            ],
-            'pelunasan' => [
-                'title' => 'Laporan Pelunasan Pembayaran',
-                'filename' => 'Laporan_Pelunasan',
-                'headers' => ['No. Pesanan', 'Pelanggan', 'WhatsApp', 'Estimasi Harga', 'Total DP', 'Pelunasan', 'Total Dibayar', 'Sisa Tagihan', 'Status Pelunasan'],
-                'rows' => $items->map(function (Order $order) {
-                    $dpAmount = (float) $order->dp_amount;
-                    $finalAmount = (float) $order->final_payment_amount;
-                    $totalPaid = $dpAmount + $finalAmount;
-                    $remaining = (float) $order->estimated_price - $totalPaid;
+                'summary' => $summary,
+            ];
+        }
 
-                    return [
-                        $order->order_number,
-                        $order->user->name ?? '-',
-                        $order->user->phone_wa ?? '-',
-                        'Rp ' . number_format($order->estimated_price, 0, ',', '.'),
-                        'Rp ' . number_format($dpAmount, 0, ',', '.'),
-                        'Rp ' . number_format($finalAmount, 0, ',', '.'),
-                        'Rp ' . number_format($totalPaid, 0, ',', '.'),
-                        'Rp ' . number_format(max($remaining, 0), 0, ',', '.'),
-                        $order->payment_status_label ?? '-',
-                    ];
-                })->all(),
-            ],
-        };
+        // Pelunasan Summary
+        $totalEstimasi = 0;
+        $totalPaidAll = 0;
+        $totalRemaining = 0;
+        $lunasCount = 0;
+        $belumLunasCount = 0;
+
+        foreach ($items as $order) {
+            $est = (float) $order->estimated_price;
+            $paid = (float) $order->dp_amount + (float) $order->final_payment_amount;
+            $rem = max(0, $est - $paid);
+
+            $totalEstimasi += $est;
+            $totalPaidAll += $paid;
+            $totalRemaining += $rem;
+
+            if ($est > 0 && $paid >= $est) {
+                $lunasCount++;
+            } else {
+                $belumLunasCount++;
+            }
+        }
+
+        if ($status === 'lunas') {
+            $summary = [
+                'Total Data Pesanan Lunas' => $items->count() . ' Data',
+                'Total Estimasi Harga'     => 'Rp ' . number_format($totalEstimasi, 0, ',', '.'),
+                'Total Sudah Dibayar'      => 'Rp ' . number_format($totalPaidAll, 0, ',', '.'),
+            ];
+        } elseif ($status === 'belum_lunas') {
+            $summary = [
+                'Total Data Pesanan Belum Lunas' => $items->count() . ' Data',
+                'Total Estimasi Harga'           => 'Rp ' . number_format($totalEstimasi, 0, ',', '.'),
+                'Total Sudah Dibayar'            => 'Rp ' . number_format($totalPaidAll, 0, ',', '.'),
+                'Total Sisa Tagihan'             => 'Rp ' . number_format($totalRemaining, 0, ',', '.'),
+            ];
+        } else {
+            $summary = [
+                'Total Data Pesanan'   => $items->count() . ' Data',
+                'Sudah Lunas'          => $lunasCount . ' Data',
+                'Belum Lunas'          => $belumLunasCount . ' Data',
+                'Total Estimasi Harga' => 'Rp ' . number_format($totalEstimasi, 0, ',', '.'),
+                'Total Sudah Dibayar'  => 'Rp ' . number_format($totalPaidAll, 0, ',', '.'),
+                'Total Sisa Tagihan'   => 'Rp ' . number_format($totalRemaining, 0, ',', '.'),
+            ];
+        }
+
+        return [
+            'title' => 'Laporan Pelunasan Pembayaran',
+            'filename' => 'Laporan_Pelunasan',
+            'headers' => ['No. Pesanan', 'Pelanggan', 'WhatsApp', 'Estimasi Harga', 'Total DP', 'Pelunasan', 'Total Dibayar', 'Sisa Tagihan', 'Status Pelunasan'],
+            'rows' => $items->map(function (Order $order) {
+                $dpAmount = (float) $order->dp_amount;
+                $finalAmount = (float) $order->final_payment_amount;
+                $totalPaid = $dpAmount + $finalAmount;
+                $remaining = (float) $order->estimated_price - $totalPaid;
+
+                return [
+                    $order->order_number,
+                    $order->user->name ?? '-',
+                    $order->user->phone_wa ?? '-',
+                    'Rp ' . number_format($order->estimated_price, 0, ',', '.'),
+                    'Rp ' . number_format($dpAmount, 0, ',', '.'),
+                    'Rp ' . number_format($finalAmount, 0, ',', '.'),
+                    'Rp ' . number_format($totalPaid, 0, ',', '.'),
+                    'Rp ' . number_format(max($remaining, 0), 0, ',', '.'),
+                    $order->payment_status_label ?? '-',
+                ];
+            })->all(),
+            'summary' => $summary,
+        ];
     }
 }

@@ -29,7 +29,7 @@ const GoogleCallback = () => {
             if (user.role === 'owner' || user.role === 'admin') {
                 navigate('/');
             } else if (!user.phone_wa || !user.alamat) {
-                navigate('/complete-profile');
+                navigate('/profile/edit');
             } else {
                 navigate('/');
             }
