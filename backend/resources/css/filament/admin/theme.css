@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
 
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
 @import '../../../../vendor/filament/filament/resources/css/base.css';
 
-@source '../../../../app/Filament';
-@source '../../../../resources/views/filament';
-@source '../../../../vendor/filament/**/*.blade.php';
+@config 'tailwind.config.js';
 
 /* ============================================================
    ERA JAHIT — ADMIN PANEL PREMIUM THEME

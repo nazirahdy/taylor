@@ -29,8 +29,7 @@ class OwnerPanelProvider extends PanelProvider
             ->authGuard('owner')
             ->login(OwnerLogin::class)
             ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('2rem')
-            ->viteTheme('resources/css/filament/owner/theme.css')
+            ->brandLogoHeight('3rem')
             ->colors([
                 'primary' => Color::hex('#79D12A'),
             ])
