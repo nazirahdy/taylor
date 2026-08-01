@@ -369,7 +369,6 @@ class AuthController extends Controller
                 $user->update([
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
-                    'email_verified_at' => $user->email_verified_at ?? now(),
                 ]);
             } else {
                 $user = User::create([
@@ -379,8 +378,13 @@ class AuthController extends Controller
                     'avatar' => $googleUser->getAvatar(),
                     'password' => Hash::make(Str::random(16)),
                     'role' => 'customer',
-                    'email_verified_at' => now(),
                 ]);
+
+                try {
+                    event(new Registered($user));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Gagal mengirim email verifikasi (Google): ' . $e->getMessage());
+                }
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
