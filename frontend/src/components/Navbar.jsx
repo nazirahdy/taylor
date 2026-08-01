@@ -104,7 +104,7 @@ const Navbar = () => {
                     
                     {/* Logo */}
                     <Link to="/" onClick={(e) => handleNavClick(e, { hash: '#beranda' })} className="flex items-center group">
-                        <div className="h-20 md:h-24 w-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500 drop-shadow-md">
+                        <div className="h-12 md:h-14 w-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500 drop-shadow-md">
                             <img src="/logo.png" alt="Era Jahit Logo" className="h-full w-auto object-contain" />
                         </div>
                     </Link>
