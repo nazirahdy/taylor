@@ -9,7 +9,11 @@ const ScrollToTop = () => {
     const { pathname } = useLocation();
 
     useLayoutEffect(() => {
+        const html = document.documentElement;
+        const previousScrollBehavior = html.style.scrollBehavior;
+        html.style.scrollBehavior = 'auto';
         window.scrollTo(0, 0);
+        html.style.scrollBehavior = previousScrollBehavior;
     }, [pathname]);
 
     return null;

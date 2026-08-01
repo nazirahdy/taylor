@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, Map, PhoneCall, Clock, Send, MessageCircle, ChevronRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Contact = () => {
+    const { user } = useAuth();
     const [nama, setNama] = useState('');
     const [nomorWa, setNomorWa] = useState('');
     const [pesan, setPesan] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            setNama((prev) => prev || user.name || '');
+            setNomorWa((prev) => prev || user.phone_wa || '');
+        }
+    }, [user]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

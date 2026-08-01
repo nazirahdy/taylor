@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -111,6 +111,14 @@ const OrderForm = () => {
     const [mapsVerified, setMapsVerified] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [createdOrder, setCreatedOrder] = useState(null);
+
+    useLayoutEffect(() => {
+        const html = document.documentElement;
+        const previousScrollBehavior = html.style.scrollBehavior;
+        html.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+        html.style.scrollBehavior = previousScrollBehavior;
+    }, [step, showSuccess]);
 
     const [isLocked, setIsLocked] = useState(false);
     const [lockTimeRemaining, setLockTimeRemaining] = useState(0);
