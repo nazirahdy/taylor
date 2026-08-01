@@ -3,6 +3,7 @@ import { X, Loader2, ArrowRight, Maximize2, ChevronLeft, ChevronRight } from 'lu
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { STORAGE_URL } from '../config';
 
 const GallerySection = () => {
     const { user } = useAuth();
@@ -130,7 +131,7 @@ const GallerySection = () => {
                                     onClick={() => handleImageClick(item)}
                                 >
                                     <img
-                                        src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `http://localhost:8000/storage/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
+                                        src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `${STORAGE_URL}/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
                                         alt={item.title || 'Koleksi Era Jahit'}
                                         loading="lazy"
                                         decoding="async"
@@ -166,7 +167,7 @@ const GallerySection = () => {
                         
                         <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-surface relative group/modal">
                             <img 
-                                src={(allPhotos[currentPhotoIndex] || '').includes('http') ? allPhotos[currentPhotoIndex] : `http://localhost:8000/storage/${allPhotos[currentPhotoIndex]}`} 
+                                src={(allPhotos[currentPhotoIndex] || '').includes('http') ? allPhotos[currentPhotoIndex] : `${STORAGE_URL}/${allPhotos[currentPhotoIndex]}`} 
                                 alt={selectedImage.title || 'Preview'} 
                                 loading="lazy"
                                 decoding="async"

@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const AuthContext = createContext();
 
 
-axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.baseURL = API_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.common['Accept'] = 'application/json';
 
