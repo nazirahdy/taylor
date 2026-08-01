@@ -19,9 +19,16 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://erajahit.cloud','https://www.erajahit.cloud','http://localhost:5173'],
+    'allowed_origins' => [
+        'https://erajahit.cloud',
+        'https://www.erajahit.cloud',
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://taylor-.*\.vercel\.app$#',
+    ],
 
     'allowed_headers' => ['*'],
 
