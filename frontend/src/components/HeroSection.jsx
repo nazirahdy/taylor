@@ -15,22 +15,22 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-10 backdrop-blur-[1px]" />
 
       {/* Main Content */}
-      <div className="relative z-20 max-w-5xl animate-fade-in pt-20 flex flex-col items-center">
-      <span className="text-white uppercase tracking-[0.5em] text-[10px] md:text-[12px] font-bold mb-8 block font-sans drop-shadow-md">
+      <div className="relative z-20 max-w-3xl animate-fade-in pt-16 flex flex-col items-center">
+      <span className="text-white uppercase tracking-[0.4em] text-[9px] md:text-[11px] font-bold mb-5 block font-sans drop-shadow-md">
         Kualitas Jahitan Terbaik
       </span>
-      <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white leading-[0.9] mb-10 drop-shadow-2xl">
+      <h1 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-white leading-[1.05] mb-6 drop-shadow-2xl">
         Menciptakan <span className="italic font-light">Karakter</span><br />
         Busana Anda
       </h1>
-        <p className="text-white/70 text-lg md:text-xl font-body max-w-2xl mb-14 leading-relaxed drop-shadow-lg">
+        <p className="text-white/70 text-sm md:text-base font-body max-w-xl mb-8 leading-relaxed drop-shadow-lg">
           Di Era Jahit, kami mendefinisikan ulang kemewahan melalui jahitan tangan yang presisi, mengubah visi busana Anda menjadi karya yang menginspirasi
         </p>
-        <div className="flex flex-wrap justify-center gap-8">
-          <Link to="/gallery" className="px-12 py-5 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/30 flex items-center gap-3 font-sans text-[11px] uppercase tracking-widest group">
-            Jelajahi Portofolio <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link to="/gallery" className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/30 flex items-center gap-2 font-sans text-[10px] uppercase tracking-widest group">
+            Jelajahi Portofolio <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
-          <Link to="/contact" className="px-12 py-5 bg-white/10 backdrop-blur-md border border-white/30 text-white font-bold rounded-2xl hover:bg-white/20 transition-all flex items-center gap-3 font-sans text-[11px] uppercase tracking-widest shadow-xl">
+          <Link to="/contact" className="px-8 py-3.5 bg-white/10 backdrop-blur-md border border-white/30 text-white font-bold rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 font-sans text-[10px] uppercase tracking-widest shadow-xl">
             Hubungi Kami
           </Link>
         </div>

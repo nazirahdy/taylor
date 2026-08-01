@@ -94,8 +94,8 @@ const Navbar = () => {
     const isTransparent = isHome && !isScrolled;
 
     const navbarBgClass = !isTransparent
-        ? 'bg-white/95 shadow-sm py-2 border-b border-border' 
-        : 'bg-transparent py-4 border-b border-transparent';
+        ? 'bg-white/95 shadow-sm py-2 border-b border-border'
+        : 'bg-transparent py-3 border-b border-transparent';
         
     return (
         <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 backdrop-blur-md ${navbarBgClass}`}>
@@ -104,13 +104,13 @@ const Navbar = () => {
                     
                     {/* Logo */}
                     <Link to="/" onClick={(e) => handleNavClick(e, { hash: '#beranda' })} className="flex items-center group">
-                        <div className="h-12 md:h-14 w-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500 drop-shadow-md">
+                        <div className="h-9 md:h-10 w-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500 drop-shadow-md">
                             <img src="/logo.png" alt="Era Jahit Logo" className="h-full w-auto object-contain" />
                         </div>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-12">
+                    <div className="hidden lg:flex items-center gap-8">
                         {navItems.map((item) => (
                             <Link 
                                 key={item.name} 
@@ -132,29 +132,29 @@ const Navbar = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="hidden md:flex items-center gap-8">
+                    <div className="hidden md:flex items-center gap-6">
                         {!user ? (
-                            <Link 
-                                to="/login" 
-                                className="px-10 py-3.5 bg-primary text-white rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 font-sans"
+                            <Link
+                                to="/login"
+                                className="px-7 py-2.5 bg-primary text-white rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 font-sans"
                             >
                                 Masuk / Daftar
                             </Link>
                         ) : (
-                            <div className={`flex items-center gap-6 border-l pl-8 ${isTransparent ? 'border-white/20' : 'border-border'}`}>
+                            <div className={`flex items-center gap-4 border-l pl-6 ${isTransparent ? 'border-white/20' : 'border-border'}`}>
                                 <Link to="/dashboard" className="flex flex-col items-end group">
-                                    <span className={`text-[10px] uppercase tracking-widest font-bold font-sans ${isTransparent ? 'text-white/80' : 'text-text-muted'}`}>Portal Pelanggan</span>
-                                    <span className={`text-sm font-display font-bold transition-colors ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-primary group-hover:text-primary'}`}>{user.name?.split(' ')[0]}</span>
+                                    <span className={`text-[9px] uppercase tracking-widest font-bold font-sans ${isTransparent ? 'text-white/80' : 'text-text-muted'}`}>Portal Pelanggan</span>
+                                    <span className={`text-xs font-display font-bold transition-colors ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-primary group-hover:text-primary'}`}>{user.name?.split(' ')[0]}</span>
                                 </Link>
                                 <div className="relative">
-                                    <button 
+                                    <button
                                         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                        className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-all group overflow-hidden ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}
+                                        className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all group overflow-hidden ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}
                                     >
                                         {user.avatar ? (
                                             <img src={user.avatar} alt="Profil" className="w-full h-full object-cover" />
                                         ) : (
-                                            <User className={`w-5 h-5 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
+                                            <User className={`w-4 h-4 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
                                         )}
                                     </button>
                                     
@@ -210,39 +210,39 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div className={`lg:hidden absolute top-full left-0 w-full bg-white/98 backdrop-blur-2xl border-b border-border transition-all duration-700 ease-in-out overflow-hidden
-                ${isMobileMenuOpen ? 'max-h-[90vh] py-12 shadow-2xl' : 'max-h-0 py-0'}
+                ${isMobileMenuOpen ? 'max-h-[90vh] py-6 shadow-2xl overflow-y-auto' : 'max-h-0 py-0'}
             `}>
-                <div className="container mx-auto px-10 flex flex-col gap-4">
+                <div className="container mx-auto px-6 flex flex-col gap-1">
                     {navItems.map((item) => (
-                        <Link 
-                            key={item.name} 
+                        <Link
+                            key={item.name}
                             to={item.path + item.hash}
                             onClick={(e) => handleNavClick(e, item)}
                             className={`
-                                py-5 text-2xl font-display font-bold border-b border-border flex justify-between items-center transition-all
-                                ${isActive(item) ? (isTransparent ? 'text-white pl-4' : 'text-primary pl-4') : (isTransparent ? 'text-white/70' : 'text-text-secondary')}
+                                py-3 text-base font-display font-bold border-b border-border flex justify-between items-center transition-all
+                                ${isActive(item) ? 'text-primary pl-3' : 'text-text-secondary'}
                             `}
                         >
                             {item.name}
-                            <span className="text-[10px] text-primary/30 font-sans font-bold">0{navItems.indexOf(item) + 1}</span>
+                            <span className="text-[9px] text-primary/30 font-sans font-bold">0{navItems.indexOf(item) + 1}</span>
                         </Link>
                     ))}
-                    
-                    <div className="mt-12 flex flex-col gap-4">
+
+                    <div className="mt-6 flex flex-col gap-3">
                         {user ? (
                             <>
-                                <Link to="/dashboard" className="w-full py-6 text-center rounded-2xl bg-primary text-white font-bold uppercase tracking-[0.2em] text-[11px] shadow-xl shadow-primary/20 font-sans">
+                                <Link to="/dashboard" className="w-full py-3.5 text-center rounded-xl bg-primary text-white font-bold uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-primary/20 font-sans">
                                     Dashboard Pelanggan
                                 </Link>
-                                <Link to="/profile/edit" className="w-full py-6 text-center rounded-2xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[11px] bg-surface font-sans">
+                                <Link to="/profile/edit" className="w-full py-3.5 text-center rounded-xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[10px] bg-surface font-sans">
                                     Kelola Profil
                                 </Link>
-                                <button onClick={logout} className="w-full py-6 text-center rounded-2xl border border-red-100 text-red-500 font-bold uppercase tracking-[0.2em] text-[11px] bg-red-50 font-sans mt-4 flex items-center justify-center gap-2">
+                                <button onClick={logout} className="w-full py-3.5 text-center rounded-xl border border-red-100 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px] bg-red-50 font-sans mt-2 flex items-center justify-center gap-2">
                                     <LogOut className="w-4 h-4" /> Keluar Akun
                                 </button>
                             </>
                         ) : (
-                            <Link to="/login" className="w-full py-6 text-center rounded-2xl bg-primary text-white font-bold uppercase tracking-[0.2em] text-[11px] shadow-xl shadow-primary/20 font-sans">
+                            <Link to="/login" className="w-full py-3.5 text-center rounded-xl bg-primary text-white font-bold uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-primary/20 font-sans">
                                 Masuk / Daftar
                             </Link>
                         )}
