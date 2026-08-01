@@ -29,11 +29,11 @@ const Services = () => {
         <div className="bg-white min-h-screen text-text-primary pb-20">
 
             {/* HEADER SERVICES */}
-            <section className="pt-48 pb-32 relative overflow-hidden bg-surface">
+            <section className="pt-32 pb-16 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 text-center animate-fade-in relative z-10">
                     <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block"></span>
-                    <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 text-text-primary">Layanan Jahit</h1>
+                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-8 text-text-primary">Layanan Jahit</h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
                         Kami menyediakan dua metode layanan yang dirancang sesuai kebutuhan Anda, memadukan keahlian tradisional dengan sentuhan modern untuk busana yang sempurna
                     </p>
@@ -122,7 +122,7 @@ const Services = () => {
             </section>
 
             {/* COMPARISON */}
-            <section className="py-32 bg-surface">
+            <section className="py-20 bg-surface">
                 <div className="container mx-auto px-4 md:px-12">
                     <div className="max-w-4xl mx-auto">
                         <div className="text-center mb-16">

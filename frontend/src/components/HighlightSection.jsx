@@ -3,12 +3,12 @@ import { Settings, Ruler, MapPin, Star } from 'lucide-react';
 
 const HighlightSection = () => {
   return (
-    <section className="bg-white py-32 px-4 md:px-20" id="gallery">
+    <section className="bg-white py-20 px-4 md:px-20" id="gallery">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 animate-fade-in">
           <div className="max-w-xl">
             <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-4 block">Karya Kami</span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-text-primary">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-text-primary">
               Galeri Desain
             </h2>
           </div>

@@ -61,7 +61,7 @@ const OrderDetail = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-32">
+        <div className="min-h-screen bg-white text-text-primary py-20">
             <div className="container mx-auto px-4 max-w-7xl">
                 
                 {/* Header Actions */}

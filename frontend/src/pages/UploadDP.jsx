@@ -86,7 +86,7 @@ const UploadDP = () => {
     };
 
     return (
-        <div className="min-h-screen bg-surface flex items-center justify-center p-6 py-32">
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6 py-20">
             <div className="w-full max-w-2xl bg-white border border-border shadow-2xl rounded-[3rem] overflow-hidden animate-slide-up">
                 
                 {/* Header Section */}

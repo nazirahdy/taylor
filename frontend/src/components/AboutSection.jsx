@@ -11,7 +11,7 @@ const AboutSection = () => {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 animate-fade-in">
                     <div className="max-w-xl">
                         <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block">Warisan Kami</span>
-                        <h2 className="text-4xl md:text-5xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h2>
+                        <h2 className="text-3xl md:text-4xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h2>
                         <div className="h-1.5 w-24 bg-primary rounded-full"></div>
                     </div>
                     <p className="text-text-secondary text-lg max-w-md leading-relaxed font-body">

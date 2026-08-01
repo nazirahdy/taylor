@@ -22,7 +22,7 @@ const ServicesSection = () => {
         <section className="bg-white py-24 scroll-mt-16" id="services">
             <div className="container mx-auto px-4 md:px-12 text-center mb-14 animate-fade-in">
                 <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block font-sans">Keahlian Kami</span>
-                <h2 className="text-5xl md:text-6xl font-display font-bold mb-5 text-text-primary">Layanan Jahit</h2>
+                <h2 className="text-3xl md:text-4xl font-display font-bold mb-5 text-text-primary">Layanan Jahit</h2>
                 <p className="text-text-secondary text-base max-w-xl mx-auto leading-relaxed font-body">
                     Kami menyediakan dua metode layanan yang dirancang sesuai kebutuhan Anda, memadukan keahlian tradisional dengan sentuhan modern.
                 </p>

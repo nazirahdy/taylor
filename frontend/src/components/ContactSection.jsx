@@ -27,7 +27,7 @@ const ContactSection = () => {
             <div className="container mx-auto px-4 md:px-12">
                 <div className="text-center mb-14 animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block font-sans">Hubungi Kami</span>
-                    <h2 className="text-4xl md:text-6xl font-display font-bold mb-5 leading-tight text-text-primary">
+                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-5 leading-tight text-text-primary">
                         Konsultasi Gratis
                     </h2>
                     <p className="text-text-secondary text-base max-w-xl mx-auto leading-relaxed font-body">

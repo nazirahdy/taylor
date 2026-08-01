@@ -51,11 +51,11 @@ const ForgotPassword = () => {
 
                 <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-10">
                     <div className="w-full max-w-md animate-fade-in">
-                        <div className="mb-14">
+                        <div className="mb-10">
                             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <KeyRound className="w-8 h-8 text-primary" />
                             </div>
-                            <h2 className="text-5xl font-display font-bold mb-5 text-text-primary">Lupa Kata Sandi?</h2>
+                            <h2 className="text-3xl font-display font-bold mb-5 text-text-primary">Lupa Kata Sandi?</h2>
                             <p className="text-text-secondary text-sm font-body">Masukkan email Anda dan kami akan mengirimkan tautan untuk mereset kata sandi</p>
                         </div>
 
@@ -73,14 +73,14 @@ const ForgotPassword = () => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-10">
-                            <div className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-3">
                                 <label className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-primary font-bold ml-1 font-sans">
                                     <Mail className="w-4 h-4" /> Alamat Email
                                 </label>
                                 <input
                                     type="email"
-                                    className="w-full px-8 py-6 bg-surface border border-border rounded-2xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
+                                    className="w-full px-5 py-3.5 bg-surface border border-border rounded-2xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
                                     placeholder="nama@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -91,7 +91,7 @@ const ForgotPassword = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-6 mt-6 bg-primary text-white uppercase tracking-[0.2em] text-sm font-bold rounded-2xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/20 flex justify-center items-center disabled:opacity-50 font-sans group"
+                                className="w-full py-4 mt-4 bg-primary text-white uppercase tracking-[0.2em] text-sm font-bold rounded-2xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/20 flex justify-center items-center disabled:opacity-50 font-sans group"
                             >
                                 {isLoading
                                     ? <Loader2 className="w-6 h-6 animate-spin" />
@@ -100,7 +100,7 @@ const ForgotPassword = () => {
                             </button>
                         </form>
 
-                        <p className="mt-16 text-center text-text-muted text-[11px] uppercase tracking-[0.3em] font-bold font-sans">
+                        <p className="mt-10 text-center text-text-muted text-[11px] uppercase tracking-[0.3em] font-bold font-sans">
                             Ingat kata sandi Anda?{' '}
                             <Link to="/login" className="text-primary hover:text-text-primary transition-colors ml-2 underline underline-offset-8">
                                 Masuk

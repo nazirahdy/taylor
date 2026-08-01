@@ -118,13 +118,13 @@ const Profile = () => {
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-32">
+        <div className="min-h-screen bg-white text-text-primary py-20">
             <div className="container mx-auto px-4 max-w-6xl">
                 
                 <div className="mb-16 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
                     <div>
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Akun Saya</span>
-                        <h1 className="text-4xl md:text-6xl font-display font-bold text-text-primary mb-4">Profil & Data Ukuran</h1>
+                        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-4">Profil & Data Ukuran</h1>
                         <p className="text-text-secondary font-body max-w-2xl mx-auto md:mx-0">Kelola data pribadi, ukuran badan, dan keamanan akun Anda</p>
                     </div>
                     <div className="flex items-center gap-4">

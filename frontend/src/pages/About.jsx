@@ -12,7 +12,7 @@ const About = () => {
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
                         <div className="max-w-xl animate-fade-in">
                             <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block">Warisan Kami</span>
-                            <h1 className="text-4xl md:text-5xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h1>
+                            <h1 className="text-3xl md:text-4xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h1>
                             <div className="h-1.5 w-24 bg-primary rounded-full"></div>
                         </div>
                         <p className="text-text-secondary text-lg max-w-md leading-relaxed animate-fade-in delay-200 font-body">

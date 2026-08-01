@@ -74,7 +74,7 @@ const GallerySection = () => {
         <section className="bg-white py-25 scroll-mt-16" id="gallery">
             <div className="container mx-auto px-4 md:px-12 text-center mb-10 animate-fade-in">
                 <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Portofolio Kami</span>
-                <h2 className="text-5xl md:text-7xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h2>
+                <h2 className="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h2>
                 <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
                     Jelajahi koleksi busana pilihan dari Era Jahit. 
                     Setiap karya mencerminkan dedikasi kami pada kualitas dan keindahan.
@@ -101,12 +101,12 @@ const GallerySection = () => {
 
                 {/* Gallery Grid */}
                 {loading ? (
-                    <div className="w-full flex flex-col items-center justify-center py-40 text-text-muted gap-6">
+                    <div className="w-full flex flex-col items-center justify-center py-24 text-text-muted gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-primary" />
                         <p className="font-sans uppercase tracking-[0.4em] text-[11px] font-bold">Memuat Koleksi...</p>
                     </div>
                 ) : filteredModels.length === 0 ? (
-                    <div className="w-full flex flex-col items-center justify-center py-40 text-text-muted bg-surface border border-dashed border-border rounded-[2rem]">
+                    <div className="w-full flex flex-col items-center justify-center py-24 text-text-muted bg-surface border border-dashed border-border rounded-[2rem]">
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini.</p>
                     </div>
                 ) : (

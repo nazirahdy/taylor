@@ -62,13 +62,13 @@ const FAQ = () => {
         <div className="bg-white min-h-screen text-text-primary">
             
             {/* Header FAQ */}
-            <section className="pt-48 pb-32 relative overflow-hidden bg-surface border-b border-border">
+            <section className="pt-32 pb-16 relative overflow-hidden bg-surface border-b border-border">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
                         <div className="max-w-3xl animate-fade-in">
                             <span className="text-primary uppercase tracking-[0.4em] text-[13px] font-bold mb-6 block">Pusat Informasi</span>
-                            <h1 className="text-6xl md:text-8xl font-display font-bold leading-none mb-8 text-text-primary">Pertanyaan Umum</h1>
+                            <h1 className="text-3xl md:text-5xl font-display font-bold leading-none mb-8 text-text-primary">Pertanyaan Umum</h1>
                             <div className="h-1.5 w-24 bg-primary rounded-full mb-8"></div>
                             <p className="text-text-secondary text-lg leading-relaxed max-w-xl font-body">
                                 Temukan jawaban atas pertanyaan umum seputar layanan, proses, dan pemesanan busana di Era Jahit

@@ -11,12 +11,12 @@ const FeaturedServices = () => {
   ];
 
   return (
-    <section className="bg-white py-40 px-6 md:px-16" id="categories">
+    <section className="bg-white py-24 px-6 md:px-16" id="categories">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12 animate-fade-in">
           <div className="max-w-2xl">
             <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-6 block font-sans">Keahlian Kami</span>
-            <h2 className="text-5xl md:text-7xl font-display font-bold text-text-primary leading-tight">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-text-primary leading-tight">
               Gaya <span className="italic font-light">Busana</span> Pilihan untuk Anda
             </h2>
           </div>

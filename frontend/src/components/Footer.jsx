@@ -14,7 +14,7 @@ const Footer = () => {
                 <div className="absolute inset-0 z-10 bg-primary/40 backdrop-blur-[2px]" />
                 <div className="relative z-20 max-w-4xl animate-fade-in flex flex-col items-center px-6">
                     <span className="text-white uppercase tracking-[0.5em] text-[12px] font-bold mb-6 font-sans drop-shadow-lg">Mari Ciptakan Karya Terbaik</span>
-                    <h2 className="text-4xl md:text-6xl font-display font-bold text-white leading-tight mb-12 drop-shadow-2xl">
+                    <h2 className="text-3xl md:text-4xl font-display font-bold text-white leading-tight mb-12 drop-shadow-2xl">
                         Mewujudkan Visi Busana <br /> Anda Menjadi Nyata
                     </h2>
                     <div className="flex flex-wrap justify-center gap-6">

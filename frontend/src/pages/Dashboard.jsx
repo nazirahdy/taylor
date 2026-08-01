@@ -52,14 +52,14 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-32">
+        <div className="min-h-screen bg-white text-text-primary py-20">
             <div className="container mx-auto px-4 max-w-6xl">
                 
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
                     <div className="animate-fade-in">
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Portal Pesanan</span>
-                        <h1 className="text-4xl md:text-6xl font-display font-bold text-text-primary mb-2">Selamat Datang, {user?.name?.split(' ')[0] || 'Pelanggan'}</h1>
+                        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-2">Selamat Datang, {user?.name?.split(' ')[0] || 'Pelanggan'}</h1>
                         <p className="text-text-secondary font-body text-sm">Pantau progres jahitan Anda dan kelola konsultasi desain busana Anda</p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0 animate-fade-in">
@@ -100,7 +100,7 @@ const Dashboard = () => {
                                 {stat.icon}
                             </div>
                             <p className="text-text-muted font-bold text-[11px] uppercase tracking-[0.2em] mb-3 font-sans">{stat.label}</p>
-                            <h3 className="text-5xl font-display font-bold text-text-primary">{stat.value}</h3>
+                            <h3 className="text-3xl font-display font-bold text-text-primary">{stat.value}</h3>
                         </div>
                     ))}
                 </div>

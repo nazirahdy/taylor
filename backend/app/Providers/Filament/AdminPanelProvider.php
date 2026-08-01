@@ -31,8 +31,9 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->login(CustomLogin::class)
             ->brandLogo(asset('images/logo.png'))
-            ->brandLogoHeight('3rem')
+            ->brandLogoHeight('2rem')
             ->favicon(asset('images/logo.png'))
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::hex('#79D12A'),
             ])

@@ -26,11 +26,11 @@ const Contact = () => {
         <div className="bg-white min-h-screen text-text-primary">
 
             {/* HERO SECTION CONTACT */}
-            <section className="relative pt-48 pb-32 overflow-hidden bg-surface">
+            <section className="relative pt-32 pb-16 overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[13px] font-bold mb-6 block">Hubungi Kami</span>
-                    <h1 className="text-5xl md:text-7xl font-display font-bold mb-8 leading-tight text-text-primary">
+                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight text-text-primary">
                         Konsultasi Gratis
                     </h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
@@ -40,7 +40,7 @@ const Contact = () => {
                 </div>
             </section>
 
-            <div className="py-32">
+            <div className="py-20">
                 <div className="container mx-auto px-4 md:px-12">
                     <div className="grid lg:grid-cols-5 gap-16">
 

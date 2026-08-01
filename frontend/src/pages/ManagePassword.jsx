@@ -47,7 +47,7 @@ const ManagePassword = () => {
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-32">
+        <div className="min-h-screen bg-white text-text-primary py-20">
             <div className="container mx-auto px-4 max-w-3xl">
                 
                 <div className="mb-12">
@@ -55,7 +55,7 @@ const ManagePassword = () => {
                         <ArrowLeft className="w-4 h-4" /> Kembali
                     </button>
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Keamanan</span>
-                    <h1 className="text-4xl md:text-5xl font-display font-bold text-text-primary mb-4">Pengaturan Sandi</h1>
+                    <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-4">Pengaturan Sandi</h1>
                     <p className="text-text-secondary font-body">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun</p>
                 </div>
 
