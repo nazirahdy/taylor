@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, CreditCard, Layers, Ruler, Clock } from 'lucide-react';
+import { STORAGE_URL } from '../../config';
 
 const OrderInfo = ({ order }) => {
     if (!order) return null;
@@ -107,8 +108,8 @@ const OrderInfo = ({ order }) => {
                         <div className="w-full overflow-hidden rounded-2xl border border-border shadow-md hover:shadow-lg transition-all duration-300">
                             <img 
                                 src={order.design_image_path.includes('http') 
-                                    ? order.design_image_path.replace('http://localhost/storage', 'http://localhost:8000/storage') 
-                                    : `http://localhost:8000/storage/${order.design_image_path}`} 
+                                    ? order.design_image_path.replace('http://localhost/storage', STORAGE_URL) 
+                                    : `${STORAGE_URL}/${order.design_image_path}`} 
                                 alt="Referensi Desain" 
                                 className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500"
                             />

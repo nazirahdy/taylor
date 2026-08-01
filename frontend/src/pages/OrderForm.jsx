@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
+import { STORAGE_URL } from '../config';
 import { ChevronRight, ArrowLeft, CheckCircle2, Home, Store, Calendar as CalendarIcon, Save, UploadCloud, MapPin, ExternalLink, Clock, Search, X, Loader2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -480,7 +481,7 @@ const OrderForm = () => {
                         <span className="text-primary text-xs font-semibold block mb-3">Desain Terpilih dari Galeri</span>
                         <div className="flex gap-6 items-center">
                             <img 
-                                src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `http://localhost:8000/storage/${selectedGalleryItem.image_path}`} 
+                                src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `${STORAGE_URL}/${selectedGalleryItem.image_path}`} 
                                 alt={selectedGalleryItem.title} 
                                 className="w-24 h-32 object-cover rounded-2xl border border-border shadow-md"
                             />
@@ -551,7 +552,7 @@ const OrderForm = () => {
                                             className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border bg-surface hover:border-primary transition-all text-left"
                                         >
                                             <img 
-                                                src={item.image_path.includes('http') ? item.image_path : `http://localhost:8000/storage/${item.image_path}`} 
+                                                src={item.image_path.includes('http') ? item.image_path : `${STORAGE_URL}/${item.image_path}`} 
                                                 alt={item.title} 
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
@@ -1005,7 +1006,7 @@ const OrderForm = () => {
                         <span className="text-text-muted text-xs block mb-2">Referensi Desain dari Galeri</span>
                         <div className="bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm inline-block">
                             <img 
-                                src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `http://localhost:8000/storage/${selectedGalleryItem.image_path}`} 
+                                src={selectedGalleryItem.image_path.includes('http') ? selectedGalleryItem.image_path : `${STORAGE_URL}/${selectedGalleryItem.image_path}`} 
                                 alt={selectedGalleryItem.title} 
                                 className="max-h-48 object-contain rounded-xl" 
                             />
