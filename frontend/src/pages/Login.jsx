@@ -59,8 +59,8 @@ const Login = () => {
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent"></div>
                 <div className="relative z-10 max-w-lg px-10 text-center">
-                    <span className="text-primary uppercase tracking-[0.5em] text-[12px] font-bold mb-8 block font-sans">Akses Masuk</span>
-                    <h1 className="text-8xl font-display font-bold mb-10 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
+                    <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-5 block font-sans">Akses Masuk</span>
+                    <h1 className="text-4xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <p className="text-text-secondary leading-relaxed text-sm font-body max-w-sm mx-auto">
                         Masuk ke dashboard pesanan eksklusif Anda dan pantau progres jahitan Anda secara real-time
                     </p>
@@ -82,10 +82,10 @@ const Login = () => {
                 </div>
 
                 {/* Form — flex-1 + flex center agar konten benar-benar di tengah sisa ruang */}
-                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-17">
+                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-12">
                     <div className="w-full max-w-md animate-fade-in">
-                        <div className="mb-14">
-                            <h2 className="text-5xl font-display font-bold mb-5 text-text-primary">Selamat Datang</h2>
+                        <div className="mb-10">
+                            <h2 className="text-3xl font-display font-bold mb-3 text-text-primary">Selamat Datang</h2>
                             <p className="text-text-secondary text-sm font-body">Silakan masukkan email dan kata sandi Anda untuk mengakses portal</p>
                         </div>
 
@@ -96,14 +96,14 @@ const Login = () => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-10">
-                            <div className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-3">
                                 <label className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-primary font-bold ml-1 font-sans">
                                     <User className="w-4 h-4" /> Alamat Email
                                 </label>
                                 <input
                                     type="email"
-                                    className="w-full px-8 py-6 bg-surface border border-border rounded-2xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
+                                    className="w-full px-5 py-3.5 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
                                     placeholder="nama@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -111,13 +111,13 @@ const Login = () => {
                                 />
                             </div>
 
-                            <div className="space-y-5">
+                            <div className="space-y-3">
                                 <label className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-primary font-bold ml-1 font-sans">
                                     <Key className="w-4 h-4" /> Kata Sandi
                                 </label>
                                 <input
                                     type="password"
-                                    className="w-full px-8 py-6 bg-surface border border-border rounded-2xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
+                                    className="w-full px-5 py-3.5 bg-surface border border-border rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-text-muted/30 font-body"
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -125,9 +125,9 @@ const Login = () => {
                                 />
                             </div>
 
-                            <div className="flex justify-between items-center text-[11px] uppercase tracking-widest font-bold font-sans">
-                                <label className="flex items-center gap-3 cursor-pointer text-text-muted hover:text-text-primary transition-colors group">
-                                    <input type="checkbox" className="w-5 h-5 rounded-lg border-border bg-surface text-primary focus:ring-0 transition-all cursor-pointer" />
+                            <div className="flex justify-between items-center text-[10px] uppercase tracking-widest font-bold font-sans">
+                                <label className="flex items-center gap-2 cursor-pointer text-text-muted hover:text-text-primary transition-colors group">
+                                    <input type="checkbox" className="w-4 h-4 rounded-lg border-border bg-surface text-primary focus:ring-0 transition-all cursor-pointer" />
                                     <span>Ingat Saya</span>
                                 </label>
                                 <Link to="/forgot-password" className="text-text-muted hover:text-primary transition-colors">Lupa kata sandi?</Link>
@@ -136,24 +136,24 @@ const Login = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-6 mt-6 bg-primary text-white uppercase tracking-[0.2em] text-sm font-bold rounded-2xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/20 flex justify-center items-center disabled:opacity-50 font-sans group"
+                                className="w-full py-4 mt-4 bg-primary text-white uppercase tracking-[0.2em] text-xs font-bold rounded-xl hover:bg-primary-dark transition-all shadow-2xl shadow-primary/20 flex justify-center items-center disabled:opacity-50 font-sans group"
                             >
                                 {isLoading
-                                    ? <Loader2 className="w-6 h-6 animate-spin" />
-                                    : <div className="flex items-center gap-4">Masuk Sekarang <ShieldCheck className="w-5 h-5 group-hover:scale-110 transition-transform" /></div>
+                                    ? <Loader2 className="w-5 h-5 animate-spin" />
+                                    : <div className="flex items-center gap-3">Masuk Sekarang <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" /></div>
                                 }
                             </button>
 
-                            <div className="relative my-8 flex items-center justify-center">
+                            <div className="relative my-5 flex items-center justify-center">
                                 <div className="border-t border-border w-full"></div>
-                                <span className="bg-white px-4 text-[11px] uppercase tracking-widest font-bold text-text-muted shrink-0 font-sans">atau</span>
+                                <span className="bg-white px-4 text-[10px] uppercase tracking-widest font-bold text-text-muted shrink-0 font-sans">atau</span>
                                 <div className="border-t border-border w-full"></div>
                             </div>
 
                             <button
                                 type="button"
                                 onClick={handleGoogleLogin}
-                                className="w-full py-5 bg-surface border border-border text-text-primary uppercase tracking-[0.15em] text-xs font-bold rounded-2xl hover:bg-slate-100 transition-all flex justify-center items-center gap-3 font-sans shadow-sm"
+                                className="w-full py-3.5 bg-surface border border-border text-text-primary uppercase tracking-[0.15em] text-[11px] font-bold rounded-xl hover:bg-slate-100 transition-all flex justify-center items-center gap-3 font-sans shadow-sm"
                             >
                                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -165,7 +165,7 @@ const Login = () => {
                             </button>
                         </form>
 
-                        <p className="mt-16 text-center text-text-muted text-[11px] uppercase tracking-[0.3em] font-bold font-sans">
+                        <p className="mt-10 text-center text-text-muted text-[11px] uppercase tracking-[0.3em] font-bold font-sans">
                             Belum punya akun?{' '}
                             <Link to="/register" className="text-primary hover:text-text-primary transition-colors ml-2 underline underline-offset-8">
                                 Daftar Sekarang

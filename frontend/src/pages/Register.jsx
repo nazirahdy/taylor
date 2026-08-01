@@ -57,8 +57,8 @@ const Register = () => {
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent"></div>
                 <div className="relative z-10 max-w-lg px-10 text-center">
-                    <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-6 block">Bergabung Bersama Kami</span>
-                    <h1 className="text-7xl font-display font-bold mb-10 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
+                    <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block">Bergabung Bersama Kami</span>
+                    <h1 className="text-4xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <div className="space-y-6 text-left">
                         {[
                             "Konsultasi desain busana custom",

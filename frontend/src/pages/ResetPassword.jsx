@@ -59,8 +59,8 @@ const ResetPassword = () => {
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent"></div>
                 <div className="relative z-10 max-w-lg px-10 text-center">
-                    <span className="text-primary uppercase tracking-[0.5em] text-[12px] font-bold mb-8 block font-sans">Kata Sandi Baru</span>
-                    <h1 className="text-8xl font-display font-bold mb-10 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
+                    <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-5 block font-sans">Kata Sandi Baru</span>
+                    <h1 className="text-4xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <p className="text-text-secondary leading-relaxed text-sm font-body max-w-sm mx-auto">
                         Buat kata sandi baru yang kuat untuk melindungi akun Anda
                     </p>
