@@ -37,6 +37,19 @@ class WhatsAppService
     public function getMessageConfirmed($order): string
     {
         $customerName = $order->user?->name ?? 'Pelanggan';
+        $tanggal = $order->quota_date ? $order->quota_date->locale('id')->translatedFormat('d F Y') : 'yang telah dijadwalkan';
+
+        if ($order->method === 'home_service') {
+            $alamat = $order->visit_address ?: 'alamat yang telah Anda berikan saat pemesanan';
+            $detailPesan = "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim penjahit kami akan *datang langsung ke lokasi Anda* pada tanggal *{$tanggal}* untuk konsultasi desain & pengukuran badan.\n\n"
+                         . "📍 *Alamat Kunjungan:* {$alamat}\n\n"
+                         . "Mohon pastikan Anda berada di lokasi tersebut pada tanggal yang telah dijadwalkan ya. Terima kasih!";
+        } else {
+            $detailPesan = "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Silakan *datang langsung ke Studio Era Jahit* pada tanggal *{$tanggal}* untuk konsultasi desain & pengukuran badan.\n\n"
+                         . "📍 *Alamat Studio:* Jl. Sungai Balang, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat\n\n"
+                         . "Setelah sesi pengukuran selesai, Admin akan memperbarui status pesanan dan status pembayaran Anda. Terima kasih!";
+        }
+
         return "👋 *Halo {$customerName},* \n\n"
              . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
@@ -44,7 +57,7 @@ class WhatsAppService
              . "*Status Saat Ini:* *DIKONFIRMASI* \n"
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan dari Admin:\n"
-             . "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim desainer dan penjahit kami akan segera memproses pembuatan busana Anda sesuai dengan detail desain & ukuran yang disepakati\n\n"
+             . "{$detailPesan}\n\n"
              . "Terima kasih banyak atas kepercayaan Anda kepada Era Jahit Studio!"
              . $this->messageFooter();
     }
