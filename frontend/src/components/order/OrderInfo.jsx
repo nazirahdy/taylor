@@ -21,13 +21,13 @@ const OrderInfo = ({ order }) => {
     };
 
     return (
-        <div className="bg-surface rounded-[2.5rem] p-10 md:p-14 border border-border shadow-sm relative overflow-hidden">
+        <div className="bg-surface rounded-[1.75rem] p-6 md:p-8 border border-border shadow-sm relative overflow-hidden">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -z-0"></div>
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16 relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
                 <div>
-                    <h2 className="text-3xl md:text-5xl font-display font-bold text-text-primary mb-3">Nomor Pesanan EJ-{order.id}</h2>
+                    <h2 className="text-3xl md:text-3xl font-display font-bold text-text-primary mb-3">Nomor Pesanan EJ-{order.id}</h2>
                     <div className="flex items-center gap-3 text-text-muted text-[11px] font-bold uppercase tracking-widest font-sans">
                         <Calendar className="w-4 h-4" />
                         Dimulai pada {new Date(order.created_at || order.order_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -47,9 +47,9 @@ const OrderInfo = ({ order }) => {
             </div>
 
             {order.method === 'home_service' && order.status === 'pending' && (
-                <div className="mb-12 relative z-10">
+                <div className="mb-7 relative z-10">
                     {(!order.estimated_price || Number(order.estimated_price) <= 0) ? (
-                        <div className="p-8 bg-surface border border-border rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+                        <div className="p-8 bg-surface border border-border rounded-[1.5rem] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center shrink-0 border border-amber-500/20">
                                     <Clock className="w-6 h-6 text-amber-600 animate-pulse" />
@@ -62,7 +62,7 @@ const OrderInfo = ({ order }) => {
                             <span className="px-5 py-2.5 bg-amber-500/10 text-amber-700 rounded-xl font-bold uppercase tracking-widest text-[10px] font-sans border border-amber-500/20 shrink-0">Menunggu Tinjauan</span>
                         </div>
                     ) : !order.dp_proof_path ? (
-                        <div className="p-8 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="p-8 bg-primary/5 border border-primary/20 rounded-[1.5rem] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 border border-primary/20">
                                     <CreditCard className="w-6 h-6 text-primary" />
@@ -101,9 +101,9 @@ const OrderInfo = ({ order }) => {
                 </div>
             </div>
 
-            <div className="mt-16 pt-16 border-t border-border relative z-10">
+            <div className="mt-8 pt-16 border-t border-border relative z-10">
                 {order.design_image_path ? (
-                    <div className="bg-white p-8 rounded-[2rem] border border-border shadow-sm flex flex-col items-center gap-6 max-w-xl mx-auto">
+                    <div className="bg-white p-8 rounded-[1.5rem] border border-border shadow-sm flex flex-col items-center gap-6 max-w-xl mx-auto">
                         <span className="text-[11px] font-bold text-text-primary uppercase tracking-[0.3em] font-sans">Foto Referensi Desain</span>
                         <div className="w-full overflow-hidden rounded-2xl border border-border shadow-md hover:shadow-lg transition-all duration-300">
                             <img 
@@ -116,21 +116,21 @@ const OrderInfo = ({ order }) => {
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-white p-8 rounded-[2rem] border border-border shadow-sm text-center text-text-muted italic text-sm font-body max-w-xl mx-auto">
+                    <div className="bg-white p-8 rounded-[1.5rem] border border-border shadow-sm text-center text-text-muted italic text-sm font-body max-w-xl mx-auto">
                         Belum ada foto referensi desain untuk pesanan ini.
                     </div>
                 )}
 
                 {order.financial_breakdown && order.financial_breakdown.length > 0 && (
-                    <div className="mt-16 pt-16 border-t border-border relative z-10 animate-fade-in">
-                        <div className="flex items-center gap-4 mb-10">
+                    <div className="mt-8 pt-16 border-t border-border relative z-10 animate-fade-in">
+                        <div className="flex items-center gap-4 mb-6">
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                                 <CreditCard className="w-5 h-5 text-primary" />
                             </div>
                             <h4 className="text-[11px] font-bold text-text-primary uppercase tracking-[0.3em] font-sans">Rincian Estimasi Keuangan</h4>
                         </div>
                         
-                        <div className="bg-white border border-border rounded-[2rem] p-8 md:p-10 shadow-sm max-w-3xl">
+                        <div className="bg-white border border-border rounded-[1.5rem] p-8 md:p-6 shadow-sm max-w-3xl">
                             <div className="space-y-4 mb-8">
                                 {order.financial_breakdown.map((item, i) => (
                                     <div key={i} className="flex justify-between items-center text-sm font-body border-b border-border/50 pb-3 last:border-b-0 last:pb-0">

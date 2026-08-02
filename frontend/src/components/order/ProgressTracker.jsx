@@ -64,7 +64,7 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
 
     if (loading) {
         return (
-            <div className="p-12 flex justify-center bg-surface rounded-[2rem] border border-border shadow-sm">
+            <div className="p-12 flex justify-center bg-surface rounded-[1.5rem] border border-border shadow-sm">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
         );
@@ -80,8 +80,8 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
     const displayActiveIndex = currentIdx;
 
     return (
-        <div className="bg-surface rounded-[2rem] p-8 md:p-10 border border-border shadow-sm flex-1">
-            <div className="flex items-center gap-4 mb-10 border-b border-border pb-6">
+        <div className="bg-surface rounded-[1.5rem] p-8 md:p-6 border border-border shadow-sm flex-1">
+            <div className="flex items-center gap-4 mb-6 border-b border-border pb-6">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                     <Activity className="w-5 h-5 text-primary" />
                 </div>
@@ -94,7 +94,7 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
             </div>
 
             {/* Progress bar overall */}
-            <div className="mb-10">
+            <div className="mb-6">
                 <div className="w-full h-1.5 bg-border rounded-full overflow-hidden">
                     <div
                         className="h-full bg-primary rounded-full transition-all duration-700"
@@ -106,7 +106,7 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
                 </span>
             </div>
 
-            <div className="relative flex flex-col gap-8">
+            <div className="relative flex flex-col gap-5">
                 {/* Vertical Line */}
                 <div className="absolute left-[13px] top-4 bottom-4 w-[2px] bg-border/60 z-0"></div>
 

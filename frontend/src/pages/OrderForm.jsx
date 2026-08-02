@@ -1140,10 +1140,10 @@ const OrderForm = () => {
     if (showSuccess) {
         if (formData.metode === 'home_service') {
             return (
-                <div className="min-h-screen bg-surface py-10 flex items-center justify-center">
+                <div className="min-h-screen bg-surface py-6 flex items-center justify-center">
                     <div className="container mx-auto px-4 max-w-3xl animate-in fade-in zoom-in-95 duration-750">
-                        <div className="bg-white p-8 md:p-14 rounded-[2rem] border border-border shadow-2xl text-center">
-                            <div className="w-14 h-14 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
+                        <div className="bg-white p-8 md:p-8 rounded-[1.5rem] border border-border shadow-2xl text-center">
+                            <div className="w-11 h-11 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
                                 <Clock className="w-8 h-8 text-primary animate-pulse"/>
                             </div>
                             <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Pembayaran Diterima</span>
@@ -1191,10 +1191,10 @@ const OrderForm = () => {
         }
 
         return (
-            <div className="min-h-screen bg-surface py-10 flex items-center justify-center">
+            <div className="min-h-screen bg-surface py-6 flex items-center justify-center">
                 <div className="container mx-auto px-4 max-w-3xl animate-in fade-in zoom-in-95 duration-750">
-                    <div className="bg-white p-8 md:p-14 rounded-[2rem] border border-border shadow-2xl text-center">
-                        <div className="w-14 h-14 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
+                    <div className="bg-white p-8 md:p-8 rounded-[1.5rem] border border-border shadow-2xl text-center">
+                        <div className="w-11 h-11 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
                             <MapPin className="w-8 h-8 text-primary animate-bounce"/>
                         </div>
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Reservasi Berhasil</span>
@@ -1262,14 +1262,14 @@ const OrderForm = () => {
     }
 
     return (
-        <div className="min-h-screen bg-surface py-10">
+        <div className="min-h-screen bg-surface py-6">
             <div className="container mx-auto px-4 max-w-5xl">
                 
                 <button onClick={() => step > 1 ? prevStep() : navigate(-1)} className="flex items-center gap-3 text-text-muted text-[11px] uppercase tracking-[0.2em] font-bold hover:text-primary transition-all mb-8 font-sans group">
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> Kembali
                 </button>
  
-                <div className="bg-white p-6 md:p-10 rounded-[2rem] border border-border shadow-2xl">
+                <div className="bg-white p-6 md:p-6 rounded-[1.5rem] border border-border shadow-2xl">
                     <StepIndicator step={displayStep} metode={formData.metode} />
                     
                     <div className="my-8">

@@ -47,19 +47,19 @@ const ManagePassword = () => {
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-20">
+        <div className="min-h-screen bg-white text-text-primary py-12">
             <div className="container mx-auto px-4 max-w-3xl">
                 
-                <div className="mb-12">
+                <div className="mb-7">
                     <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-text-muted hover:text-primary transition-colors mb-8 font-sans">
                         <ArrowLeft className="w-4 h-4" /> Kembali
                     </button>
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Keamanan</span>
-                    <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-4">Pengaturan Sandi</h1>
+                    <h1 className="text-3xl md:text-2xl font-display font-bold text-text-primary mb-4">Pengaturan Sandi</h1>
                     <p className="text-text-secondary font-body">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun</p>
                 </div>
 
-                <div className="bg-surface border border-border p-8 md:p-12 rounded-[2.5rem] shadow-sm">
+                <div className="bg-surface border border-border p-8 md:p-12 rounded-[1.75rem] shadow-sm">
                     <div className="flex items-center gap-3 mb-8 border-b border-border pb-6">
                         <KeyRound className="w-6 h-6 text-primary" />
                         <h2 className="text-lg font-bold text-text-primary font-display">Ubah Kata Sandi</h2>

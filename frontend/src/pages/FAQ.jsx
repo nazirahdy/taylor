@@ -9,9 +9,9 @@ const FAQItem = ({ question, answer, index }) => {
         <div className={`border-b border-border transition-all duration-500 overflow-hidden ${isOpen ? 'bg-surface/50' : ''}`}>
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full text-left py-10 md:py-12 flex justify-between items-center focus:outline-none group px-8"
+                className="w-full text-left py-6 md:py-12 flex justify-between items-center focus:outline-none group px-8"
             >
-                <div className="flex items-start gap-8">
+                <div className="flex items-start gap-5">
                     <span className="text-primary font-display font-bold text-xs mt-1 opacity-40 group-hover:opacity-100 transition-opacity">0{index + 1}</span>
                     <h3 className={`text-xl md:text-2xl font-display font-bold leading-tight pr-8 transition-colors ${isOpen ? 'text-primary' : 'text-text-primary'}`}>
                         {question}
@@ -62,13 +62,13 @@ const FAQ = () => {
         <div className="bg-white min-h-screen text-text-primary">
             
             {/* Header FAQ */}
-            <section className="pt-32 pb-16 relative overflow-hidden bg-surface border-b border-border">
+            <section className="pt-16 pb-16 relative overflow-hidden bg-surface border-b border-border">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10">
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                         <div className="max-w-3xl animate-fade-in">
                             <span className="text-primary uppercase tracking-[0.4em] text-[13px] font-bold mb-6 block">Pusat Informasi</span>
-                            <h1 className="text-3xl md:text-5xl font-display font-bold leading-none mb-8 text-text-primary">Pertanyaan Umum</h1>
+                            <h1 className="text-3xl md:text-3xl font-display font-bold leading-none mb-8 text-text-primary">Pertanyaan Umum</h1>
                             <div className="h-1.5 w-24 bg-primary rounded-full mb-8"></div>
                             <p className="text-text-secondary text-lg leading-relaxed max-w-xl font-body">
                                 Temukan jawaban atas pertanyaan umum seputar layanan, proses, dan pemesanan busana di Era Jahit
@@ -82,7 +82,7 @@ const FAQ = () => {
             </section>
 
             {/* Accordion Lists */}
-            <section className="py-20">
+            <section className="py-12">
                 <div className="container mx-auto px-4 md:px-12 max-w-6xl">
                     <div className="border-t border-border animate-slide-up">
                         {faqData.map((item, index) => (
@@ -91,12 +91,12 @@ const FAQ = () => {
                     </div>
 
                     {/* Support CTA */}
-                    <div className="mt-32 p-12 md:p-20 bg-surface border border-border rounded-[2.5rem] relative overflow-hidden group animate-slide-up delay-400">
+                    <div className="mt-32 p-8 md:p-8 bg-surface border border-border rounded-[1.75rem] relative overflow-hidden group animate-slide-up delay-400">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] rounded-full -z-0 group-hover:bg-primary/10 transition-colors duration-700"></div>
                         
                         <div className="relative z-10 max-w-2xl">
-                            <h2 className="text-3xl md:text-5xl font-display font-bold mb-6 italic text-text-primary">Masih punya pertanyaan?</h2>
-                            <p className="text-text-secondary text-lg mb-12 font-body leading-relaxed">
+                            <h2 className="text-3xl md:text-3xl font-display font-bold mb-6 italic text-text-primary">Masih punya pertanyaan?</h2>
+                            <p className="text-text-secondary text-lg mb-7 font-body leading-relaxed">
                                 Jika pertanyaan Anda belum terjawab di sini, tim Era Jahit siap membantu Anda secara langsung melalui halaman kontak kami
                             </p>
                             

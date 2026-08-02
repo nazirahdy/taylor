@@ -86,8 +86,8 @@ const UploadDP = () => {
     };
 
     return (
-        <div className="min-h-screen bg-surface flex items-center justify-center p-6 py-20">
-            <div className="w-full max-w-2xl bg-white border border-border shadow-2xl rounded-[3rem] overflow-hidden animate-slide-up">
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6 py-12">
+            <div className="w-full max-w-2xl bg-white border border-border shadow-2xl rounded-[1.5rem] overflow-hidden animate-slide-up">
                 
                 {/* Header Section */}
                 <div className="bg-surface/50 p-12 relative flex flex-col items-center text-center border-b border-border">
@@ -98,12 +98,12 @@ const UploadDP = () => {
                         <CheckCircle2 className="w-8 h-8 text-primary"/>
                     </div>
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Tahap Akhir</span>
-                    <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Pesanan Terdaftar</h2>
+                    <h2 className="text-2xl font-display font-bold text-text-primary mb-3">Pesanan Terdaftar</h2>
                     <p className="text-text-secondary font-body text-sm max-w-xs">Konfirmasi pembayaran DP Anda untuk memulai proses pengerjaan busana.</p>
                 </div>
 
                 <div className="p-12 md:p-16">
-                    <div className="grid md:grid-cols-2 gap-8 bg-surface p-10 border border-border rounded-[2rem] mb-10 shadow-sm">
+                    <div className="grid md:grid-cols-2 gap-5 bg-surface p-6 border border-border rounded-[1.5rem] mb-6 shadow-sm">
                         <div>
                             <span className="text-[11px] uppercase tracking-widest text-text-muted block mb-3 font-bold font-sans">Nomor Pesanan</span>
                             <span className="text-text-primary font-display font-bold text-2xl">EJ-{id}</span>
@@ -117,7 +117,7 @@ const UploadDP = () => {
                     </div>
 
                     {orderInfo.financial_breakdown && orderInfo.financial_breakdown.length > 0 && (
-                        <div className="mb-12 bg-surface p-10 border border-border rounded-[2rem] shadow-sm">
+                        <div className="mb-7 bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm">
                             <h4 className="text-text-primary font-display font-bold text-sm uppercase tracking-[0.2em] mb-6 flex items-center gap-3 font-sans">
                                 <span className="w-4 h-[2px] bg-primary"></span> Rincian Estimasi Biaya
                             </h4>
@@ -138,7 +138,7 @@ const UploadDP = () => {
                         </div>
                     )}
 
-                    <div className="mb-12">
+                    <div className="mb-7">
                         <h4 className="text-text-primary font-display font-bold text-xl mb-6 flex items-center gap-4">
                             <span className="w-8 h-[2px] bg-primary"></span> Instruksi Pembayaran
                         </h4>
@@ -154,16 +154,16 @@ const UploadDP = () => {
                         </ol>
                     </div>
                     {error && (
-                         <div className="mb-10 p-5 bg-red-50 border border-red-100 text-red-700 flex items-start gap-4 text-sm font-body rounded-2xl shadow-sm">
+                         <div className="mb-6 p-5 bg-red-50 border border-red-100 text-red-700 flex items-start gap-4 text-sm font-body rounded-2xl shadow-sm">
                              <AlertCircle className="w-6 h-6 shrink-0 text-red-600" />
                              <span className="pt-0.5">{error}</span>
                          </div>
                     )}
 
                     <form onSubmit={handleUpload}>
-                        <div className="mb-12">
+                        <div className="mb-7">
                             <label 
-                                className={`w-full border-2 border-dashed rounded-[2.5rem] p-12 flex flex-col items-center text-center cursor-pointer transition-all duration-500 group ${
+                                className={`w-full border-2 border-dashed rounded-[1.75rem] p-12 flex flex-col items-center text-center cursor-pointer transition-all duration-500 group ${
                                     preview ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-surface'
                                 }`}
                             >

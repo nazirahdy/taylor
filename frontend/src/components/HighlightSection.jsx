@@ -3,12 +3,12 @@ import { Settings, Ruler, MapPin, Star } from 'lucide-react';
 
 const HighlightSection = () => {
   return (
-    <section className="bg-white py-20 px-4 md:px-20" id="gallery">
+    <section className="bg-white py-12 px-4 md:px-20" id="gallery">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-6 gap-5 animate-fade-in">
           <div className="max-w-xl">
             <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-4 block">Karya Kami</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-text-primary">
+            <h2 className="text-3xl md:text-2xl font-display font-bold text-text-primary">
               Galeri Desain
             </h2>
           </div>
@@ -17,7 +17,7 @@ const HighlightSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {galleryItems.map((item, i) => (
             <div key={i} className="group relative aspect-square overflow-hidden rounded-2xl cursor-pointer animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
               <img 

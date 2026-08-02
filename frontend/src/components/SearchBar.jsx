@@ -5,10 +5,10 @@ const SearchBar = () => {
   return (
     <section className="bg-white py-16 px-4 md:px-20">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-dark-bg mb-2">
+        <h2 className="text-3xl md:text-2xl font-display font-bold text-dark-bg mb-2">
           Jelajahi Layanan Jahit Terbaik
         </h2>
-        <p className="text-muted text-base mb-10">
+        <p className="text-muted text-base mb-6">
           Koleksi pilihan pakaian berkualitas dari penjahit berpengalaman Era Jahit.
         </p>
         

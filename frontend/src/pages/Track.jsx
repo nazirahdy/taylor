@@ -26,14 +26,14 @@ const Track = () => {
     };
 
     return (
-        <div className="bg-dark-bg min-h-screen text-white pb-24">
+        <div className="bg-dark-bg min-h-screen text-white pb-14">
             
             {/* HERO SECTION TRACKING */}
             <section className="relative pt-28 pb-12 overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[120px] rounded-full -z-10"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[10px] font-bold mb-6 block">Pantau Pesanan</span>
-                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight">Lacak Pesanan</h1>
+                    <h1 className="text-3xl md:text-3xl font-display font-bold mb-8 leading-tight">Lacak Pesanan</h1>
                     <p className="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed font-light">
                         Pantau setiap tahapan pengerjaan busana Anda secara real-time melalui sistem pelacakan pesanan Era Jahit.
                     </p>
@@ -88,7 +88,7 @@ const Track = () => {
                             </div>
 
                             {/* Header Order */}
-                            <div className="flex flex-col md:flex-row justify-between gap-10 mb-16 relative z-10 border-b border-white/5 pb-16">
+                            <div className="flex flex-col md:flex-row justify-between gap-6 mb-8 relative z-10 border-b border-white/5 pb-16">
                                 <div>
                                     <div className="flex items-center gap-3 mb-6">
                                         <span className="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-widest rounded-sm">
@@ -104,7 +104,7 @@ const Track = () => {
                                         </span>
                                         <span className="text-white/20 font-bold text-[10px] uppercase tracking-widest">Ref: #{order.order_number}</span>
                                     </div>
-                                    <h2 className="text-3xl md:text-4xl font-display text-white mb-6 leading-tight">{order.fashion_model?.name || 'Busana Kustom'}</h2>
+                                    <h2 className="text-3xl md:text-2xl font-display text-white mb-6 leading-tight">{order.fashion_model?.name || 'Busana Kustom'}</h2>
                                     <div className="flex items-center gap-4 text-white/40 text-xs font-light tracking-wide">
                                         <MapPin className="w-4 h-4 text-primary" />
                                         <span>Studio Era Jahit, Padang</span>
@@ -117,10 +117,10 @@ const Track = () => {
                             </div>
 
                             {/* Progress Bar */}
-                            <div className="mb-20">
+                            <div className="mb-6">
                                 <div className="flex justify-between items-end mb-8">
                                     <p className="font-bold text-white/20 uppercase tracking-widest text-[10px]">Progres Pengerjaan</p>
-                                    <p className="text-4xl font-display text-white leading-none">
+                                    <p className="text-2xl font-display text-white leading-none">
                                         {(() => {
                                             if (order.status === 'pending' || order.status === 'dp_uploaded' || order.status === 'rejected') return 0;
                                             if (order.status === 'selesai_penyerahan') return 100;
@@ -203,7 +203,7 @@ const Track = () => {
                                 </div>
 
                                 {/* Financial Summary */}
-                                <div className="bg-darkest/40 p-10 space-y-10 rounded-sm border border-white/5 self-start">
+                                <div className="bg-darkest/40 p-6 space-y-10 rounded-sm border border-white/5 self-start">
                                     <h3 className="text-[10px] uppercase tracking-widest font-bold text-primary border-b border-white/5 pb-4">Ringkasan Pembayaran</h3>
                                     <div className="space-y-6">
                                         <div className="flex justify-between text-[10px] uppercase tracking-[0.2em] font-bold">

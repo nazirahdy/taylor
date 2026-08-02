@@ -26,14 +26,14 @@ const Services = () => {
         }
     };
     return (
-        <div className="bg-white min-h-screen text-text-primary pb-20">
+        <div className="bg-white min-h-screen text-text-primary pb-12">
 
             {/* HEADER SERVICES */}
-            <section className="pt-32 pb-16 relative overflow-hidden bg-surface">
+            <section className="pt-16 pb-16 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 text-center animate-fade-in relative z-10">
                     <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block"></span>
-                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-8 text-text-primary">Layanan Jahit</h1>
+                    <h1 className="text-3xl md:text-3xl font-display font-bold mb-8 text-text-primary">Layanan Jahit</h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
                         Kami menyediakan dua metode layanan yang dirancang sesuai kebutuhan Anda, memadukan keahlian tradisional dengan sentuhan modern untuk busana yang sempurna
                     </p>
@@ -41,12 +41,12 @@ const Services = () => {
             </section>
 
             {/* TWO MAIN SERVICES */}
-            <section className="py-24 container mx-auto px-4 md:px-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <section className="py-8 container mx-auto px-4 md:px-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                     {/* Method 1: Home Service */}
-                    <div className="bg-surface p-8 md:p-10 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up">
-                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                    <div className="bg-surface p-8 md:p-6 rounded-[1.5rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up">
+                        <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <User className="w-8 h-8" />
                         </div>
                         <h2 className="text-3xl font-display font-bold mb-4">Home Service</h2>
@@ -54,7 +54,7 @@ const Services = () => {
                             Layanan penjahit kami di mana tukang jahit datang ke lokasi Anda untuk konsultasi dan pengukuran badan. Bedanya, pada Home Service penjahit yang datang, sedangkan pada kunjungan studio Anda datang ke toko
                         </p>
 
-                        <div className="space-y-6 mb-10 flex-grow text-left">
+                        <div className="space-y-6 mb-6 flex-grow text-left">
                             <h4 className="text-[11px] uppercase tracking-widest font-bold text-primary border-b border-border pb-4 font-sans">Prosedur &amp; Proses</h4>
                             <div className="flex items-start gap-5">
                                 <div className="w-10 h-10 bg-white border border-border rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm">
@@ -82,8 +82,8 @@ const Services = () => {
                     </div>
 
                     {/* Method 2: In-Store */}
-                    <div className="bg-surface p-8 md:p-10 rounded-[2rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up delay-200">
-                        <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                    <div className="bg-surface p-8 md:p-6 rounded-[1.5rem] border border-border flex flex-col group hover:shadow-2xl transition-all duration-700 animate-slide-up delay-200">
+                        <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
                             <Store className="w-8 h-8" />
                         </div>
                         <h2 className="text-3xl font-display font-bold mb-4">In-Store (Kunjungan Studio)</h2>
@@ -91,7 +91,7 @@ const Services = () => {
                             Kunjungi studio kami untuk pengalaman desain kolaboratif dan pengukuran oleh penjahit kami di tempat. Bedanya, pada In-Store pelanggan datang ke toko, bukan penjahit yang datang ke rumah
                         </p>
 
-                        <div className="space-y-6 mb-10 flex-grow text-left">
+                        <div className="space-y-6 mb-6 flex-grow text-left">
                             <h4 className="text-[11px] uppercase tracking-widest font-bold text-primary border-b border-border pb-4 font-sans">Prosedur &amp; Proses</h4>
                             <div className="flex items-start gap-5">
                                 <div className="w-10 h-10 bg-white border border-border rounded-xl flex items-center justify-center text-primary shrink-0 shadow-sm">
@@ -122,14 +122,14 @@ const Services = () => {
             </section>
 
             {/* COMPARISON */}
-            <section className="py-20 bg-surface">
+            <section className="py-12 bg-surface">
                 <div className="container mx-auto px-4 md:px-12">
                     <div className="max-w-4xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h3 className="text-3xl md:text-4xl font-display font-bold mb-4 text-text-primary">Perbandingan Layanan</h3>
+                        <div className="text-center mb-8">
+                            <h3 className="text-3xl md:text-2xl font-display font-bold mb-4 text-text-primary">Perbandingan Layanan</h3>
                             <div className="h-1 w-20 bg-primary mx-auto rounded-full"></div>
                         </div>
-                        <div className="bg-white rounded-[2rem] border border-border overflow-hidden shadow-xl">
+                        <div className="bg-white rounded-[1.5rem] border border-border overflow-hidden shadow-xl">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>

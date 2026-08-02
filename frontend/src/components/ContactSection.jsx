@@ -23,11 +23,11 @@ const ContactSection = () => {
     };
 
     return (
-        <section className="bg-white py-20 scroll-mt-16" id="contact">
+        <section className="bg-white py-12 scroll-mt-8" id="contact">
             <div className="container mx-auto px-4 md:px-12">
-                <div className="text-center mb-14 animate-fade-in">
+                <div className="text-center mb-8 animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block font-sans">Hubungi Kami</span>
-                    <h2 className="text-3xl md:text-4xl font-display font-bold mb-5 leading-tight text-text-primary">
+                    <h2 className="text-3xl md:text-2xl font-display font-bold mb-5 leading-tight text-text-primary">
                         Konsultasi Gratis
                     </h2>
                     <p className="text-text-secondary text-base max-w-xl mx-auto leading-relaxed font-body">
@@ -35,7 +35,7 @@ const ContactSection = () => {
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-5 gap-10">
+                <div className="grid lg:grid-cols-5 gap-6">
 
                     {/* Info Column */}
                     <div className="lg:col-span-2 space-y-6 animate-slide-up">
@@ -78,9 +78,9 @@ const ContactSection = () => {
                                 <div>
                                     <h4 className="text-base font-display font-bold mb-1.5">Jam Operasional</h4>
                                     <div className="text-text-secondary text-sm space-y-1 font-body">
-                                        <p className="flex justify-between gap-8"><span>Sen - Kam:</span> <span className="font-bold text-text-primary">09:00 - 17:00</span></p>
-                                        <p className="flex justify-between gap-8"><span>Jumat:</span> <span className="font-bold text-text-primary">09:00 - 11:30</span></p>
-                                        <p className="flex justify-between gap-8"><span>Sabtu:</span> <span className="font-bold text-text-primary">09:00 - 15:00</span></p>
+                                        <p className="flex justify-between gap-5"><span>Sen - Kam:</span> <span className="font-bold text-text-primary">09:00 - 17:00</span></p>
+                                        <p className="flex justify-between gap-5"><span>Jumat:</span> <span className="font-bold text-text-primary">09:00 - 11:30</span></p>
+                                        <p className="flex justify-between gap-5"><span>Sabtu:</span> <span className="font-bold text-text-primary">09:00 - 15:00</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@ const ContactSection = () => {
                     </div>
 
                     {/* Form Column */}
-                    <div className="lg:col-span-3 bg-surface p-8 md:p-10 rounded-[2rem] border border-border animate-fade-in delay-200 shadow-sm">
+                    <div className="lg:col-span-3 bg-surface p-8 md:p-6 rounded-[1.5rem] border border-border animate-fade-in delay-200 shadow-sm">
                         <h2 className="text-2xl font-display font-bold mb-2">Kirim Pesan</h2>
                         <p className="text-text-secondary text-sm mb-8 leading-relaxed font-body">
                             Gunakan formulir ini untuk konsultasi cepat. Pesan Anda akan diteruskan langsung ke WhatsApp admin Era Jahit.
@@ -135,7 +135,7 @@ const ContactSection = () => {
             </div>
 
             {/* Map */}
-            <div className="w-full h-80 relative mt-16 border-t border-border">
+            <div className="w-full h-80 relative mt-8 border-t border-border">
                 <iframe
                     src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
                     width="100%"

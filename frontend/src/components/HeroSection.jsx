@@ -19,7 +19,7 @@ const HeroSection = () => {
       <span className="text-white uppercase tracking-[0.4em] text-[9px] md:text-[11px] font-bold mb-5 block font-sans drop-shadow-md">
         Kualitas Jahitan Terbaik
       </span>
-      <h1 className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-white leading-[1.05] mb-6 drop-shadow-2xl">
+      <h1 className="text-2xl md:text-2xl lg:text-3xl font-display font-bold text-white leading-[1.05] mb-6 drop-shadow-2xl">
         Menciptakan <span className="italic font-light">Karakter</span><br />
         Busana Anda
       </h1>

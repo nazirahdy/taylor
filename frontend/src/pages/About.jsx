@@ -3,16 +3,16 @@ import { Target, Zap, Shield } from 'lucide-react';
 
 const About = () => {
     return (
-        <div className="bg-white min-h-screen text-text-primary pb-20">
+        <div className="bg-white min-h-screen text-text-primary pb-12">
 
             {/* HEADER ABOUT */}
-            <section className="pt-24 pb-12 relative overflow-hidden bg-surface">
+            <section className="pt-14 pb-12 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10">
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                         <div className="max-w-xl animate-fade-in">
                             <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-4 block">Warisan Kami</span>
-                            <h1 className="text-3xl md:text-4xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h1>
+                            <h1 className="text-3xl md:text-2xl font-display font-bold leading-none mb-4 text-text-primary">Visi Kami</h1>
                             <div className="h-1.5 w-24 bg-primary rounded-full"></div>
                         </div>
                         <p className="text-text-secondary text-lg max-w-md leading-relaxed animate-fade-in delay-200 font-body">
@@ -24,9 +24,9 @@ const About = () => {
 
             {/* MAIN STORY SECTION */}
             <section className="py-12 container mx-auto px-4 md:px-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mb-7">
                     <div className="relative animate-slide-up flex justify-center">
-                        <div className="aspect-[4/5] w-3/4 md:w-2/3 rounded-[2rem] overflow-hidden bg-surface p-3 border border-border shadow-md">
+                        <div className="aspect-[4/5] w-3/4 md:w-2/3 rounded-[1.5rem] overflow-hidden bg-surface p-3 border border-border shadow-md">
                             <img
                                 src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop"
                                 className="w-full h-full object-cover rounded-[1.5rem]"
@@ -39,7 +39,7 @@ const About = () => {
                             <h2 className="text-[10px] uppercase tracking-[0.4em] font-bold text-primary whitespace-nowrap font-sans">Berdiri 2010</h2>
                             <div className="h-[1px] w-full bg-border"></div>
                         </div>
-                        <h3 className="text-3xl md:text-4xl font-display font-bold leading-tight text-text-primary">Merajut Busana Timeless dengan Presisi Tak Tertandingi</h3>
+                        <h3 className="text-3xl md:text-2xl font-display font-bold leading-tight text-text-primary">Merajut Busana Timeless dengan Presisi Tak Tertandingi</h3>
                         <p className="text-text-secondary leading-relaxed text-lg font-body">
                             Era Jahit bukan sekadar penjahit; kami adalah studio busana yang bercerita melalui kain. Kami percaya kemewahan sejati terletak pada keselarasan antara desain dan kenyamanan, disesuaikan dengan kepribadian unik Anda
                         </p>
@@ -54,11 +54,11 @@ const About = () => {
             {/* VALUES SECTION */}
             <section className="py-16 bg-surface relative">
                 <div className="container mx-auto px-4 md:px-12">
-                    <div className="text-center mb-12">
+                    <div className="text-center mb-7">
                         <h2 className="text-[11px] uppercase tracking-[0.4em] font-bold text-primary mb-3 font-sans">Nilai Kami</h2>
-                        <h3 className="text-3xl md:text-4xl font-display font-bold text-text-primary">Filosofi Utama</h3>
+                        <h3 className="text-3xl md:text-2xl font-display font-bold text-text-primary">Filosofi Utama</h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         {[
                             {
                                 title: "Presisi Artistik",
@@ -76,8 +76,8 @@ const About = () => {
                                 icon: <Shield className="w-8 h-8" />
                             }
                         ].map((value, i) => (
-                            <div key={i} className="bg-white p-8 rounded-[2rem] border border-border hover:shadow-2xl transition-all duration-700 group text-center md:text-left">
-                                <div className="text-primary mb-6 bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto md:mx-0 group-hover:scale-110 transition-transform duration-500">
+                            <div key={i} className="bg-white p-8 rounded-[1.5rem] border border-border hover:shadow-2xl transition-all duration-700 group text-center md:text-left">
+                                <div className="text-primary mb-6 bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto md:mx-0 group-hover:scale-110 transition-transform duration-500">
                                     {value.icon}
                                 </div>
                                 <h4 className="text-xl font-display font-bold mb-4 text-text-primary">{value.title}</h4>

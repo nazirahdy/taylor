@@ -49,20 +49,20 @@ const VerifyEmail = () => {
 
     return (
         <div className="min-h-screen bg-surface flex flex-col justify-center items-center px-4 py-12">
-            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-border max-w-md w-full text-center relative overflow-hidden">
+            <div className="bg-white p-8 md:p-6 rounded-3xl shadow-xl border border-border max-w-md w-full text-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary via-emerald-400 to-primary"></div>
 
                 {id && hash ? (
                     // Token verification mode
                     status === 'pending' ? (
                         <div>
-                            <Loader2 className="w-14 h-14 text-primary animate-spin mx-auto mb-6" />
+                            <Loader2 className="w-11 h-11 text-primary animate-spin mx-auto mb-6" />
                             <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Memverifikasi Email...</h2>
                             <p className="text-sm text-text-secondary">Sedang memeriksa keabsahan tautan verifikasi Anda.</p>
                         </div>
                     ) : status === 'success' ? (
                         <div>
-                            <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto mb-6" />
+                            <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-6" />
                             <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Email Terverifikasi!</h2>
                             <p className="text-sm text-text-secondary mb-8">{message}</p>
                             <Link
@@ -74,7 +74,7 @@ const VerifyEmail = () => {
                         </div>
                     ) : (
                         <div>
-                            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
+                            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-6" />
                             <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Verifikasi Gagal</h2>
                             <p className="text-sm text-text-secondary mb-8">{message}</p>
                             <Link

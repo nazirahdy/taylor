@@ -71,10 +71,10 @@ const GallerySection = () => {
         : models.filter(m => (m.kategori || m.category || 'Eksklusif') === activeFilter);
 
     return (
-        <section className="bg-white py-25 scroll-mt-16" id="gallery">
-            <div className="container mx-auto px-4 md:px-12 text-center mb-10 animate-fade-in">
+        <section className="bg-white py-25 scroll-mt-8" id="gallery">
+            <div className="container mx-auto px-4 md:px-12 text-center mb-6 animate-fade-in">
                 <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block">Portofolio Kami</span>
-                <h2 className="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h2>
+                <h2 className="text-3xl md:text-3xl font-display font-bold mb-8 leading-tight text-text-primary">Galeri Karya</h2>
                 <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
                     Jelajahi koleksi busana pilihan dari Era Jahit. 
                     Setiap karya mencerminkan dedikasi kami pada kualitas dan keindahan.
@@ -83,7 +83,7 @@ const GallerySection = () => {
 
             <div className="container mx-auto px-4 md:px-12">
                 {/* Filter Bar */}
-                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-10 animate-fade-in">
+                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-6 animate-fade-in">
                     {categories.map(cat => (
                         <button 
                             key={cat}
@@ -101,12 +101,12 @@ const GallerySection = () => {
 
                 {/* Gallery Grid */}
                 {loading ? (
-                    <div className="w-full flex flex-col items-center justify-center py-24 text-text-muted gap-6">
+                    <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted gap-6">
                         <Loader2 className="w-12 h-12 animate-spin text-primary" />
                         <p className="font-sans uppercase tracking-[0.4em] text-[11px] font-bold">Memuat Koleksi...</p>
                     </div>
                 ) : filteredModels.length === 0 ? (
-                    <div className="w-full flex flex-col items-center justify-center py-24 text-text-muted bg-surface border border-dashed border-border rounded-[2rem]">
+                    <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted bg-surface border border-dashed border-border rounded-[1.5rem]">
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini.</p>
                     </div>
                 ) : (
@@ -126,7 +126,7 @@ const GallerySection = () => {
                             {filteredModels.map((item, i) => (
                                 <div
                                     key={item.id}
-                                    className="group relative overflow-hidden rounded-[2rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700 snap-center"
+                                    className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700 snap-center"
                                     style={{ animationDelay: `${i * 50}ms` }}
                                     onClick={() => handleImageClick(item)}
                                 >
@@ -163,7 +163,7 @@ const GallerySection = () => {
             {/* Lightbox Modal */}
             {selectedImage && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-text-primary/40 backdrop-blur-md cursor-zoom-out animate-fade-in" onClick={() => setSelectedImage(null)}>
-                    <div className="relative w-full max-w-6xl max-h-[90vh] flex flex-col md:flex-row bg-white border border-border rounded-[2.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] cursor-default overflow-hidden" onClick={e => e.stopPropagation()}>
+                    <div className="relative w-full max-w-6xl max-h-[90vh] flex flex-col md:flex-row bg-white border border-border rounded-[1.75rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] cursor-default overflow-hidden" onClick={e => e.stopPropagation()}>
                         
                         <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-surface relative group/modal">
                             <img 
@@ -192,20 +192,20 @@ const GallerySection = () => {
                             )}
                         </div>
                         
-                        <div className="w-full md:w-2/5 p-10 md:p-14 flex flex-col relative bg-white">
+                        <div className="w-full md:w-2/5 p-6 md:p-8 flex flex-col relative bg-white">
                             <button onClick={() => setSelectedImage(null)} className="absolute top-8 right-8 w-12 h-12 bg-surface text-text-muted flex items-center justify-center rounded-xl hover:bg-primary hover:text-white transition-all border border-border group">
                                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
                             </button>
                             
                             <div className="mt-4 mb-auto">
                                 <span className="text-primary text-[11px] uppercase tracking-[0.4em] block mb-2 font-bold font-sans">{selectedImage.category || 'Koleksi Eksklusif'}</span>
-                                <h3 className="text-4xl font-display font-bold mb-4 leading-tight text-text-primary">{selectedImage.title || `Galeri ${selectedImage.id}`}</h3>
+                                <h3 className="text-2xl font-display font-bold mb-4 leading-tight text-text-primary">{selectedImage.title || `Galeri ${selectedImage.id}`}</h3>
                                 <p className="text-text-secondary text-sm leading-relaxed mb-8 font-body">
                                     {selectedImage.description || 'Sebuah karya busana premium yang memadukan desain kontemporer dengan keahlian jahit tradisional untuk menghadirkan tampilan yang elegan dan berkesan.'}
                                 </p>
                             </div>
                             
-                            <div className="mt-16">
+                            <div className="mt-8">
                                 <button onClick={handleOrderClick} className="w-full flex items-center justify-center gap-4 py-5 bg-primary text-white uppercase tracking-widest text-xs font-bold rounded-xl hover:bg-primary-dark transition-all shadow-xl shadow-primary/20">
                                     Pesan Busana Ini <ArrowRight className="w-5 h-5" />
                                 </button>

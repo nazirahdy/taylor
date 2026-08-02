@@ -53,7 +53,7 @@ const Measurements = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white text-text-primary flex items-center justify-center pt-20 pb-10 px-4">
+        <div className="min-h-screen bg-white text-text-primary flex items-center justify-center pt-12 pb-10 px-4">
             <div className="container mx-auto max-w-4xl">
                 
                 <div className="mb-6">
@@ -61,11 +61,11 @@ const Measurements = () => {
                         <ArrowLeft className="w-4 h-4" /> Kembali
                     </button>
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-2 block font-sans">Data Fisik</span>
-                    <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-2">Ukuran Badan</h1>
+                    <h1 className="text-3xl md:text-2xl font-display font-bold text-text-primary mb-2">Ukuran Badan</h1>
                     <p className="text-sm text-text-secondary font-body">Data ukuran badan yang tersimpan dari hasil pengukuran di Era Jahit</p>
                 </div>
 
-                <div className="bg-surface border border-border p-5 md:p-8 rounded-[2rem] shadow-sm">
+                <div className="bg-surface border border-border p-5 md:p-8 rounded-[1.5rem] shadow-sm">
                     <div className="flex items-center justify-between mb-6 border-b border-border pb-5">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">

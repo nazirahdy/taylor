@@ -74,7 +74,8 @@ const Navbar = () => {
                 if (hash === '#beranda') {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
-                    const navbarOffset = 65;
+                    const nav = document.querySelector('nav');
+                    const navbarOffset = (nav ? nav.offsetHeight : 65) + 8;
                     const y = element.getBoundingClientRect().top + window.pageYOffset - navbarOffset;
                     window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
                 }
@@ -110,7 +111,7 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex items-center gap-8">
+                    <div className="hidden lg:flex items-center gap-5">
                         {navItems.map((item) => (
                             <Link 
                                 key={item.name} 
@@ -161,7 +162,7 @@ const Navbar = () => {
                                     {isProfileDropdownOpen && (
                                         <>
                                             <div className="fixed inset-0 z-40" onClick={() => setIsProfileDropdownOpen(false)}></div>
-                                            <div className="absolute right-0 mt-3 w-64 bg-white rounded-[2rem] shadow-2xl border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                                            <div className="absolute right-0 mt-3 w-64 bg-white rounded-[1.5rem] shadow-2xl border border-border overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
                                                 <div className="p-3 flex flex-col gap-1">
                                                     <div className="px-4 py-3 mb-2 flex items-center gap-3 border-b border-border/60 pb-4">
                                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold overflow-hidden">

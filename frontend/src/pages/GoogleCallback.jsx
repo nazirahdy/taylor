@@ -56,8 +56,8 @@ const GoogleCallback = () => {
                 ) : (
                     <>
                         <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-                        <h2 className="text-xl font-display font-bold text-text-primary mb-2">Memproses Login Google...</h2>
-                        <p className="text-sm text-text-secondary">Mohon tunggu sebentar, kami sedang menyiapkan sesi Anda.</p>
+                        <h2 className="text-xl font-display font-bold text-text-primary mb-2">Memproses Login Google</h2>
+                        <p className="text-sm text-text-secondary">Mohon tunggu sebentar, kami sedang menyiapkan sesi Anda</p>
                     </>
                 )}
             </div>

@@ -26,11 +26,11 @@ const Contact = () => {
         <div className="bg-white min-h-screen text-text-primary">
 
             {/* HERO SECTION CONTACT */}
-            <section className="relative pt-32 pb-16 overflow-hidden bg-surface">
+            <section className="relative pt-16 pb-16 overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10 text-center animate-fade-in">
                     <span className="text-primary uppercase tracking-[0.4em] text-[13px] font-bold mb-6 block">Hubungi Kami</span>
-                    <h1 className="text-3xl md:text-5xl font-display font-bold mb-8 leading-tight text-text-primary">
+                    <h1 className="text-3xl md:text-3xl font-display font-bold mb-8 leading-tight text-text-primary">
                         Konsultasi Gratis
                     </h1>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed font-body">
@@ -40,7 +40,7 @@ const Contact = () => {
                 </div>
             </section>
 
-            <div className="py-20">
+            <div className="py-12">
                 <div className="container mx-auto px-4 md:px-12">
                     <div className="grid lg:grid-cols-5 gap-16">
 
@@ -48,15 +48,15 @@ const Contact = () => {
                         <div className="lg:col-span-2 space-y-10 animate-slide-up">
                             <div>
                                 <h3 className="text-3xl font-display font-bold mb-6 text-text-primary">Informasi Studio</h3>
-                                <p className="text-text-secondary leading-relaxed mb-10 font-body">
+                                <p className="text-text-secondary leading-relaxed mb-6 font-body">
                                     Kunjungi studio kami untuk konsultasi langsung dan melihat koleksi bahan pilihan bersama tim penjahit kami
                                 </p>
                             </div>
 
                             {/* Contact Cards */}
                             <div className="space-y-6">
-                                <div className="bg-surface p-8 rounded-[2rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
-                                    <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
+                                <div className="bg-surface p-8 rounded-[1.5rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
+                                    <div className="w-11 h-11 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
                                         <MapPin className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -68,8 +68,8 @@ const Contact = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-surface p-8 rounded-[2rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
-                                    <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
+                                <div className="bg-surface p-8 rounded-[1.5rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
+                                    <div className="w-11 h-11 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
                                         <PhoneCall className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -79,16 +79,16 @@ const Contact = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-surface p-8 rounded-[2rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
-                                    <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
+                                <div className="bg-surface p-8 rounded-[1.5rem] border border-border flex items-start gap-6 group hover:shadow-xl transition-all duration-700">
+                                    <div className="w-11 h-11 bg-primary/10 text-primary rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-500 shadow-sm">
                                         <Clock className="w-6 h-6" />
                                     </div>
                                     <div>
                                         <h4 className="text-lg font-display font-bold mb-2">Jam Operasional</h4>
                                         <div className="text-text-secondary text-sm space-y-1 font-body">
-                                            <p className="flex justify-between gap-10"><span>Sen - Kam:</span> <span className="font-bold text-text-primary">09:00 - 17:00</span></p>
-                                            <p className="flex justify-between gap-10"><span>Jumat:</span> <span className="font-bold text-text-primary">09:00 - 11:30</span></p>
-                                            <p className="flex justify-between gap-10"><span>Sabtu:</span> <span className="font-bold text-text-primary">09:00 - 15:00</span></p>
+                                            <p className="flex justify-between gap-6"><span>Sen - Kam:</span> <span className="font-bold text-text-primary">09:00 - 17:00</span></p>
+                                            <p className="flex justify-between gap-6"><span>Jumat:</span> <span className="font-bold text-text-primary">09:00 - 11:30</span></p>
+                                            <p className="flex justify-between gap-6"><span>Sabtu:</span> <span className="font-bold text-text-primary">09:00 - 15:00</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -96,14 +96,14 @@ const Contact = () => {
                         </div>
 
                         {/* Form Column */}
-                        <div className="lg:col-span-3 bg-surface p-10 md:p-14 rounded-[2.5rem] border border-border animate-fade-in delay-200 shadow-sm">
+                        <div className="lg:col-span-3 bg-surface p-6 md:p-8 rounded-[1.75rem] border border-border animate-fade-in delay-200 shadow-sm">
                             <h2 className="text-3xl font-display font-bold mb-6">Kirim Pesan</h2>
-                            <p className="text-text-secondary mb-12 leading-relaxed font-body">
+                            <p className="text-text-secondary mb-7 leading-relaxed font-body">
                                 Gunakan formulir ini untuk konsultasi cepat. Pesan Anda akan diteruskan langsung ke WhatsApp admin Era Jahit.
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-10">
-                                <div className="grid md:grid-cols-2 gap-10">
+                                <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <label className="text-[11px] font-bold uppercase tracking-widest text-primary ml-1 font-sans">Nama Lengkap</label>
                                         <input
@@ -144,7 +144,7 @@ const Contact = () => {
             </div>
 
             {/* Map Section */}
-            <div className="w-full h-[600px] relative mt-20 border-t border-border">
+            <div className="w-full h-[600px] relative mt-10 border-t border-border">
                 <iframe
                     src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
                     width="100%"

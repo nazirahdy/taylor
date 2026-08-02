@@ -60,7 +60,7 @@ const ResetPassword = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent"></div>
                 <div className="relative z-10 max-w-lg px-10 text-center">
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-5 block font-sans">Kata Sandi Baru</span>
-                    <h1 className="text-4xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
+                    <h1 className="text-2xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <p className="text-text-secondary leading-relaxed text-sm font-body max-w-sm mx-auto">
                         Buat kata sandi baru yang kuat untuk melindungi akun Anda
                     </p>
@@ -78,10 +78,10 @@ const ResetPassword = () => {
                     </Link>
                 </div>
 
-                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-10">
+                <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-6">
                     <div className="w-full max-w-md animate-fade-in">
-                        <div className="mb-10">
-                            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                        <div className="mb-6">
+                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <KeyRound className="w-8 h-8 text-primary" />
                             </div>
                             <h2 className="text-3xl font-display font-bold mb-5 text-text-primary">Reset Kata Sandi</h2>
@@ -89,7 +89,7 @@ const ResetPassword = () => {
                         </div>
 
                         {error && (
-                            <div className="mb-10 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex items-start gap-4 text-[13px] font-body shadow-sm">
+                            <div className="mb-6 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex items-start gap-4 text-[13px] font-body shadow-sm">
                                 <AlertCircle className="w-6 h-6 shrink-0 text-red-500" />
                                 <span>{error}</span>
                             </div>

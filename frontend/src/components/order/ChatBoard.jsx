@@ -89,7 +89,7 @@ const ChatBoard = ({ orderId }) => {
     };
 
     return (
-        <div className="bg-surface border border-border shadow-sm flex-1 flex flex-col overflow-hidden h-full max-h-[700px] min-h-[500px] rounded-[2.5rem] relative">
+        <div className="bg-surface border border-border shadow-sm flex-1 flex flex-col overflow-hidden h-full max-h-[700px] min-h-[500px] rounded-[1.75rem] relative">
             
             {/* Header */}
             <div className="bg-white/80 backdrop-blur-md p-8 border-b border-border flex items-center justify-between z-10">
@@ -106,10 +106,10 @@ const ChatBoard = ({ orderId }) => {
             </div>
 
             {/* Chat Body */}
-            <div className="flex-1 p-8 md:p-12 overflow-y-auto bg-white/40 flex flex-col gap-10 custom-scrollbar">
+            <div className="flex-1 p-8 md:p-12 overflow-y-auto bg-white/40 flex flex-col gap-6 custom-scrollbar">
                 {messages.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-text-muted/20 gap-8 animate-fade-in">
-                        <MessageSquare className="w-16 h-16 stroke-[1px]" />
+                    <div className="h-full flex flex-col items-center justify-center text-text-muted/20 gap-5 animate-fade-in">
+                        <MessageSquare className="w-12 h-12 stroke-[1px]" />
                         <div className="text-center space-y-3">
                             <p className="text-[12px] uppercase tracking-[0.4em] font-bold font-sans text-text-muted">Mulai Konsultasi</p>
                             <p className="text-[11px] font-body max-w-[240px] text-text-muted/60">Tim penjahit kami siap mendiskusikan kebutuhan busana Anda.</p>
@@ -164,7 +164,7 @@ const ChatBoard = ({ orderId }) => {
                     type="submit" 
                     disabled={!newMessage.trim() || isLoading || !orderId}
                     aria-label="Kirim pesan"
-                    className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center hover:bg-primary-dark transition-all disabled:opacity-30 shadow-xl shadow-primary/20 shrink-0 group"
+                    className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center hover:bg-primary-dark transition-all disabled:opacity-30 shadow-xl shadow-primary/20 shrink-0 group"
                 >
                     {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"/>}
                 </button>

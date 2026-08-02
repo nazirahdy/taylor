@@ -16,7 +16,8 @@ const ScrollToTop = () => {
         if (hash) {
             const target = document.querySelector(hash);
             if (target) {
-                const navbarOffset = 65;
+                const nav = document.querySelector('nav');
+                const navbarOffset = (nav ? nav.offsetHeight : 65) + 8;
                 const y = target.getBoundingClientRect().top + window.pageYOffset - navbarOffset;
                 window.scrollTo(0, Math.max(0, y));
                 html.style.scrollBehavior = previousScrollBehavior;

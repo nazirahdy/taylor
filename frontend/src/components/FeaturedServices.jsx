@@ -11,12 +11,12 @@ const FeaturedServices = () => {
   ];
 
   return (
-    <section className="bg-white py-24 px-6 md:px-16" id="categories">
+    <section className="bg-white py-8 px-6 md:px-16" id="categories">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12 animate-fade-in">
           <div className="max-w-2xl">
             <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-6 block font-sans">Keahlian Kami</span>
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-text-primary leading-tight">
+            <h2 className="text-3xl md:text-3xl font-display font-bold text-text-primary leading-tight">
               Gaya <span className="italic font-light">Busana</span> Pilihan untuk Anda
             </h2>
           </div>
@@ -25,10 +25,10 @@ const FeaturedServices = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((item, i) => (
             <div key={i} className="group cursor-pointer animate-slide-up" style={{ animationDelay: `${i * 150}ms` }}>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] mb-8 shadow-sm group-hover:shadow-2xl group-hover:shadow-primary/10 transition-all duration-700">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] mb-8 shadow-sm group-hover:shadow-2xl group-hover:shadow-primary/10 transition-all duration-700">
                 <img 
                   src={item.image} 
                   alt={item.name} 

@@ -52,14 +52,14 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-20">
+        <div className="min-h-screen bg-white text-text-primary py-12">
             <div className="container mx-auto px-4 max-w-6xl">
                 
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-5">
                     <div className="animate-fade-in">
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Portal Pesanan</span>
-                        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-2">Selamat Datang, {user?.name?.split(' ')[0] || 'Pelanggan'}</h1>
+                        <h1 className="text-3xl md:text-2xl font-display font-bold text-text-primary mb-2">Selamat Datang, {user?.name?.split(' ')[0] || 'Pelanggan'}</h1>
                         <p className="text-text-secondary font-body text-sm">Pantau progres jahitan Anda dan kelola konsultasi desain busana Anda</p>
                     </div>
                     <div className="flex items-center gap-4 shrink-0 animate-fade-in">
@@ -74,7 +74,7 @@ const Dashboard = () => {
 
                 {/* Profile Incomplete Warning */}
                 {(!user?.phone_wa || !user?.alamat) && (
-                    <div className="mb-12 p-8 bg-red-50 border border-red-100 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse">
+                    <div className="mb-7 p-8 bg-red-50 border border-red-100 rounded-[1.5rem] flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse">
                         <div className="flex items-center gap-5">
                             <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shrink-0">
                                 <AlertCircle className="w-6 h-6" />
@@ -89,14 +89,14 @@ const Dashboard = () => {
                 )}
 
                 {/* Statistics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 animate-slide-up">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 animate-slide-up">
                     {[
                         { icon: <Clock className="w-6 h-6" />, label: "Pesanan Aktif", value: stats.aktif, color: "text-primary", bg: "bg-primary/10" },
                         { icon: <Package className="w-6 h-6" />, label: "Menunggu Review", value: stats.pending, color: "text-amber-600", bg: "bg-amber-50" },
                         { icon: <CheckCircle2 className="w-6 h-6" />, label: "Selesai", value: stats.selesai, color: "text-green-600", bg: "bg-green-50" }
                     ].map((stat, i) => (
-                        <div key={i} className="bg-surface p-10 border border-border rounded-[2rem] hover:shadow-xl transition-all group duration-700">
-                            <div className={`w-16 h-16 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-8 border border-border group-hover:scale-110 transition-transform duration-500`}>
+                        <div key={i} className="bg-surface p-6 border border-border rounded-[1.5rem] hover:shadow-xl transition-all group duration-700">
+                            <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-8 border border-border group-hover:scale-110 transition-transform duration-500`}>
                                 {stat.icon}
                             </div>
                             <p className="text-text-muted font-bold text-[11px] uppercase tracking-[0.2em] mb-3 font-sans">{stat.label}</p>
@@ -106,8 +106,8 @@ const Dashboard = () => {
                 </div>
 
                 {/* Orders Table */}
-                <div className="bg-white border border-border rounded-[2.5rem] overflow-hidden animate-slide-up delay-200 shadow-sm">
-                    <div className="p-10 border-b border-border flex justify-between items-center bg-surface/30">
+                <div className="bg-white border border-border rounded-[1.75rem] overflow-hidden animate-slide-up delay-200 shadow-sm">
+                    <div className="p-6 border-b border-border flex justify-between items-center bg-surface/30">
                         <h2 className="text-2xl font-display font-bold text-text-primary">Riwayat Pesanan</h2>
                         <span className="text-[11px] text-text-muted uppercase tracking-widest font-sans font-bold">Total: {orders.length} Data</span>
                     </div>

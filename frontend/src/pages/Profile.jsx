@@ -118,13 +118,13 @@ const Profile = () => {
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-20">
+        <div className="min-h-screen bg-white text-text-primary py-12">
             <div className="container mx-auto px-4 max-w-6xl">
                 
-                <div className="mb-16 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+                <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-5 text-center md:text-left">
                     <div>
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Akun Saya</span>
-                        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary mb-4">Profil & Data Ukuran</h1>
+                        <h1 className="text-3xl md:text-2xl font-display font-bold text-text-primary mb-4">Profil & Data Ukuran</h1>
                         <p className="text-text-secondary font-body max-w-2xl mx-auto md:mx-0">Kelola data pribadi, ukuran badan, dan keamanan akun Anda</p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -143,11 +143,11 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     
                     {/* PERSONAL INFORMATION */}
                     <div className="lg:col-span-1 space-y-8">
-                        <div className="bg-surface border border-border p-10 rounded-[2rem] shadow-sm">
+                        <div className="bg-surface border border-border p-6 rounded-[1.5rem] shadow-sm">
                             <div className="flex items-center gap-3 mb-8 border-b border-border pb-6">
                                 <User className="w-5 h-5 text-primary" />
                                 <h2 className="text-sm font-bold uppercase tracking-widest text-text-primary font-sans">Data Pribadi</h2>
@@ -187,7 +187,7 @@ const Profile = () => {
                         </div>
 
                         {/* SECURITY */}
-                        <div className="bg-surface border border-border p-10 rounded-[2rem] shadow-sm">
+                        <div className="bg-surface border border-border p-6 rounded-[1.5rem] shadow-sm">
                             <div className="flex items-center gap-3 mb-8 border-b border-border pb-6">
                                 <KeyRound className="w-5 h-5 text-primary" />
                                 <h2 className="text-sm font-bold uppercase tracking-widest text-text-primary font-sans">Keamanan Akun</h2>
@@ -212,11 +212,11 @@ const Profile = () => {
 
                     {/* MEASUREMENTS (FR-04) */}
                     <div className="lg:col-span-2">
-                        <div className="bg-surface border border-border p-10 md:p-14 rounded-[2.5rem] shadow-sm h-full flex flex-col justify-between">
+                        <div className="bg-surface border border-border p-6 md:p-8 rounded-[1.75rem] shadow-sm h-full flex flex-col justify-between">
                             <div>
-                                <div className="flex items-center justify-between mb-12 border-b border-border pb-8">
+                                <div className="flex items-center justify-between mb-7 border-b border-border pb-8">
                                     <div className="flex items-center gap-5">
-                                        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                                             <Ruler className="w-8 h-8 text-primary" />
                                         </div>
                                         <div>

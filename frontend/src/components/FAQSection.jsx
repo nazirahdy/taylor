@@ -11,11 +11,11 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="bg-white py-20 px-4 md:px-20" id="faq">
+    <section className="bg-white py-12 px-4 md:px-20" id="faq">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-20 animate-fade-in">
+        <div className="text-center mb-6 animate-fade-in">
           <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-4 block">Pusat Bantuan</span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-text-primary">
+          <h2 className="text-3xl md:text-2xl font-display font-bold text-text-primary">
             Ada Pertanyaan?
           </h2>
         </div>

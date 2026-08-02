@@ -4,9 +4,9 @@ import { Instagram, Facebook, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-r
 
 const Footer = () => {
     return (
-        <footer className="relative mt-16">
+        <footer className="relative mt-8">
             {/* CTA Banner Section */}
-            <div className="relative h-[280px] md:h-[340px] flex items-center justify-center text-center px-6 overflow-hidden mx-4 md:mx-16 rounded-[2rem] mb-[-70px] z-10 shadow-2xl group">
+            <div className="relative h-[280px] md:h-[340px] flex items-center justify-center text-center px-6 overflow-hidden mx-4 md:mx-16 rounded-[1.5rem] mb-[-70px] z-10 shadow-2xl group">
                 <div
                     className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
                     style={{ backgroundImage: "url('https://as2.ftcdn.net/jpg/09/05/00/55/1000_F_905005503_yzsxQV76TLxuvKlzXXADdlNUXin54gcr.jpg')" }}
@@ -27,7 +27,7 @@ const Footer = () => {
 
             {/* Main Footer */}
             <div className="bg-primary text-white pt-[110px] pb-10">
-                <div className="container mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <div className="container mx-auto px-4 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-7">
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-4 mb-5 group">
                             <div className="h-14 w-auto flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
@@ -95,7 +95,7 @@ const Footer = () => {
                     <p className="text-white/20 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
                         © 2026 Era Jahit — Penjahit & Konveksi Profesional.
                     </p>
-                    <div className="flex gap-10 text-white/40 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
+                    <div className="flex gap-6 text-white/40 font-sans text-[10px] uppercase tracking-[0.2em] font-bold">
                         <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
                         <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
                     </div>

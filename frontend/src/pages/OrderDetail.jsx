@@ -61,11 +61,11 @@ const OrderDetail = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-20">
+        <div className="min-h-screen bg-white text-text-primary py-12">
             <div className="container mx-auto px-4 max-w-7xl">
                 
                 {/* Header Actions */}
-                <div className="mb-12 flex items-center justify-between">
+                <div className="mb-7 flex items-center justify-between">
                     <Link to="/dashboard" className="group inline-flex items-center gap-3 text-text-muted font-bold hover:text-primary transition-all text-[11px] uppercase tracking-widest font-sans">
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform"/> Kembali ke Portal Pesanan
                     </Link>
@@ -78,7 +78,7 @@ const OrderDetail = () => {
                 <OrderInfo order={order} />
 
                 {/* Progress Tracker */}
-                <div className="mt-16 animate-slide-up">
+                <div className="mt-8 animate-slide-up">
                     <div className="flex items-center gap-4 mb-8">
                         <Activity className="w-5 h-5 text-primary" />
                         <h2 className="text-xl font-display font-bold text-text-primary">Tahapan Pengerjaan</h2>

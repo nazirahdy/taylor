@@ -78,7 +78,7 @@ const Login = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/80 to-transparent"></div>
                 <div className="relative z-10 max-w-lg px-10 text-center">
                     <span className="text-primary uppercase tracking-[0.4em] text-[11px] font-bold mb-5 block font-sans">Akses Masuk</span>
-                    <h1 className="text-4xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
+                    <h1 className="text-2xl font-display font-bold mb-6 tracking-tight text-text-primary">ERA<span className="text-primary">.</span>JAHIT</h1>
                     <p className="text-text-secondary leading-relaxed text-sm font-body max-w-sm mx-auto">
                         Masuk ke dashboard pesanan eksklusif Anda dan pantau progres jahitan Anda secara real-time
                     </p>
@@ -102,13 +102,13 @@ const Login = () => {
                 {/* Form — flex-1 + flex center agar konten benar-benar di tengah sisa ruang */}
                 <div className="flex-1 flex items-center justify-center px-8 sm:px-12 py-12">
                     <div className="w-full max-w-md animate-fade-in">
-                        <div className="mb-10">
+                        <div className="mb-6">
                             <h2 className="text-3xl font-display font-bold mb-3 text-text-primary">Selamat Datang</h2>
                             <p className="text-text-secondary text-sm font-body">Silakan masukkan email dan kata sandi Anda untuk mengakses portal</p>
                         </div>
 
                         {error && (
-                            <div className="mb-10 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex flex-col gap-3 text-[13px] font-body shadow-sm">
+                            <div className="mb-6 p-6 bg-red-50 border border-red-100 text-red-600 rounded-2xl flex flex-col gap-3 text-[13px] font-body shadow-sm">
                                 <div className="flex items-start gap-4">
                                     <AlertCircle className="w-6 h-6 shrink-0 text-red-500" />
                                     <span>{error}</span>
