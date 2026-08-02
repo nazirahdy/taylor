@@ -137,13 +137,13 @@ const ChatWidget = () => {
             ) : (
                 <div
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-white w-80 md:w-96 h-[500px] shadow-2xl rounded-2xl flex flex-col border border-gray-100 animate-slide-up relative overflow-hidden"
+                    className="bg-white w-72 md:w-80 h-[420px] shadow-2xl rounded-2xl flex flex-col border border-gray-100 animate-slide-up relative overflow-hidden"
                 >
-                    <div className="bg-primary text-white p-4 rounded-t-2xl flex justify-between items-center border-b border-white/10">
-                        <div className="flex items-center gap-3">
+                    <div className="bg-primary text-white p-3 rounded-t-2xl flex justify-between items-center border-b border-white/10">
+                        <div className="flex items-center gap-2.5">
                             {/* Era Jahit avatar */}
-                            <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden">
-                                <span className="text-primary font-bold text-base select-none">EJ</span>
+                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden">
+                                <span className="text-primary font-bold text-sm select-none">EJ</span>
                             </div>
                             <div className="leading-tight">
                                 <span className="font-bold block text-sm">Era Jahit</span>
@@ -164,11 +164,11 @@ const ChatWidget = () => {
                             onClick={() => setIsOpen(false)}
                             className="text-white hover:text-gray-200 focus:outline-none"
                         >
-                            <X size={20} />
+                            <X size={18} />
                         </button>
                     </div>
 
-                    <div ref={chatBodyRef} className="flex-grow overflow-y-auto p-5 space-y-5 bg-white relative" id="customer-chat-body">
+                    <div ref={chatBodyRef} className="flex-grow overflow-y-auto p-4 space-y-4 bg-white relative" id="customer-chat-body">
                         {messages.length === 0 && (
                             <div className="text-center text-gray-400 mt-10 text-sm font-sans">
                                 <p>Tanya apa saja seputar pesanan kamu!</p>
@@ -198,10 +198,10 @@ const ChatWidget = () => {
                         ))}
                     </div>
 
-                    <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex items-center gap-3">
+                    <form onSubmit={handleSend} className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
                         <input
                             type="text"
-                            className="flex-grow border border-gray-400 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-emerald-600 transition-all font-sans min-w-0"
+                            className="flex-grow border border-gray-400 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-600 transition-all font-sans min-w-0"
                             placeholder="Tulis pesan..."
                             value={newMessage}
                             onChange={e => setNewMessage(e.target.value)}
@@ -209,9 +209,9 @@ const ChatWidget = () => {
                         <button
                             type="submit"
                             className="rounded-full text-white flex items-center justify-center transition-transform hover:scale-105 flex-shrink-0 disabled:opacity-50"
-                            style={{ backgroundColor: '#115e59', width: '44px', height: '44px', minWidth: '44px' }}
+                            style={{ backgroundColor: '#115e59', width: '38px', height: '38px', minWidth: '38px' }}
                         >
-                            <Send size={20} style={{ marginLeft: '-2px' }} />
+                            <Send size={18} style={{ marginLeft: '-2px' }} />
                         </button>
                     </form>
                 </div>
