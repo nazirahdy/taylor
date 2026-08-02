@@ -51,6 +51,19 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1536px) {
+  html {
+    font-size: 15px;
+  }
 }
 
 :root {
