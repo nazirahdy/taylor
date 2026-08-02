@@ -133,7 +133,8 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "━━━━━━━━━━━━━━━━━━━\n"
                                    . "Pesan dari Admin:\n"
                                    . "_DP Anda sudah kami terima dan terverifikasi. Pesanan Anda kini sedang menunggu konfirmasi akhir dari Admin. Kami akan segera menghubungi Anda kembali setelah pesanan dikonfirmasi._ 🙏✨\n\n"
-                                   . "Terima kasih telah memilih Era Jahit Studio!";
+                                   . "Terima kasih telah memilih Era Jahit Studio!"
+                                   . $waService->messageFooter();
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
                         }
@@ -194,7 +195,8 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "━━━━━━━━━━━━━━━━━━━\n"
                                    . "Alasan dari Admin:\n"
                                    . "_*{$data['alasan_tolak']}*_\n\n"
-                                   . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih. 🙏";
+                                   . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih. 🙏"
+                                   . $waService->messageFooter();
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
                         }

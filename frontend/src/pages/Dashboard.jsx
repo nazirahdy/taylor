@@ -52,7 +52,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-12">
+        <div className="min-h-screen bg-white text-text-primary pt-24 pb-12">
             <div className="container mx-auto px-4 max-w-6xl">
                 
                 {/* Header Section */}

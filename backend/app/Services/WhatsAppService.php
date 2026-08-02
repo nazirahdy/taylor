@@ -5,8 +5,16 @@ namespace App\Services;
 class WhatsAppService
 {
     const ADMIN_PHONE = '081267976080';
-    
+    const WEBSITE_NAME = 'Era Jahit Studio';
+    const DASHBOARD_URL = 'https://www.erajahit.cloud/dashboard';
+
     protected static array $sentNotifications = [];
+
+    public function messageFooter(): string
+    {
+        return "\n\n🌐 Cek riwayat & progres pesanan Anda kapan saja di *" . self::WEBSITE_NAME . "*:\n"
+             . self::DASHBOARD_URL;
+    }
 
     protected function alreadySent(string $key): bool
     {
@@ -37,7 +45,8 @@ class WhatsAppService
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan dari Admin:\n"
              . "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim desainer dan penjahit kami akan segera memproses pembuatan busana Anda sesuai dengan detail desain & ukuran yang disepakati\n\n"
-             . "Terima kasih banyak atas kepercayaan Anda kepada Era Jahit Studio!";
+             . "Terima kasih banyak atas kepercayaan Anda kepada Era Jahit Studio!"
+             . $this->messageFooter();
     }
 
     public function getMessageInProgress($order): string
@@ -51,7 +60,8 @@ class WhatsAppService
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan dari Admin:\n"
              . "Proses menjahit busana Anda resmi dimulai! Tim penjahit kami sedang mengerjakan pemotongan kain dan pola desain dengan teliti untuk menjamin kesempurnaan busana Anda.\n\n"
-             . "Kami akan terus memperbarui progres pengerjaan di dashboard pesanan Anda. Terima kasih!";
+             . "Kami akan terus memperbarui progres pengerjaan di dashboard pesanan Anda. Terima kasih!"
+             . $this->messageFooter();
     }
 
     public function getMessageCompleted($order): string
@@ -65,7 +75,8 @@ class WhatsAppService
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan dari Admin:\n"
              . "Busana Anda telah selesai dijahit dan telah lolos tahap Quality Control (QC) kami dengan hasil yang sangat baik. Silakan hubungi kami untuk koordinasi pengiriman atau silakan datang langsung ke studio untuk fitting/pengambilan\n\n"
-             . "Terima kasih telah mempercayakan busana Anda kepada Era Jahit Studio!";
+             . "Terima kasih telah mempercayakan busana Anda kepada Era Jahit Studio!"
+             . $this->messageFooter();
     }
 
     public function getMessageRejected($order, $reason = 'Ketidaksesuaian detail'): string
@@ -79,7 +90,8 @@ class WhatsAppService
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Alasan dari Admin:\n"
              . "_Mohon maaf sebesar-besarnya, pesanan Anda saat ini belum dapat kami proses karena: *{$reason}*._\n\n"
-             . "Jika ada hal yang ingin ditanyakan atau ingin mendiskusikan alternatif desain/jadwal lain, silakan langsung membalas pesan ini. Terima kasih";
+             . "Jika ada hal yang ingin ditanyakan atau ingin mendiskusikan alternatif desain/jadwal lain, silakan langsung membalas pesan ini. Terima kasih"
+             . $this->messageFooter();
     }
 
     public function getMessageProgressUpdate($order, string $stage, string $description = ''): string
@@ -91,7 +103,8 @@ class WhatsAppService
              . "*Tahap Progres:* *{$stage}* 🪡\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan Progres:{$descriptionStr}\n\n"
-             . "Terima kasih atas kepercayaan Anda!";
+             . "Terima kasih atas kepercayaan Anda!"
+             . $this->messageFooter();
     }
 
     public function sendMessage(string $phone, string $message): void
@@ -231,7 +244,8 @@ class WhatsAppService
              . "*Jumlah Pelunasan:* Rp " . number_format($final, 0, ',', '.') . "\n"
              . "*Sisa Tagihan:* {$sisa}\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
-             . "Terima kasih atas kepercayaan Anda kepada Era Jahit Studio!";
+             . "Terima kasih atas kepercayaan Anda kepada Era Jahit Studio!"
+             . $this->messageFooter();
     }
 
     public function notifyPaymentStatusUpdated($order): void

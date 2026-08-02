@@ -214,7 +214,7 @@ class OrderStatusResource extends Resource
 
                             Notification::make()
                                 ->title('Status Berhasil Diperbarui! ✅')
-                                ->body('Notifikasi perubahan status telah dikirim otomatis dan dialihkan ke WhatsApp.')
+                                ->body('Pesan notifikasi sudah disiapkan dan dialihkan ke WhatsApp, silakan klik kirim.')
                                 ->success()
                                 ->send();
                         } else {

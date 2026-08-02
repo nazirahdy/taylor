@@ -47,7 +47,7 @@ const ManagePassword = () => {
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
-        <div className="min-h-screen bg-white text-text-primary py-12">
+        <div className="min-h-screen bg-white text-text-primary pt-24 pb-12">
             <div className="container mx-auto px-4 max-w-3xl">
                 
                 <div className="mb-7">

@@ -76,22 +76,6 @@ class Order extends Model
             }
         });
 
-        static::updated(function (Order $order) {
-            if ($order->wasChanged('status')) {
-                $status = $order->status;
-                $whatsAppService = app(\App\Services\WhatsAppService::class);
-                $order->load('user');
-
-                if (!$order->user || !$order->user->phone_wa) return;
-                
-                switch ($status) {
-                    case 'confirmed': $whatsAppService->notifyOrderConfirmed($order); break;
-                    case 'selesai_penyerahan': $whatsAppService->notifyOrderCompleted($order); break;
-                    case 'rejected': $whatsAppService->notifyOrderRejected($order, $order->rejected_reason ?? 'Ketidaksesuaian detail'); break;
-                    case 'proses_menjahit': $whatsAppService->notifyOrderInProgress($order); break;
-                }
-            }
-        });
     }
 
     public static function generateUniqueOrderNumber(): string

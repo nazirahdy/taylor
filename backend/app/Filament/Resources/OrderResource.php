@@ -356,7 +356,8 @@ class OrderResource extends Resource
                                 $nomSisa = number_format($sisa, 0, ',', '.');
                                 $msg .= "Sisa tagihan Anda saat ini adalah *Rp {$nomSisa}*. Terima kasih! ✨";
                             }
-                            
+                            $msg .= $whatsAppService->messageFooter();
+
                             $url = $whatsAppService->generateWaLink($record->user->phone_wa, $msg);
                             Notification::make()
                                 ->title('Pelunasan dicatat!')
@@ -389,7 +390,8 @@ class OrderResource extends Resource
                                  . "Tim Era Jahit telah meninjau pesanan Anda #{$record->id}.\n\n"
                                  . "💰 *Estimasi Total*: Rp {$estimatedPrice}\n"
                                  . "💳 *Uang Muka (DP)*: Rp {$dpAmount}\n\n"
-                                 . "Silakan bayar DP agar pesanan segera kami proses! 🙏";
+                                 . "Silakan bayar DP agar pesanan segera kami proses! 🙏"
+                                 . $waService->messageFooter();
 
                             $url = $waService->generateWaLink($record->user->phone_wa, $msg);
                             Notification::make()
