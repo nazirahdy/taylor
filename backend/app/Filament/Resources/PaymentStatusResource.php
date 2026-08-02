@@ -286,7 +286,6 @@ class PaymentStatusResource extends Resource
                             $url = $waService->generateWaLink($record->user->phone_wa, $message);
 
                             $livewire->js("window.open('{$url}', '_blank')");
-                            $waService->notifyPaymentStatusUpdated($record);
 
                             Notification::make()
                                 ->title('Status Pelunasan Diperbarui! ✅')
@@ -343,7 +342,6 @@ class PaymentStatusResource extends Resource
                             $url = $waService->generateWaLink($record->user->phone_wa, $message);
 
                             $livewire->js("window.open('{$url}', '_blank')");
-                            $waService->notifyPaymentStatusUpdated($record);
 
                             Notification::make()
                                 ->title('DP Berhasil Dicatat! ✅')
@@ -413,7 +411,6 @@ class PaymentStatusResource extends Resource
                             $url = $waService->generateWaLink($record->user->phone_wa, $message);
 
                             $livewire->js("window.open('{$url}', '_blank')");
-                            $waService->notifyPaymentStatusUpdated($record);
 
                             Notification::make()
                                 ->title($record->is_fully_paid ? 'Pelunasan Berhasil! Pesanan Lunas ✅' : 'Pembayaran Sebagian Dicatat ✅')

@@ -61,8 +61,6 @@ class ProgressLogsRelationManager extends RelationManager
 
                         if ($order->user?->phone_wa) {
                             $wa = new WhatsAppService();
-                            // Kirim otomatis via API
-                            $wa->notifyProgressUpdate($record);
 
                             $url = $wa->generateWaLink(
                                 $order->user->phone_wa,
@@ -73,7 +71,7 @@ class ProgressLogsRelationManager extends RelationManager
 
                             \Filament\Notifications\Notification::make()
                                 ->title('Progres Tercatat! ✅')
-                                ->body('Progres berhasil dicatat, notifikasi dikirim secara otomatis, dan dialihkan ke WhatsApp.')
+                                ->body('Progres berhasil dicatat dan dialihkan ke WhatsApp, silakan klik kirim.')
                                 ->success()
                                 ->send();
                         }

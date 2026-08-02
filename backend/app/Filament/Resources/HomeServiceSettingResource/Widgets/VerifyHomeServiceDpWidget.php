@@ -136,8 +136,6 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "Terima kasih telah memilih Era Jahit Studio!";
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
-                            // Kirim otomatis via API
-                            $waService->sendMessage($record->user->phone_wa, $waMsg);
                         }
 
                         if ($waUrl) {
@@ -199,8 +197,6 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                                    . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih. 🙏";
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
-                            // Kirim otomatis via API
-                            $waService->sendMessage($record->user->phone_wa, $waMsg);
                         }
 
                         if ($waUrl) {
