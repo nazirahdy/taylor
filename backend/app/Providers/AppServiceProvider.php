@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(Registered::class, SendEmailVerificationNotification::class);
+
         VerifyEmail::toMailUsing(function ($notifiable) {
             $frontendUrl = rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/');
             $verifyUrl = $frontendUrl . '/verify-email?id=' . $notifiable->getKey()
