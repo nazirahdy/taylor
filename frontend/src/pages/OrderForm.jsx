@@ -51,13 +51,13 @@ const StepIndicator = ({ step, metode }) => {
     const progressWidth = allSteps.length > 1 ? (activeStepIndex / (allSteps.length - 1)) * 100 : 0;
 
     return (
-        <div className="flex items-center justify-between relative mb-20">
+        <div className="flex items-center justify-between relative mb-6">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-border -z-10"></div>
             <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] bg-primary -z-10 transition-all duration-700" style={{ width: `${progressWidth}%` }}></div>
             
             {allSteps.map(s => (
                 <div key={s.num} className="flex flex-col items-center gap-4">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border ${
+                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-500 border ${
                         step >= s.num ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20' : 'bg-surface border-border text-text-muted'
                     }`}>
                         {s.icon}
@@ -431,16 +431,16 @@ const OrderForm = () => {
 
     const renderStep1 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-10">
+            <div className="text-center mb-6">
                 <span className="text-primary text-xs font-medium mb-2 block">Tahap 1 dari {formData.metode === 'home_service' ? '5' : '4'}</span>
                 <h2 className="text-2xl font-semibold text-text-primary">Pilih Metode Layanan</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-5">
                 <button 
                     onClick={() => setFormData({...formData, metode: 'home_service'})}
-                    className={`p-10 text-left border rounded-[2rem] transition-all duration-500 group shadow-sm ${formData.metode === 'home_service' ? 'border-primary bg-surface ring-4 ring-primary/5' : 'border-border hover:border-primary/50 bg-white'}`}
+                    className={`p-6 text-left border rounded-[1.5rem] transition-all duration-500 group shadow-sm ${formData.metode === 'home_service' ? 'border-primary bg-surface ring-4 ring-primary/5' : 'border-border hover:border-primary/50 bg-white'}`}
                 >
-                    <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'home_service' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
+                    <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'home_service' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
                         <Home className="w-6 h-6" />
                     </div>
                     <h3 className="text-lg font-semibold text-text-primary mb-3">Home Service</h3>
@@ -450,9 +450,9 @@ const OrderForm = () => {
                 
                 <button 
                     onClick={() => setFormData({...formData, metode: 'visit'})}
-                    className={`p-10 text-left border rounded-[2rem] transition-all duration-500 group shadow-sm ${formData.metode === 'visit' ? 'border-primary bg-surface ring-4 ring-primary/5' : 'border-border hover:border-primary/50 bg-white'}`}
+                    className={`p-6 text-left border rounded-[1.5rem] transition-all duration-500 group shadow-sm ${formData.metode === 'visit' ? 'border-primary bg-surface ring-4 ring-primary/5' : 'border-border hover:border-primary/50 bg-white'}`}
                 >
-                    <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'visit' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
+                    <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center mb-8 transition-all duration-500 shadow-sm ${formData.metode === 'visit' ? 'border-primary text-white bg-primary' : 'border-border text-text-muted bg-surface'}`}>
                         <Store className="w-6 h-6" />
                     </div>
                     <h3 className="text-lg font-semibold text-text-primary mb-3">In-Store (Kunjungan Studio)</h3>
@@ -465,13 +465,13 @@ const OrderForm = () => {
 
     const renderStep2 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-10">
+            <div className="text-center mb-6">
                 <span className="text-primary text-xs font-medium mb-2 block">Tahap 2 dari {formData.metode === 'home_service' ? '5' : '4'}</span>
                 <h2 className="text-2xl font-semibold text-text-primary mb-2">Desain &amp; Referensi</h2>
                 <p className="text-text-secondary text-sm max-w-lg mx-auto">Deskripsikan keinginan model baju Anda dan unggah gambar referensi jika ada</p>
             </div>
 
-            <div className="mb-10 max-w-xl mx-auto">
+            <div className="mb-6 max-w-xl mx-auto">
                 <label className="text-text-secondary text-sm font-medium mb-2 block">Deskripsi Desain (Opsional)</label>
                 <textarea
                     value={formData.catatan}
@@ -483,9 +483,9 @@ const OrderForm = () => {
                 <p className="text-[11px] text-text-muted mt-3">Opsional: Deskripsikan keinginan desain agar penjahit bisa menyiapkan lebih baik (boleh dikosongkan)</p>
             </div>
 
-            <div className="mb-10 max-w-xl mx-auto">
+            <div className="mb-6 max-w-xl mx-auto">
                 {selectedGalleryItem ? (
-                    <div className="bg-surface border border-border rounded-[2rem] p-8 shadow-sm">
+                    <div className="bg-surface border border-border rounded-[1.5rem] p-8 shadow-sm">
                         <span className="text-primary text-xs font-semibold block mb-3">Desain Terpilih dari Galeri</span>
                         <div className="flex gap-6 items-center">
                             <img 
@@ -515,10 +515,10 @@ const OrderForm = () => {
                     </div>
                 ) : (
                     <div className="space-y-8">
-                        <div className="border border-border rounded-[2rem] p-8 bg-white shadow-sm">
+                        <div className="border border-border rounded-[1.5rem] p-8 bg-white shadow-sm">
                             <span className="text-sm font-medium text-text-secondary block mb-3">Pilihan A: Unggah Gambar Referensi Sendiri</span>
                             <div className="flex flex-col items-center">
-                                <label className={`w-full border-2 border-dashed rounded-[2rem] p-10 flex flex-col items-center text-center cursor-pointer transition-all duration-300 ${designPreview ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-surface'}`}>
+                                <label className={`w-full border-2 border-dashed rounded-[1.5rem] p-6 flex flex-col items-center text-center cursor-pointer transition-all duration-300 ${designPreview ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-surface'}`}>
                                     <input 
                                         type="file" 
                                         accept="image/*" 
@@ -541,7 +541,7 @@ const OrderForm = () => {
                             </div>
                         </div>
 
-                        <div className="border border-border rounded-[2rem] p-8 bg-white shadow-sm">
+                        <div className="border border-border rounded-[1.5rem] p-8 bg-white shadow-sm">
                             <span className="text-sm font-medium text-text-secondary block mb-3">Pilihan B: Pilih dari Galeri Era Jahit</span>
                             {galleryList.length === 0 ? (
                                 <p className="text-xs text-text-muted italic">Memuat galeri karya...</p>
@@ -664,14 +664,14 @@ const OrderForm = () => {
 
         return (
             <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-                <div className="text-center mb-12">
+                <div className="text-center mb-7">
                     <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-3 block font-sans">Tahap 03</span>
-                    <h2 className="text-4xl font-display font-bold text-text-primary mb-3">Lokasi Kunjungan</h2>
+                    <h2 className="text-2xl font-display font-bold text-text-primary mb-3">Lokasi Kunjungan</h2>
                     <p className="text-text-secondary font-body text-sm max-w-lg mx-auto">Tentukan alamat lengkap dan pin point titik lokasi untuk sesi kunjungan Home Service kami.</p>
                 </div>
                 
                 {formData.metode === 'home_service' && (
-                    <div className="mb-12 max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-8 border border-border rounded-[2rem] shadow-sm">
+                    <div className="mb-7 max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-8 border border-border rounded-[1.5rem] shadow-sm">
                         <h3 className="font-display font-bold text-lg text-text-primary mb-2 flex items-center gap-3">
                             <span className="w-6 h-[2px] bg-primary"></span> Detail Lokasi Kunjungan
                         </h3>
@@ -735,7 +735,7 @@ const OrderForm = () => {
                             </div>
 
                             {/* Interactive Color Map (Leaflet) with Draggable Pin */}
-                            <div className="w-full h-80 rounded-2xl overflow-hidden relative border border-border shadow-md mt-3 z-0">
+                            <div className="w-full h-64 rounded-2xl overflow-hidden relative border border-border shadow-md mt-3 z-0">
                                 <MapContainer 
                                     center={[mapLat, mapLng]} 
                                     zoom={15} 
@@ -819,13 +819,13 @@ const OrderForm = () => {
 
     const renderStep4 = () => (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-10">
+            <div className="text-center mb-6">
                 <span className="text-primary text-xs font-medium mb-2 block">Tahap {displayStep} dari {formData.metode === 'home_service' ? '5' : '4'}</span>
                 <h2 className="text-2xl font-semibold text-text-primary mb-2">Jadwal Pertemuan</h2>
                 <p className="text-text-secondary text-sm max-w-lg mx-auto">Pilih tanggal yang tersedia untuk sesi desain utama atau pengukuran.</p>
             </div>
 
-            <div className="max-w-4xl mx-auto bg-surface rounded-[2rem] border border-border p-6 shadow-sm">
+            <div className="max-w-4xl mx-auto bg-surface rounded-[1.5rem] border border-border p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div>
                         <h3 className="text-xl font-bold text-text-primary">Kalender Jadwal Kuota</h3>
@@ -886,7 +886,7 @@ const OrderForm = () => {
                                         }
                                         setFormData({...formData, tanggal: d.date});
                                     }}
-                                    className={`min-h-[110px] flex flex-col items-center justify-between rounded-3xl border p-4 text-left transition-all duration-500 ${
+                                    className={`min-h-[76px] flex flex-col items-center justify-between rounded-3xl border p-4 text-left transition-all duration-500 ${
                                         !d ? 'bg-transparent border-transparent cursor-default' : (d.is_past || d.disabled || d.is_closure) ? 'bg-surface border-border opacity-70 cursor-pointer hover:border-primary/50' : formData.tanggal === d.date ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20' : 'bg-white border-border hover:border-primary/50 text-text-primary shadow-sm'
                                     }`}
                                 >
@@ -908,7 +908,7 @@ const OrderForm = () => {
 
             {fullDateModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4 py-6">
-                    <div className="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl border border-border">
+                    <div className="w-full max-w-md rounded-[1.5rem] bg-white p-8 shadow-2xl border border-border">
                         <h3 className="text-2xl font-bold text-text-primary mb-4">
                             {fullDateModal.type === 'past' ? 'Tanggal Lampau' : 
                              fullDateModal.type === 'closure' ? 'Toko Tutup' : 'Tanggal Penuh'}
@@ -942,14 +942,14 @@ const OrderForm = () => {
 
         return (
         <div className="animate-in fade-in slide-in-from-right-8 duration-700">
-            <div className="text-center mb-10">
+            <div className="text-center mb-6">
                 <span className="text-primary text-xs font-medium mb-2 block">Tahap {displayStep} dari {formData.metode === 'home_service' ? '5' : '4'}</span>
                 <h2 className="text-2xl font-semibold text-text-primary">
                     {formData.metode === 'home_service' ? 'Konfirmasi & Pembayaran DP' : 'Konfirmasi Pesanan'}
                 </h2>
             </div>
             
-            <div className="bg-white p-10 md:p-14 border border-border rounded-[2.5rem] max-w-3xl mx-auto shadow-sm">
+            <div className="bg-white p-6 md:p-8 border border-border rounded-[1.75rem] max-w-3xl mx-auto shadow-sm">
                 
                 {isLocked && (
                     <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-2xl mb-8 flex items-center justify-between shadow-sm animate-in zoom-in-95 duration-500">
@@ -973,7 +973,7 @@ const OrderForm = () => {
                     </span>
                 </div>
                 
-                <div className="flex justify-between items-center pb-8 border-b border-border mb-12">
+                <div className="flex justify-between items-center pb-8 border-b border-border mb-7">
                     <span className="text-text-muted text-xs">Tanggal Sesi</span>
                     <span className="font-semibold text-text-primary text-base">
                         {new Date(formData.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -982,7 +982,7 @@ const OrderForm = () => {
 
 
                 {formData.metode === 'home_service' && formData.alamat_kunjungan && (
-                    <div className="flex flex-col pb-8 border-b border-border mb-12 gap-2 text-left">
+                    <div className="flex flex-col pb-8 border-b border-border mb-7 gap-2 text-left">
                         <span className="text-text-muted text-xs mb-1">Alamat Kunjungan</span>
                         <span className="font-body text-text-primary text-sm leading-relaxed bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm">
                             {formData.alamat_kunjungan}
@@ -994,14 +994,14 @@ const OrderForm = () => {
                 )}
 
                 {formData.catatan && (
-                    <div className="mb-12 text-left">
+                    <div className="mb-7 text-left">
                         <span className="text-text-muted text-xs block mb-2">Catatan Desain</span>
                         <p className="bg-surface p-8 border border-border text-text-secondary font-body italic text-sm leading-relaxed rounded-[1.5rem] shadow-sm">{formData.catatan}</p>
                     </div>
                 )}
 
                 {designPreview && (
-                    <div className="mb-12 text-left">
+                    <div className="mb-7 text-left">
                         <span className="text-text-muted text-xs block mb-2">Referensi Gambar Desain</span>
                         <div className="bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm inline-block">
                             <img src={designPreview} alt="Referensi Desain" className="max-h-48 object-contain rounded-xl" />
@@ -1010,7 +1010,7 @@ const OrderForm = () => {
                 )}
 
                 {selectedGalleryItem && (
-                    <div className="mb-12 text-left">
+                    <div className="mb-7 text-left">
                         <span className="text-text-muted text-xs block mb-2">Referensi Desain dari Galeri</span>
                         <div className="bg-surface p-6 border border-border rounded-[1.5rem] shadow-sm inline-block">
                             <img 
@@ -1023,7 +1023,7 @@ const OrderForm = () => {
                 )}
 
                 {formData.metode === 'home_service' && (
-                    <div className="border border-primary/20 bg-primary/5 rounded-[2rem] p-8 md:p-10 mb-12 text-left animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="border border-primary/20 bg-primary/5 rounded-[1.5rem] p-8 md:p-6 mb-7 text-left animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center gap-4 mb-6 border-b border-primary/10 pb-4">
                             <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-bold">Rp</div>
                             <div>
@@ -1032,7 +1032,7 @@ const OrderForm = () => {
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-8 mb-8">
+                        <div className="grid md:grid-cols-2 gap-5 mb-8">
                             <div>
                                 <span className="text-xs text-text-muted font-medium block mb-1">Transfer Bank Mandiri</span>
                                 <span className="text-text-primary font-mono font-bold text-lg tracking-wider block">123-00-0987654-1</span>
@@ -1140,19 +1140,19 @@ const OrderForm = () => {
     if (showSuccess) {
         if (formData.metode === 'home_service') {
             return (
-                <div className="min-h-screen bg-surface py-20 flex items-center justify-center">
+                <div className="min-h-screen bg-surface py-10 flex items-center justify-center">
                     <div className="container mx-auto px-4 max-w-3xl animate-in fade-in zoom-in-95 duration-750">
-                        <div className="bg-white p-12 md:p-20 rounded-[3rem] border border-border shadow-2xl text-center">
-                            <div className="w-20 h-20 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
+                        <div className="bg-white p-8 md:p-14 rounded-[2rem] border border-border shadow-2xl text-center">
+                            <div className="w-14 h-14 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
                                 <Clock className="w-8 h-8 text-primary animate-pulse"/>
                             </div>
                             <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Pembayaran Diterima</span>
-                            <h2 className="text-4xl font-display font-bold text-text-primary mb-4">Pesanan & DP Berhasil Dikirim</h2>
-                            <p className="text-text-secondary font-body text-sm max-w-md mx-auto mb-12 leading-relaxed">
+                            <h2 className="text-2xl font-display font-bold text-text-primary mb-4">Pesanan & DP Berhasil Dikirim</h2>
+                            <p className="text-text-secondary font-body text-sm max-w-md mx-auto mb-7 leading-relaxed">
                                 Bukti transfer DP Anda sebesar <strong>Rp {globalDpAmount.toLocaleString('id-ID')}</strong> telah berhasil diunggah. Kami akan memvalidasi pembayaran Anda secepatnya.
                             </p>
 
-                            <div className="grid md:grid-cols-2 gap-8 text-left bg-surface p-10 border border-border rounded-[2rem] mb-10">
+                            <div className="grid md:grid-cols-2 gap-5 text-left bg-surface p-6 border border-border rounded-[1.5rem] mb-6">
                                 <div>
                                     <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block mb-2">Jadwal Kunjungan</span>
                                     <span className="text-text-primary font-display font-bold text-lg block">
@@ -1167,7 +1167,7 @@ const OrderForm = () => {
                                 </div>
                             </div>
 
-                            <div className="border border-border rounded-[2rem] p-8 text-left bg-white shadow-sm mb-12">
+                            <div className="border border-border rounded-[1.5rem] p-8 text-left bg-white shadow-sm mb-7">
                                 <h4 className="font-display font-bold text-lg text-text-primary mb-4 flex items-center gap-3">
                                     <span className="w-6 h-[2px] bg-primary"></span> Langkah Selanjutnya
                                 </h4>
@@ -1191,19 +1191,19 @@ const OrderForm = () => {
         }
 
         return (
-            <div className="min-h-screen bg-surface py-20 flex items-center justify-center">
+            <div className="min-h-screen bg-surface py-10 flex items-center justify-center">
                 <div className="container mx-auto px-4 max-w-3xl animate-in fade-in zoom-in-95 duration-750">
-                    <div className="bg-white p-12 md:p-20 rounded-[3rem] border border-border shadow-2xl text-center">
-                        <div className="w-20 h-20 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
+                    <div className="bg-white p-8 md:p-14 rounded-[2rem] border border-border shadow-2xl text-center">
+                        <div className="w-14 h-14 border-2 border-primary/20 rounded-3xl flex items-center justify-center mb-8 mx-auto bg-primary/5">
                             <MapPin className="w-8 h-8 text-primary animate-bounce"/>
                         </div>
                         <span className="text-primary uppercase tracking-[0.4em] text-[12px] font-bold mb-4 block font-sans">Reservasi Berhasil</span>
-                        <h2 className="text-4xl font-display font-bold text-text-primary mb-4">Silakan Kunjungi Studio Kami</h2>
-                        <p className="text-text-secondary font-body text-sm max-w-md mx-auto mb-12 leading-relaxed">
+                        <h2 className="text-2xl font-display font-bold text-text-primary mb-4">Silakan Kunjungi Studio Kami</h2>
+                        <p className="text-text-secondary font-body text-sm max-w-md mx-auto mb-7 leading-relaxed">
                             Pesanan Anda telah terdaftar Kami menunggu kedatangan Anda untuk melakukan pengukuran langsung dan diskusi detail desain.
                         </p>
 
-                        <div className="grid md:grid-cols-2 gap-8 text-left bg-surface p-10 border border-border rounded-[2rem] mb-10">
+                        <div className="grid md:grid-cols-2 gap-5 text-left bg-surface p-6 border border-border rounded-[1.5rem] mb-6">
                             <div>
                                 <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block mb-2">Jadwal Sesi Anda</span>
                                 <span className="text-text-primary font-display font-bold text-lg block">
@@ -1219,7 +1219,7 @@ const OrderForm = () => {
                             </div>
                         </div>
 
-                        <div className="border border-border rounded-[2rem] overflow-hidden p-8 text-left bg-white shadow-sm mb-12">
+                        <div className="border border-border rounded-[1.5rem] overflow-hidden p-8 text-left bg-white shadow-sm mb-7">
                             <h4 className="font-display font-bold text-lg text-text-primary mb-4 flex items-center gap-3">
                                 <span className="w-6 h-[2px] bg-primary"></span> Detail Alamat Studio
                             </h4>
@@ -1262,17 +1262,17 @@ const OrderForm = () => {
     }
 
     return (
-        <div className="min-h-screen bg-surface py-20">
+        <div className="min-h-screen bg-surface py-10">
             <div className="container mx-auto px-4 max-w-5xl">
                 
-                <button onClick={() => step > 1 ? prevStep() : navigate(-1)} className="flex items-center gap-3 text-text-muted text-[11px] uppercase tracking-[0.2em] font-bold hover:text-primary transition-all mb-16 font-sans group">
+                <button onClick={() => step > 1 ? prevStep() : navigate(-1)} className="flex items-center gap-3 text-text-muted text-[11px] uppercase tracking-[0.2em] font-bold hover:text-primary transition-all mb-8 font-sans group">
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" /> Kembali
                 </button>
  
-                <div className="bg-white p-10 md:p-20 rounded-[3rem] border border-border shadow-2xl">
+                <div className="bg-white p-6 md:p-10 rounded-[2rem] border border-border shadow-2xl">
                     <StepIndicator step={displayStep} metode={formData.metode} />
                     
-                    <div className="min-h-[40vh] my-16">
+                    <div className="my-8">
                         {step === 1 && renderStep1()}
                         {step === 2 && renderStep2()}
                         {step === 3 && renderStep3()}
@@ -1280,11 +1280,11 @@ const OrderForm = () => {
                         {step === 5 && renderStep5()}
                     </div>
 
-                    <div className="flex justify-between items-center pt-12 border-t border-border mt-16">
+                    <div className="flex justify-between items-center pt-6 border-t border-border mt-8">
                         <button 
                             onClick={prevStep}
                             disabled={step === 1}
-                            className={`px-10 py-4 uppercase tracking-widest text-[11px] font-bold transition-all border rounded-xl font-sans ${step === 1 ? 'opacity-0 cursor-default' : 'border-border text-text-muted hover:border-primary hover:text-primary hover:bg-surface'}`}
+                            className={`px-6 py-3 uppercase tracking-widest text-[11px] font-bold transition-all border rounded-xl font-sans ${step === 1 ? 'opacity-0 cursor-default' : 'border-border text-text-muted hover:border-primary hover:text-primary hover:bg-surface'}`}
                         >
                             Tahap Sebelumnya
                         </button>
@@ -1295,14 +1295,14 @@ const OrderForm = () => {
                                 <button 
                                     onClick={submitOrder}
                                     disabled={isLoading}
-                                    className="px-12 py-5 bg-text-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-black transition-all flex items-center gap-3 shadow-xl shadow-black/10 rounded-xl font-sans disabled:opacity-50"
+                                    className="px-8 py-3.5 bg-text-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-black transition-all flex items-center gap-3 shadow-xl shadow-black/10 rounded-xl font-sans disabled:opacity-50"
                                 >
                                     {isLoading ? "Memproses..." : <><Save className="w-5 h-5"/> Buat Pesanan Sekarang</>}
                                 </button>
                             ) : (
                                 <button 
                                     onClick={nextStep}
-                                    className="px-12 py-5 bg-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-primary-dark transition-all flex items-center gap-3 shadow-xl shadow-primary/20 rounded-xl font-sans"
+                                    className="px-8 py-3.5 bg-primary text-white uppercase tracking-widest text-[11px] font-bold hover:bg-primary-dark transition-all flex items-center gap-3 shadow-xl shadow-primary/20 rounded-xl font-sans"
                                 >
                                     Lanjutkan <ChevronRight className="w-5 h-5" />
                                 </button>
