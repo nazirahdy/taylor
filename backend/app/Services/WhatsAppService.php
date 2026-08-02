@@ -12,7 +12,7 @@ class WhatsAppService
 
     public function messageFooter(): string
     {
-        return "\n\n🌐 Cek riwayat & progres pesanan Anda kapan saja di *" . self::WEBSITE_NAME . "*:\n"
+        return "\n\n📌 Cek riwayat & progres pesanan Anda kapan saja di *" . self::WEBSITE_NAME . "*:\n"
              . self::DASHBOARD_URL;
     }
 
@@ -29,7 +29,7 @@ class WhatsAppService
     public function generateWaLink(string $phoneWA, string $message): string
     {
         $formattedNumber = $this->formatNumber($phoneWA);
-        $encodedMessage = urlencode($message);
+        $encodedMessage = rawurlencode($message);
 
         return "https://wa.me/{$formattedNumber}?text={$encodedMessage}";
     }
@@ -50,7 +50,7 @@ class WhatsAppService
                          . "Setelah sesi pengukuran selesai, Admin akan memperbarui status pesanan dan status pembayaran Anda. Terima kasih!";
         }
 
-        return "👋 *Halo {$customerName},* \n\n"
+        return "*Halo {$customerName},* \n\n"
              . "Berikut adalah konfirmasi status pesanan Anda dari Admin *Era Jahit Studio*:\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "*Nomor Pesanan:* {$order->order_number}\n"
