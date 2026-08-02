@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Filter, X, Eye, Loader2, ArrowRight, ChevronRight, ChevronLeft, Maximize2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Eye, Loader2, ArrowRight, ChevronRight, ChevronLeft, Maximize2 } from 'lucide-react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -14,15 +14,6 @@ const Gallery = () => {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const navigate = useNavigate();
     const { user } = useAuth();
-    const scrollRef = useRef(null);
-
-    const scroll = (direction) => {
-        if (scrollRef.current) {
-            const { current } = scrollRef;
-            const scrollAmount = current.clientWidth * 0.8;
-            current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-        }
-    };
 
     const handleImageClick = (item) => {
         setSelectedImage(item);
@@ -80,92 +71,62 @@ const Gallery = () => {
             </section>
 
             <div className="container mx-auto px-4 md:px-12 py-6">
-                <div className="flex flex-col lg:flex-row gap-8">
 
-                    {/* Filter Sidebar */}
-                    <aside className="lg:w-56 shrink-0">
-                        <div className="lg:sticky lg:top-28 flex flex-row flex-wrap lg:flex-col gap-3 animate-fade-in">
-                            <span className="hidden lg:flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold text-text-muted mb-1 font-sans">
-                                <Filter className="w-3.5 h-3.5" /> Kategori
-                            </span>
-                            {categories.map(cat => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setActiveFilter(cat)}
-                                    className={`px-6 py-3 lg:w-full text-left rounded-xl text-[11px] uppercase tracking-[0.2em] font-bold transition-all duration-500 border ${activeFilter === cat
-                                            ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20'
-                                            : 'bg-surface text-text-muted border-border hover:border-primary hover:text-primary'
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-                    </aside>
-
-                    {/* Gallery Grid */}
-                    <div className="flex-1 min-w-0">
-                        {loading ? (
-                            <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted gap-6">
-                                <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                                <p className="font-sans uppercase tracking-[0.4em] text-[11px] font-bold">Memuat Koleksi...</p>
-                            </div>
-                        ) : filteredModels.length === 0 ? (
-                            <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted bg-surface border border-dashed border-border rounded-[1.5rem]">
-                                <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini</p>
-                            </div>
-                        ) : (
-                            <div className="relative group">
-                                <button
-                                    onClick={() => scroll('left')}
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 md:-ml-8 z-10 w-12 h-12 bg-white text-primary border border-border rounded-full shadow-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
-                                >
-                                    <ChevronLeft className="w-6 h-6" />
-                                </button>
-
-                                <div
-                                    ref={scrollRef}
-                                    className="grid grid-flow-col auto-cols-[calc(50%-12px)] sm:auto-cols-[calc(33.333%-16px)] xl:auto-cols-[calc(25%-18px)] gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-4 -mx-4 hide-scrollbar"
-                                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                                >
-                                    {filteredModels.map((item, i) => (
-                                        <div
-                                            key={item.id}
-                                            className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700 snap-center"
-                                            style={{ animationDelay: `${i * 50}ms` }}
-                                            onClick={() => handleImageClick(item)}
-                                        >
-                                            <img
-                                                src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `${STORAGE_URL}/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
-                                                alt={item.title || 'Koleksi Era Jahit'}
-                                                loading="lazy"
-                                                decoding="async"
-                                                className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-8">
-                                                <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
-                                                    <span className="text-primary text-[10px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
-                                                    <h3 className="text-white text-3xl font-display font-bold mb-2">{item.title || `Galeri ${item.id}`}</h3>
-                                                    <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
-                                                        <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <button
-                                    onClick={() => scroll('right')}
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-8 z-10 w-12 h-12 bg-white text-primary border border-border rounded-full shadow-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
-                                >
-                                    <ChevronRight className="w-6 h-6" />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
+                {/* Filter Bar */}
+                <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-8 animate-fade-in">
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setActiveFilter(cat)}
+                            className={`px-8 py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-bold transition-all duration-500 border ${activeFilter === cat
+                                    ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20'
+                                    : 'bg-surface text-text-muted border-border hover:border-primary hover:text-primary'
+                                }`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
                 </div>
+
+                {/* Gallery Grid */}
+                {loading ? (
+                    <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted gap-6">
+                        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                        <p className="font-sans uppercase tracking-[0.4em] text-[11px] font-bold">Memuat Koleksi...</p>
+                    </div>
+                ) : filteredModels.length === 0 ? (
+                    <div className="w-full flex flex-col items-center justify-center py-8 text-text-muted bg-surface border border-dashed border-border rounded-[1.5rem]">
+                        <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredModels.map((item, i) => (
+                            <div
+                                key={item.id}
+                                className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
+                                style={{ animationDelay: `${i * 50}ms` }}
+                                onClick={() => handleImageClick(item)}
+                            >
+                                <img
+                                    src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `${STORAGE_URL}/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
+                                    alt={item.title || 'Koleksi Era Jahit'}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-8">
+                                    <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
+                                        <span className="text-primary text-[10px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
+                                        <h3 className="text-white text-3xl font-display font-bold mb-2">{item.title || `Galeri ${item.id}`}</h3>
+                                        <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
+                                            <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Lightbox Modal */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader2, ArrowRight, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -12,16 +12,7 @@ const GallerySection = () => {
     const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState('Semua');
     const [selectedImage, setSelectedImage] = useState(null);
-    const scrollRef = useRef(null);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-
-    const scroll = (direction) => {
-        if (scrollRef.current) {
-            const { current } = scrollRef;
-            const scrollAmount = current.clientWidth * 0.8;
-            current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-        }
-    };
 
     const handleImageClick = (item) => {
         setSelectedImage(item);
@@ -117,52 +108,32 @@ const GallerySection = () => {
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini.</p>
                     </div>
                 ) : (
-                    <div className="relative group">
-                        <button 
-                            onClick={() => scroll('left')} 
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -ml-5 md:-ml-8 z-10 w-12 h-12 bg-white text-primary border border-border rounded-full shadow-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
-                        >
-                            <ChevronLeft className="w-6 h-6" />
-                        </button>
-                        
-                        <div 
-                            ref={scrollRef}
-                            className="grid grid-flow-col auto-cols-[calc(50%-12px)] sm:auto-cols-[calc(33.333%-16px)] lg:auto-cols-[calc(20%-19.2px)] gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-8 pt-4 px-4 -mx-4 hide-scrollbar"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
-                            {filteredModels.map((item, i) => (
-                                <div
-                                    key={item.id}
-                                    className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700 snap-center"
-                                    style={{ animationDelay: `${i * 50}ms` }}
-                                    onClick={() => handleImageClick(item)}
-                                >
-                                    <img
-                                        src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `${STORAGE_URL}/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
-                                        alt={item.title || 'Koleksi Era Jahit'}
-                                        loading="lazy"
-                                        decoding="async"
-                                        className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-8">
-                                        <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
-                                            <span className="text-primary text-[10px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
-                                            <h3 className="text-white text-3xl font-display font-bold mb-2">{item.title || `Galeri ${item.id}`}</h3>
-                                            <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
-                                                <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
-                                            </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {filteredModels.map((item, i) => (
+                            <div
+                                key={item.id}
+                                className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
+                                style={{ animationDelay: `${i * 50}ms` }}
+                                onClick={() => handleImageClick(item)}
+                            >
+                                <img
+                                    src={(item.images && item.images.length > 0 ? item.images[0] : item.image_path || '').includes('http') ? (item.images && item.images.length > 0 ? item.images[0] : item.image_path) : `${STORAGE_URL}/${item.images && item.images.length > 0 ? item.images[0] : item.image_path}`}
+                                    alt={item.title || 'Koleksi Era Jahit'}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-8">
+                                    <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
+                                        <span className="text-primary text-[10px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
+                                        <h3 className="text-white text-3xl font-display font-bold mb-2">{item.title || `Galeri ${item.id}`}</h3>
+                                        <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
+                                            <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-
-                        <button 
-                            onClick={() => scroll('right')} 
-                            className="absolute right-0 top-1/2 -translate-y-1/2 -mr-5 md:-mr-8 z-10 w-12 h-12 bg-white text-primary border border-border rounded-full shadow-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white"
-                        >
-                            <ChevronRight className="w-6 h-6" />
-                        </button>
+                            </div>
+                        ))}
                     </div>
                 )}
 

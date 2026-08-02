@@ -87,7 +87,8 @@ const Navbar = () => {
     };
 
     const isActive = (item) => {
-        if (location.pathname !== '/') return location.pathname === item.path;
+        if (item.path !== '/') return location.pathname === item.path;
+        if (location.pathname !== '/') return false;
         return activeSection === (item.hash || '#beranda');
     };
 
