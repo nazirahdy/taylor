@@ -152,13 +152,13 @@ const GallerySection = () => {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-text-primary/40 backdrop-blur-md cursor-zoom-out animate-fade-in" onClick={() => setSelectedImage(null)}>
                     <div className="relative w-full max-w-6xl max-h-[90vh] flex flex-col md:flex-row bg-white border border-border rounded-[1.75rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] cursor-default overflow-hidden" onClick={e => e.stopPropagation()}>
                         
-                        <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-surface relative group/modal">
-                            <img 
-                                src={(allPhotos[currentPhotoIndex] || '').includes('http') ? allPhotos[currentPhotoIndex] : `${STORAGE_URL}/${allPhotos[currentPhotoIndex]}`} 
-                                alt={selectedImage.title || 'Preview'} 
+                        <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-text-primary/5 relative group/modal">
+                            <img
+                                src={(allPhotos[currentPhotoIndex] || '').includes('http') ? allPhotos[currentPhotoIndex] : `${STORAGE_URL}/${allPhotos[currentPhotoIndex]}`}
+                                alt={selectedImage.title || 'Preview'}
                                 loading="lazy"
                                 decoding="async"
-                                className="w-full h-full object-cover transition-opacity duration-300" 
+                                className="w-full h-full object-contain transition-opacity duration-300"
                             />
                             
                             {allPhotos.length > 1 && (

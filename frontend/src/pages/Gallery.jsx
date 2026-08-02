@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Eye, Loader2, ArrowRight, ChevronRight, ChevronLeft, Maximize2 } from 'lucide-react';
+import { X, Loader2, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -99,11 +99,11 @@ const Gallery = () => {
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                         {filteredModels.map((item, i) => (
                             <div
                                 key={item.id}
-                                className="group relative overflow-hidden rounded-[1.5rem] bg-surface p-4 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
+                                className="group relative overflow-hidden rounded-[1.25rem] bg-surface p-2.5 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
                                 style={{ animationDelay: `${i * 50}ms` }}
                                 onClick={() => handleImageClick(item)}
                             >
@@ -112,16 +112,11 @@ const Gallery = () => {
                                     alt={item.title || 'Koleksi Era Jahit'}
                                     loading="lazy"
                                     decoding="async"
-                                    className="w-full h-full object-cover rounded-[1.5rem] transition-all duration-1000 group-hover:scale-110"
+                                    className="w-full h-full object-cover rounded-[1.25rem] transition-all duration-1000 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-8">
-                                    <div className="translate-y-8 group-hover:translate-y-0 transition-all duration-700">
-                                        <span className="text-primary text-[10px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
-                                        <h3 className="text-white text-3xl font-display font-bold mb-2">{item.title || `Galeri ${item.id}`}</h3>
-                                        <div className="flex items-center gap-3 text-white/70 text-[11px] uppercase tracking-widest font-bold font-sans">
-                                            <Maximize2 className="w-4 h-4 text-primary" /> Lihat Detail
-                                        </div>
-                                    </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/10 to-transparent transition-all duration-700 flex flex-col justify-end p-4">
+                                    <span className="text-primary text-[9px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
+                                    <h3 className="text-white text-sm font-display font-bold leading-tight">{item.title || `Galeri ${item.id}`}</h3>
                                 </div>
                             </div>
                         ))}
@@ -134,13 +129,13 @@ const Gallery = () => {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-text-primary/40 backdrop-blur-md cursor-zoom-out animate-fade-in" onClick={() => setSelectedImage(null)}>
                     <div className="relative w-full max-w-6xl max-h-[90vh] flex flex-col md:flex-row bg-white border border-border rounded-[1.75rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] cursor-default overflow-hidden" onClick={e => e.stopPropagation()}>
 
-                        <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-surface relative group/modal">
+                        <div className="w-full md:w-3/5 h-[40vh] md:h-auto bg-text-primary/5 relative group/modal">
                             <img
                                 src={(allPhotos[currentPhotoIndex] || '').includes('http') ? allPhotos[currentPhotoIndex] : `${STORAGE_URL}/${allPhotos[currentPhotoIndex]}`}
                                 alt={selectedImage.title || 'Preview'}
                                 loading="lazy"
                                 decoding="async"
-                                className="w-full h-full object-cover transition-opacity duration-300"
+                                className="w-full h-full object-contain transition-opacity duration-300"
                             />
                             
                             {allPhotos.length > 1 && (
