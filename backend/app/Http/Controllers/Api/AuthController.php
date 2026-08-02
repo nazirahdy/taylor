@@ -374,9 +374,14 @@ class AuthController extends Controller
                 $user->update([
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
-                    // Google sudah memverifikasi kepemilikan email ini
-                    'email_verified_at' => $user->email_verified_at ?? now(),
                 ]);
+
+                // Google sudah memverifikasi kepemilikan email ini.
+                // Di-set langsung (bukan mass-assignment) karena email_verified_at tidak ada di $fillable.
+                if (!$user->email_verified_at) {
+                    $user->email_verified_at = now();
+                    $user->save();
+                }
             } else {
                 $user = User::create([
                     'name' => $googleUser->getName(),
@@ -385,9 +390,11 @@ class AuthController extends Controller
                     'avatar' => $googleUser->getAvatar(),
                     'password' => Hash::make(Str::random(16)),
                     'role' => 'customer',
-                    // Email dari Google OAuth sudah terverifikasi, tidak perlu verifikasi ulang
-                    'email_verified_at' => now(),
                 ]);
+
+                // Email dari Google OAuth sudah terverifikasi, tidak perlu verifikasi ulang
+                $user->email_verified_at = now();
+                $user->save();
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
