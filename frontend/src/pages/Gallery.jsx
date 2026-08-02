@@ -115,7 +115,7 @@ const Gallery = () => {
                                     className="w-full h-full object-cover rounded-[1.25rem] transition-all duration-1000 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-text-primary/90 via-text-primary/10 to-transparent transition-all duration-700 flex flex-col justify-end p-4">
-                                    <span className="text-primary text-[9px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
+                                    <span className="text-primary-bg text-[9px] uppercase tracking-widest mb-1 block font-bold font-sans">{item.category || 'Koleksi Eksklusif'}</span>
                                     <h3 className="text-white text-sm font-display font-bold leading-tight">{item.title || `Galeri ${item.id}`}</h3>
                                 </div>
                             </div>
