@@ -8,6 +8,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Filament\Pages\Auth\Login as OwnerLogin;
 use App\Filament\Owner\Pages\Dashboard as OwnerDashboard;
+use App\Http\Middleware\TrackAdminActivity;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -55,6 +56,7 @@ class OwnerPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                TrackAdminActivity::class,
             ]);
     }
 }

@@ -6,11 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ChatMessageRequest;
 use App\Models\ChatMessage;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
+    /**
+     * Cek apakah ada admin/owner yang sedang aktif (dipakai untuk status Online/Offline di chat widget).
+     */
+    public function adminStatus()
+    {
+        $online = User::whereIn('role', ['admin', 'owner'])
+            ->where('last_active_at', '>=', now()->subMinutes(3))
+            ->exists();
+
+        return response()->json(['online' => $online]);
+    }
+
     /**
      * Get all messages for a specific order.
      */

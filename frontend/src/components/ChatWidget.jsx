@@ -11,6 +11,7 @@ const ChatWidget = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [sessionInitialized, setSessionInitialized] = useState(false);
+    const [adminOnline, setAdminOnline] = useState(false);
     
     // Generate a storage key based on auth status
     const getStorageKey = useCallback(
@@ -52,6 +53,15 @@ const ChatWidget = () => {
         }
     }, [isOpen]);
 
+    const fetchAdminStatus = useCallback(async () => {
+        try {
+            const res = await axios.get('/chat/admin-status');
+            setAdminOnline(Boolean(res.data?.online));
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
     useEffect(() => {
         if (!sessionInitialized) return;
 
@@ -63,6 +73,14 @@ const ChatWidget = () => {
         const interval = setInterval(fetchMessages, isOpen ? 3000 : 20000);
         return () => clearInterval(interval);
     }, [fetchMessages, getStorageKey, sessionInitialized, isOpen]);
+
+    useEffect(() => {
+        if (!sessionInitialized) return;
+
+        queueMicrotask(fetchAdminStatus);
+        const interval = setInterval(fetchAdminStatus, 30000);
+        return () => clearInterval(interval);
+    }, [fetchAdminStatus, sessionInitialized]);
 
     const chatBodyRef = useRef(null);
 
@@ -129,10 +147,17 @@ const ChatWidget = () => {
                             </div>
                             <div className="leading-tight">
                                 <span className="font-bold block text-sm">Era Jahit</span>
-                                <span className="flex items-center gap-1 text-[10px] text-green-200">
-                                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse inline-block"></span>
-                                    Online
-                                </span>
+                                {adminOnline ? (
+                                    <span className="flex items-center gap-1 text-[10px] text-green-200">
+                                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse inline-block"></span>
+                                        Online
+                                    </span>
+                                ) : (
+                                    <span className="flex items-center gap-1 text-[10px] text-white/60">
+                                        <span className="w-2 h-2 bg-gray-300 rounded-full inline-block"></span>
+                                        Biasanya membalas dalam beberapa jam
+                                    </span>
+                                )}
                             </div>
                         </div>
                         <button

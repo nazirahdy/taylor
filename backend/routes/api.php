@@ -31,6 +31,7 @@ Route::get('/gallery', [GalleryController::class, 'index']);
 
 Route::get('/chat', [ChatController::class, 'guestIndex']);
 Route::post('/chat', [ChatController::class, 'guestStore']);
+Route::get('/chat/admin-status', [ChatController::class, 'adminStatus']);
 
 
 Route::get('/quota', [QuotaController::class, 'index']);
