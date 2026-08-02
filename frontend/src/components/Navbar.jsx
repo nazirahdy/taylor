@@ -59,10 +59,10 @@ const Navbar = () => {
 
     const navItems = [
         { name: 'Beranda', path: '/', hash: '#beranda' },
-        { name: 'Tentang', path: '/', hash: '#about' },
-        { name: 'Layanan', path: '/', hash: '#services' },
+        { name: 'Tentang', path: '/about', hash: '' },
+        { name: 'Layanan', path: '/services', hash: '' },
         { name: 'Galeri', path: '/gallery', hash: '' },
-        { name: 'Kontak', path: '/', hash: '#contact' }
+        { name: 'Kontak', path: '/contact', hash: '' }
     ];
 
     const handleNavClick = (e, item) => {
