@@ -12,6 +12,13 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        \App\Models\Order::where('is_read', false)->update(['is_read' => true]);
+    }
+
     protected function getHeaderActions(): array
     {
         return [
