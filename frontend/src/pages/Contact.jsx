@@ -144,16 +144,18 @@ const Contact = () => {
             </div>
 
             {/* Map Section */}
-            <div className="w-full h-[600px] relative mt-10 border-t border-border">
-                <iframe
-                    src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    title="Lokasi Studio Era Jahit"
-                ></iframe>
+            <div className="container mx-auto px-4 md:px-12 py-10">
+                <div className="w-full h-[320px] rounded-[1.5rem] overflow-hidden border border-border shadow-sm">
+                    <iframe
+                        src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
+                        title="Lokasi Studio Era Jahit"
+                    ></iframe>
+                </div>
             </div>
         </div>
     );
