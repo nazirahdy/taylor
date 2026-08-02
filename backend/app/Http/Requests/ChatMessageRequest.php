@@ -23,7 +23,7 @@ class ChatMessageRequest extends FormRequest
     {
         return [
             'message' => 'required|string|min:1|max:1000',
-            'attachment' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'attachment' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
         ];
     }
 
@@ -38,7 +38,7 @@ class ChatMessageRequest extends FormRequest
             'message.max' => 'Pesan maksimal 1000 karakter',
             'attachment.image' => 'File harus berupa gambar',
             'attachment.mimes' => 'Format gambar hanya JPG, JPEG, atau PNG',
-            'attachment.max' => 'Ukuran gambar maksimal 2MB',
+            'attachment.max' => 'Ukuran gambar maksimal 10MB',
         ];
     }
 }

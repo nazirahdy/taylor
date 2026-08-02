@@ -241,8 +241,8 @@ const OrderForm = () => {
             return;
         }
 
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error('Ukuran gambar tidak boleh lebih dari 2MB.');
+        if (file.size > 10 * 1024 * 1024) {
+            toast.error('Ukuran gambar tidak boleh lebih dari 10MB.');
             return;
         }
 
@@ -259,8 +259,8 @@ const OrderForm = () => {
             return;
         }
 
-        if (file.size > 4 * 1024 * 1024) {
-            toast.error('Ukuran gambar tidak boleh lebih dari 4MB.');
+        if (file.size > 10 * 1024 * 1024) {
+            toast.error('Ukuran gambar tidak boleh lebih dari 10MB.');
             return;
         }
 
@@ -531,7 +531,7 @@ const OrderForm = () => {
                                         <div className="flex flex-col items-center text-text-muted">
                                             <UploadCloud className="w-8 h-8 mb-2" />
                                             <span className="text-xs font-medium text-text-primary">Pilih Gambar Referensi</span>
-                                            <span className="text-[11px] text-text-muted mt-1">JPG, PNG (Maks. 2MB)</span>
+                                            <span className="text-[11px] text-text-muted mt-1">JPG, PNG (Maks. 10MB)</span>
                                         </div>
                                     )}
                                 </label>
@@ -1052,7 +1052,7 @@ const OrderForm = () => {
                                 <label className="flex-1 w-full py-8 border-2 border-dashed border-border hover:border-primary rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-surface group">
                                     <UploadCloud className="w-8 h-8 text-text-muted group-hover:text-primary mb-3 transition-colors" />
                                     <span className="text-xs font-medium text-text-primary group-hover:text-primary transition-colors">Pilih File Bukti</span>
-                                    <span className="text-[11px] text-text-muted mt-1">Maksimal 4MB (JPG, PNG)</span>
+                                    <span className="text-[11px] text-text-muted mt-1">Maksimal 10MB (JPG, PNG)</span>
                                     <input 
                                         type="file" 
                                         className="hidden" 

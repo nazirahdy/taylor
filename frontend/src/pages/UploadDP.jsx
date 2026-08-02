@@ -47,8 +47,8 @@ const UploadDP = () => {
             return;
         }
 
-        if (fileUpload.size > 2 * 1024 * 1024) {
-            setError('Ukuran file tidak boleh lebih dari 2 MB.');
+        if (fileUpload.size > 10 * 1024 * 1024) {
+            setError('Ukuran file tidak boleh lebih dari 10 MB.');
             return;
         }
 
@@ -183,7 +183,7 @@ const UploadDP = () => {
                                             <UploadCloud className="w-8 h-8 group-hover:text-primary transition-colors"/>
                                         </div>
                                         <h4 className="text-text-primary font-display font-bold text-xl mb-3">Unggah Bukti Pembayaran</h4>
-                                        <p className="text-text-muted text-[11px] font-bold uppercase tracking-widest font-sans">JPG, PNG. (Maks. 2MB)</p>
+                                        <p className="text-text-muted text-[11px] font-bold uppercase tracking-widest font-sans">JPG, PNG. (Maks. 10MB)</p>
                                     </>
                                 )}
                             </label>

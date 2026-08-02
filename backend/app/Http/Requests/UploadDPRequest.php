@@ -22,8 +22,8 @@ class UploadDPRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dp_proof' => 'required_without:bukti_dp|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'bukti_dp' => 'required_without:dp_proof|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'dp_proof' => 'required_without:bukti_dp|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            'bukti_dp' => 'required_without:dp_proof|file|mimes:jpg,jpeg,png,pdf|max:10240',
             'dp_amount' => 'required|numeric|min:0',
         ];
     }
@@ -37,11 +37,11 @@ class UploadDPRequest extends FormRequest
             'dp_proof.required_without' => 'Bukti DP wajib diunggah',
             'dp_proof.file' => 'File tidak valid',
             'dp_proof.mimes' => 'Format file hanya JPG, JPEG, PNG, atau PDF',
-            'dp_proof.max' => 'Ukuran file maksimal 2MB',
+            'dp_proof.max' => 'Ukuran file maksimal 10MB',
             'bukti_dp.required_without' => 'Bukti DP wajib diunggah',
             'bukti_dp.file' => 'File tidak valid',
             'bukti_dp.mimes' => 'Format file hanya JPG, JPEG, PNG, atau PDF',
-            'bukti_dp.max' => 'Ukuran file maksimal 2MB',
+            'bukti_dp.max' => 'Ukuran file maksimal 10MB',
             'dp_amount.required' => 'Jumlah DP wajib diisi',
             'dp_amount.numeric' => 'Jumlah DP harus berupa angka',
             'dp_amount.min' => 'Jumlah DP minimal 0',

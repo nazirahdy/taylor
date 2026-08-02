@@ -26,10 +26,10 @@ class OrderRequest extends FormRequest
             'quota_date' => 'required|date|after_or_equal:today',
             'method' => 'required|in:home_service,visit',
             'design_notes' => 'nullable|string',
-            'design_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'design_image' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
             'gallery_image_path' => 'nullable|string',
             'alamat' => 'nullable|string|min:5',
-            'dp_proof' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'dp_proof' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
         ];
     }
 
@@ -46,7 +46,10 @@ class OrderRequest extends FormRequest
             'design_notes.min' => 'Deskripsi desain minimal 5 karakter',
             'design_image.image' => 'File harus berupa gambar',
             'design_image.mimes' => 'Format gambar hanya JPG, JPEG, atau PNG',
-            'design_image.max' => 'Ukuran gambar maksimal 2MB',
+            'design_image.max' => 'Ukuran gambar maksimal 10MB',
+            'dp_proof.image' => 'File harus berupa gambar',
+            'dp_proof.mimes' => 'Format gambar hanya JPG, JPEG, atau PNG',
+            'dp_proof.max' => 'Ukuran gambar maksimal 10MB',
         ];
     }
 }
