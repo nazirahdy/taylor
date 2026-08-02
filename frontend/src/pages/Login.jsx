@@ -10,6 +10,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [needsVerification, setNeedsVerification] = useState(false);
+    const [needsRegister, setNeedsRegister] = useState(false);
     const [resendStatus, setResendStatus] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -41,6 +42,7 @@ const Login = () => {
         e.preventDefault();
         setError('');
         setNeedsVerification(false);
+        setNeedsRegister(false);
         setResendStatus('');
         if (!email || !password) {
             setError('Credentials cannot be empty.');
@@ -63,6 +65,9 @@ const Login = () => {
             setError(err.response?.data?.message || 'Authorization failed. Verify your credentials.');
             if (err.response?.data?.error_code === 'EMAIL_NOT_VERIFIED') {
                 setNeedsVerification(true);
+            }
+            if (err.response?.data?.error_code === 'EMAIL_NOT_REGISTERED') {
+                setNeedsRegister(true);
             }
         } finally {
             setIsLoading(false);
@@ -127,6 +132,16 @@ const Login = () => {
                                                 {resendStatus === 'sending' ? 'Mengirim...' : 'Kirim ulang email verifikasi'}
                                             </button>
                                         )}
+                                    </div>
+                                )}
+                                {needsRegister && (
+                                    <div className="pl-10">
+                                        <Link
+                                            to="/register"
+                                            className="text-primary font-bold text-xs uppercase tracking-widest underline underline-offset-4"
+                                        >
+                                            Daftar Sekarang
+                                        </Link>
                                     </div>
                                 )}
                             </div>

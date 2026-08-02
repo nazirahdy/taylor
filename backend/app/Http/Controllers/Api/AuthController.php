@@ -61,9 +61,14 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
+            $emailTerdaftar = User::where('email', $request->email)->exists();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Password tidak sesuai'
+                'message' => $emailTerdaftar
+                    ? 'Password tidak sesuai'
+                    : 'Email belum terdaftar. Silakan daftar terlebih dahulu.',
+                'error_code' => $emailTerdaftar ? 'INVALID_PASSWORD' : 'EMAIL_NOT_REGISTERED',
             ], 401);
         }
 
@@ -369,6 +374,8 @@ class AuthController extends Controller
                 $user->update([
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
+                    // Google sudah memverifikasi kepemilikan email ini
+                    'email_verified_at' => $user->email_verified_at ?? now(),
                 ]);
             } else {
                 $user = User::create([
@@ -378,13 +385,9 @@ class AuthController extends Controller
                     'avatar' => $googleUser->getAvatar(),
                     'password' => Hash::make(Str::random(16)),
                     'role' => 'customer',
+                    // Email dari Google OAuth sudah terverifikasi, tidak perlu verifikasi ulang
+                    'email_verified_at' => now(),
                 ]);
-
-                try {
-                    event(new Registered($user));
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error('Gagal mengirim email verifikasi (Google): ' . $e->getMessage());
-                }
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
