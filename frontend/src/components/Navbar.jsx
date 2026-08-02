@@ -238,6 +238,15 @@ const Navbar = () => {
                                 <Link to="/profile/edit" className="w-full py-3.5 text-center rounded-xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[10px] bg-surface font-sans">
                                     Kelola Profil
                                 </Link>
+                                <Link to="/profile/password" className="w-full py-3.5 text-center rounded-xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[10px] bg-surface font-sans">
+                                    Pengaturan Sandi
+                                </Link>
+                                <Link to="/profile/measurements" className="w-full py-3.5 text-center rounded-xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[10px] bg-surface font-sans">
+                                    Ukuran Badan
+                                </Link>
+                                <Link to="/dashboard" className="w-full py-3.5 text-center rounded-xl border border-border text-text-primary font-bold uppercase tracking-[0.2em] text-[10px] bg-surface font-sans">
+                                    Riwayat Pesanan
+                                </Link>
                                 <button onClick={logout} className="w-full py-3.5 text-center rounded-xl border border-red-100 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px] bg-red-50 font-sans mt-2 flex items-center justify-center gap-2">
                                     <LogOut className="w-4 h-4" /> Keluar Akun
                                 </button>
