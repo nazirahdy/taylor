@@ -290,6 +290,28 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('terima_pesanan')
+                    ->label('Terima Pesanan')->icon('heroicon-o-check-circle')->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Terima Pesanan')
+                    ->modalDescription('Pesanan In-Store akan dikonfirmasi dan Anda akan dialihkan ke WhatsApp untuk mengirim pesan.')
+                    ->visible(fn (Order $record) => $record->status === 'pending' && $record->method !== 'home_service')
+                    ->action(function (Order $record, $livewire) {
+                        $record->update(['status' => 'confirmed']);
+                        $record->refresh();
+                        $record->load('user');
+
+                        if ($record->user && $record->user->phone_wa) {
+                            $whatsAppService = app(\App\Services\WhatsAppService::class);
+                            $url = $whatsAppService->generateWaLink(
+                                $record->user->phone_wa,
+                                $whatsAppService->getMessageConfirmed($record)
+                            );
+                            $livewire->js("window.open('{$url}', '_blank')");
+                        }
+
+                        Notification::make()->title('Pesanan diterima & dikonfirmasi!')->success()->send();
+                    }),
                 Tables\Actions\Action::make('reject')
                     ->label('Tolak')->icon('heroicon-o-x-circle')->color('danger')
                     ->form([
