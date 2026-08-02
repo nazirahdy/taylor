@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, Link } from 'react-router-dom';
-import { Menu, X, User, Phone, LogOut, Settings, KeyRound, Ruler, FileText } from 'lucide-react';
+import { Menu, X, User, Phone, LogOut, Settings, KeyRound, Ruler, FileText, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -61,12 +61,12 @@ const Navbar = () => {
         { name: 'Beranda', path: '/', hash: '#beranda' },
         { name: 'Tentang', path: '/', hash: '#about' },
         { name: 'Layanan', path: '/', hash: '#services' },
-        { name: 'Galeri', path: '/', hash: '#gallery' },
+        { name: 'Galeri', path: '/gallery', hash: '' },
         { name: 'Kontak', path: '/', hash: '#contact' }
     ];
 
     const handleNavClick = (e, item) => {
-        if (location.pathname === '/') {
+        if (item.path === '/' && location.pathname === '/') {
             e.preventDefault();
             const hash = item.hash || '#beranda';
             const element = document.querySelector(hash);
@@ -150,13 +150,16 @@ const Navbar = () => {
                                 <div className="relative">
                                     <button
                                         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                                        className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all group overflow-hidden ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}
+                                        className={`flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-xl border transition-all group ${isTransparent ? 'bg-white/10 border-white/20 hover:border-primary' : 'bg-surface border-border hover:border-primary hover:text-primary'}`}
                                     >
-                                        {user.avatar ? (
-                                            <img src={user.avatar} alt="Profil" className="w-full h-full object-cover" />
-                                        ) : (
-                                            <User className={`w-4 h-4 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
-                                        )}
+                                        <span className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                                            {user.avatar ? (
+                                                <img src={user.avatar} alt="Profil" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User className={`w-4 h-4 transition-transform group-hover:scale-110 ${isTransparent ? 'text-white group-hover:text-primary' : 'text-text-secondary group-hover:text-primary'}`} />
+                                            )}
+                                        </span>
+                                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isProfileDropdownOpen ? 'rotate-180' : ''} ${isTransparent ? 'text-white/80' : 'text-text-muted'}`} />
                                     </button>
                                     
                                     {isProfileDropdownOpen && (

@@ -49,6 +49,7 @@ const GallerySection = () => {
     };
 
     const categories = ['Semua', ...new Set(models.map(m => m.kategori || m.category || 'Eksklusif'))];
+    const PREVIEW_LIMIT = 8;
 
     useEffect(() => {
         const fetchGallery = async () => {
@@ -66,9 +67,15 @@ const GallerySection = () => {
         fetchGallery();
     }, []);
 
-    const filteredModels = activeFilter === 'Semua' 
-        ? models 
-        : models.filter(m => (m.kategori || m.category || 'Eksklusif') === activeFilter);
+    const handleCategoryClick = (cat) => {
+        setActiveFilter(cat);
+        navigate('/gallery', { state: { category: cat } });
+    };
+
+    const filteredModels = (activeFilter === 'Semua'
+        ? models
+        : models.filter(m => (m.kategori || m.category || 'Eksklusif') === activeFilter)
+    ).slice(0, PREVIEW_LIMIT);
 
     return (
         <section className="bg-white py-25 scroll-mt-8" id="gallery">
@@ -85,12 +92,12 @@ const GallerySection = () => {
                 {/* Filter Bar */}
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-6 animate-fade-in">
                     {categories.map(cat => (
-                        <button 
+                        <button
                             key={cat}
-                            onClick={() => setActiveFilter(cat)}
+                            onClick={() => handleCategoryClick(cat)}
                             className={`px-8 py-3 rounded-xl text-[11px] uppercase tracking-[0.2em] font-bold transition-all duration-500 border ${
-                                activeFilter === cat 
-                                ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20' 
+                                activeFilter === cat
+                                ? 'bg-primary text-white border-primary shadow-xl shadow-primary/20'
                                 : 'bg-surface text-text-muted border-border hover:border-primary hover:text-primary'
                             }`}
                         >
@@ -158,6 +165,15 @@ const GallerySection = () => {
                         </button>
                     </div>
                 )}
+
+                <div className="text-center mt-10">
+                    <button
+                        onClick={() => navigate('/gallery')}
+                        className="inline-flex items-center gap-3 px-10 py-4 bg-primary text-white uppercase tracking-widest text-[11px] font-bold rounded-xl hover:bg-primary-dark transition-all shadow-xl shadow-primary/20"
+                    >
+                        Lihat Semua Koleksi <ArrowRight className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
 
             {/* Lightbox Modal */}
