@@ -6,7 +6,7 @@ const About = () => {
         <div className="bg-white min-h-screen text-text-primary pb-12">
 
             {/* HEADER ABOUT */}
-            <section className="pt-14 pb-12 relative overflow-hidden bg-surface">
+            <section className="pt-28 pb-12 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">

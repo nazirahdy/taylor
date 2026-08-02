@@ -29,7 +29,7 @@ const Services = () => {
         <div className="bg-white min-h-screen text-text-primary pb-12">
 
             {/* HEADER SERVICES */}
-            <section className="pt-16 pb-16 relative overflow-hidden bg-surface">
+            <section className="pt-28 pb-16 relative overflow-hidden bg-surface">
                 <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div className="container mx-auto px-4 md:px-12 text-center animate-fade-in relative z-10">
                     <span className="text-primary uppercase tracking-[0.2em] text-[13px] font-bold mb-6 block"></span>
