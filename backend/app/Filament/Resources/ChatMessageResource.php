@@ -67,18 +67,7 @@ class ChatMessageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama_pelanggan')
                     ->label('Name')
-                    ->state(function (ChatMessage $record) {
-                        if ($record->sender && $record->sender->role !== 'admin') {
-                            return $record->sender->name;
-                        }
-                        if ($record->order && $record->order->user) {
-                            return $record->order->user->name;
-                        }
-                        if ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
-                            return $record->sender_name;
-                        }
-                        return 'Pelanggan';
-                    })
+                    ->state(fn (ChatMessage $record) => static::resolveCustomerName($record))
                     ->searchable(query: function (Builder $query, string $search) {
                         $query->whereHas('sender', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                               ->orWhere('sender_name', 'like', "%{$search}%");
@@ -111,42 +100,7 @@ class ChatMessageResource extends Resource
                         ]);
                     })
                     ->modalHeading(function (ChatMessage $record) {
-                        $name = null;
-                        if ($record->sender && $record->sender->role !== 'admin') {
-                            $name = $record->sender->name;
-                        } elseif ($record->order && $record->order->user) {
-                            $name = $record->order->user->name;
-                        } elseif ($record->sender_name && strtolower($record->sender_name) !== 'admin') {
-                            $name = $record->sender_name;
-                        }
-
-                        if (!$name && $record->order_id) {
-                            $order = \App\Models\Order::with('user')->find($record->order_id);
-                            if ($order?->user) {
-                                $name = $order->user->name;
-                            }
-                        }
-
-                        if (!$name && $record->session_id) {
-                            $customerMsg = ChatMessage::where('session_id', $record->session_id)
-                                ->where(function ($q) {
-                                    $q->whereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'))
-                                      ->orWhereNull('sender_id');
-                                })
-                                ->with('sender')
-                                ->first();
-
-                            if ($customerMsg?->sender) {
-                                $name = $customerMsg->sender->name;
-                            } elseif ($customerMsg?->sender_name && strtolower($customerMsg->sender_name) !== 'admin') {
-                                $name = $customerMsg->sender_name;
-                            }
-                        }
-
-                        if (!$name) {
-                            $name = 'Pelanggan';
-                        }
-
+                        $name = static::resolveCustomerName($record);
                         $initial = strtoupper(substr($name, 0, 1));
 
                         return new \Illuminate\Support\HtmlString("
@@ -172,6 +126,44 @@ class ChatMessageResource extends Resource
                 ]),
             ])
             ->defaultSort('created_at', 'desc');
+    }
+
+    /**
+     * Cari nama pelanggan yang sebenarnya untuk suatu thread chat (order/session),
+     * bukan sekadar nama pengirim pesan terakhir — karena pesan terakhir bisa saja
+     * balasan admin, yang membuat namanya salah tertukar jadi nama admin.
+     */
+    private static function resolveCustomerName(ChatMessage $record): string
+    {
+        if ($record->order_id) {
+            $order = $record->relationLoaded('order')
+                ? $record->order
+                : \App\Models\Order::with('user')->find($record->order_id);
+
+            if ($order?->user) {
+                return $order->user->name;
+            }
+        }
+
+        $customerMsg = ChatMessage::query()
+            ->when($record->order_id, fn ($q) => $q->where('order_id', $record->order_id))
+            ->when(!$record->order_id && $record->session_id, fn ($q) => $q->where('session_id', $record->session_id))
+            ->where(function ($q) {
+                $q->whereHas('sender', fn ($sq) => $sq->where('role', '!=', 'admin'))
+                  ->orWhereNull('sender_id');
+            })
+            ->with('sender')
+            ->first();
+
+        if ($customerMsg?->sender) {
+            return $customerMsg->sender->name;
+        }
+
+        if ($customerMsg?->sender_name && strtolower($customerMsg->sender_name) !== 'admin') {
+            return $customerMsg->sender_name;
+        }
+
+        return 'Pelanggan';
     }
 
     public static function getNavigationBadge(): ?string
