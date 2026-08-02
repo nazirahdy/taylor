@@ -40,7 +40,7 @@ const GallerySection = () => {
     };
 
     const categories = ['Semua', ...new Set(models.map(m => m.kategori || m.category || 'Eksklusif'))];
-    const PREVIEW_LIMIT = 8;
+    const PREVIEW_LIMIT = 4;
 
     useEffect(() => {
         const fetchGallery = async () => {
