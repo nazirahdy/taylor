@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Registered::class, SendEmailVerificationNotification::class);
 
         VerifyEmail::toMailUsing(function ($notifiable) {
-            $frontendUrl = rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/');
+            $frontendUrl = config('app.frontend_url');
             $verifyUrl = $frontendUrl . '/verify-email?id=' . $notifiable->getKey()
                 . '&hash=' . sha1($notifiable->getEmailForVerification());
 
@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         ResetPassword::toMailUsing(function ($notifiable, $token) {
-            $frontendUrl = rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/');
+            $frontendUrl = config('app.frontend_url');
             $resetUrl = $frontendUrl . '/reset-password?token=' . $token
                 . '&email=' . urlencode($notifiable->getEmailForPasswordReset());
 

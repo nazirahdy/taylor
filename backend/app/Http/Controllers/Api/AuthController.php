@@ -400,7 +400,7 @@ class AuthController extends Controller
                 ]);
             }
 
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            $frontendUrl = config('app.frontend_url');
             return redirect("{$frontendUrl}/auth/google/callback?token=" . urlencode($token));
         } catch (\Exception $e) {
             return response()->json([
