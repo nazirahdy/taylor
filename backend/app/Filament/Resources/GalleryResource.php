@@ -54,10 +54,6 @@ class GalleryResource extends Resource
                         Forms\Components\Toggle::make('is_published')
                             ->label('Tampilkan di Website')
                             ->default(true),
-                        Forms\Components\TextInput::make('sort_order')
-                            ->label('Urutan Tampil')
-                            ->numeric()
-                            ->default(0),
                     ])
                     ->columns(2),
             ]);
@@ -82,9 +78,6 @@ class GalleryResource extends Resource
                 Tables\Columns\IconColumn::make('is_published')
                     ->label('Publik')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->label('Urutan')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()
@@ -105,6 +98,7 @@ class GalleryResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ])
+            ->reorderable('sort_order')
             ->defaultSort('sort_order', 'asc');
     }
 
