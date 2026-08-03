@@ -35,7 +35,7 @@ const Track = () => {
                     <span className="text-primary uppercase tracking-[0.4em] text-[10px] font-bold mb-6 block">Pantau Pesanan</span>
                     <h1 className="text-3xl md:text-3xl font-display font-bold mb-8 leading-tight">Lacak Pesanan</h1>
                     <p className="text-white/40 text-lg max-w-2xl mx-auto leading-relaxed font-light">
-                        Pantau setiap tahapan pengerjaan busana Anda secara real-time melalui sistem pelacakan pesanan Era Jahit.
+                        Pantau setiap tahapan pengerjaan busana Anda secara real-time melalui sistem pelacakan pesanan Era Jahit
                     </p>
                 </div>
             </section>
