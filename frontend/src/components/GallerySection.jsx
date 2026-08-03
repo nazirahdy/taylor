@@ -107,7 +107,7 @@ const GallerySection = () => {
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 max-w-5xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:gap-4 max-w-5xl mx-auto">
                         {filteredModels.map((item, i) => (
                             <div
                                 key={item.id}
