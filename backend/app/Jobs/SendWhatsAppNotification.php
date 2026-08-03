@@ -51,7 +51,7 @@ class SendWhatsAppNotification implements ShouldQueue
         try {
             $response = Http::withHeaders([
                 'Authorization' => $token
-            ])->post('https://api.fonnte.com/send', [
+            ])->asForm()->post('https://api.fonnte.com/send', [
                 'target'      => $target,
                 'message'     => $this->message,
                 'countryCode' => '62',
