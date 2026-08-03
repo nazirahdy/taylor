@@ -456,7 +456,6 @@ class OrderResource extends Resource
     {
         return [
             RelationManagers\ProgressLogsRelationManager::class,
-            RelationManagers\ChatMessagesRelationManager::class,
         ];
     }
 
