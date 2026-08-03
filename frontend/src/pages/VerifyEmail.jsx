@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 
 const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
-    const [status, setStatus] = useState('pending'); // pending, success, error
+    const [status, setStatus] = useState('pending'); 
     const [message, setMessage] = useState('');
     const [resendLoading, setResendLoading] = useState(false);
     const [resendMessage, setResendMessage] = useState('');
@@ -30,7 +30,7 @@ const VerifyEmail = () => {
             setMessage(response.data?.message || 'Email berhasil diverifikasi!');
         } catch (err) {
             setStatus('error');
-            setMessage(err.response?.data?.message || 'Tautan verifikasi tidak valid atau telah kadaluwarsa.');
+            setMessage(err.response?.data?.message || 'Tautan verifikasi tidak valid atau telah kadaluwarsa');
         }
     };
 
@@ -39,9 +39,9 @@ const VerifyEmail = () => {
         setResendMessage('');
         try {
             const res = await axios.post('/email/resend');
-            setResendMessage(res.data?.message || 'Email verifikasi baru berhasil dikirim.');
+            setResendMessage(res.data?.message || 'Email verifikasi baru berhasil dikirim');
         } catch (err) {
-            setResendMessage(err.response?.data?.message || 'Gagal mengirim email verifikasi. Pastikan Anda sudah masuk.');
+            setResendMessage(err.response?.data?.message || 'Gagal mengirim email verifikasi Pastikan Anda sudah masuk');
         } finally {
             setResendLoading(false);
         }
@@ -58,7 +58,7 @@ const VerifyEmail = () => {
                         <div>
                             <Loader2 className="w-11 h-11 text-primary animate-spin mx-auto mb-6" />
                             <h2 className="text-2xl font-display font-bold text-text-primary mb-2">Memverifikasi Email...</h2>
-                            <p className="text-sm text-text-secondary">Sedang memeriksa keabsahan tautan verifikasi Anda.</p>
+                            <p className="text-sm text-text-secondary">Sedang memeriksa keabsahan tautan verifikasi Anda</p>
                         </div>
                     ) : status === 'success' ? (
                         <div>
@@ -93,12 +93,12 @@ const VerifyEmail = () => {
                         </div>
                         <h2 className="text-2xl font-display font-bold text-text-primary mb-3">Cek Email Anda</h2>
                         <p className="text-sm text-text-secondary leading-relaxed mb-6">
-                            Kami telah mengirimkan tautan verifikasi ke email Anda. Silakan klik tautan tersebut untuk mengaktifkan akun secara penuh.
+                            Kami telah mengirimkan tautan verifikasi ke email Anda Silakan klik tautan tersebut untuk mengaktifkan akun secara penuh
                         </p>
 
                         {user?.email_verified_at && (
                             <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-xs font-semibold">
-                                ✓ Email Anda ({user.email}) sudah terverifikasi!
+                                Email Anda ({user.email}) sudah terverifikasi!
                             </div>
                         )}
 

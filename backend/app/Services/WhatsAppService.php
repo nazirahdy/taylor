@@ -42,11 +42,11 @@ class WhatsAppService
         if ($order->method === 'home_service') {
             $alamat = $order->visit_address ?: 'alamat yang telah Anda berikan saat pemesanan';
             $detailPesan = "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Tim penjahit kami akan *datang langsung ke lokasi Anda* pada tanggal *{$tanggal}* untuk konsultasi desain & pengukuran badan.\n\n"
-                         . "📍 *Alamat Kunjungan:* {$alamat}\n\n"
+                         . "*Alamat Kunjungan:* {$alamat}\n\n"
                          . "Mohon pastikan Anda berada di lokasi tersebut pada tanggal yang telah dijadwalkan ya. Terima kasih!";
         } else {
             $detailPesan = "Pesanan Anda telah dikonfirmasi dan disetujui oleh Admin. Silakan *datang langsung ke Studio Era Jahit* pada tanggal *{$tanggal}* untuk konsultasi desain & pengukuran badan.\n\n"
-                         . "📍 *Alamat Studio:* Jl. Sungai Balang, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat\n\n"
+                         . "*Alamat Studio:* Jl. Sungai Balang, Cupak Tangah, Kec. Pauh, Kota Padang, Sumatera Barat\n\n"
                          . "Setelah sesi pengukuran selesai, Admin akan memperbarui status pesanan dan status pembayaran Anda. Terima kasih!";
         }
 
@@ -246,7 +246,7 @@ class WhatsAppService
         $final = (float) $order->final_payment_amount;
         $total = $dp + $final;
         $isLunas = $price > 0 && $total >= $price && $total > 0;
-        $sisa = $isLunas ? 'Lunas ✅' : 'Rp ' . number_format(max(0, $price - $total), 0, ',', '.');
+        $sisa = $isLunas ? 'Lunas' : 'Rp ' . number_format(max(0, $price - $total), 0, ',', '.');
 
         return "*Halo {$customerName},* \n\n"
              . "Berikut pembaruan status pembayaran pesanan Anda dari Admin *Era Jahit Studio*:\n"

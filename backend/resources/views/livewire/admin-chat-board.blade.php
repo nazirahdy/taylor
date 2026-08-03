@@ -137,22 +137,27 @@
 
     <!-- Input Box -->
     <div class="pt-1 pb-1 bg-white flex-shrink-0" style="flex-shrink: 0;">
-        <form wire:key="chat-form-{{ $this->getId() }}" wire:submit.prevent="sendMessage" @submit="userScrolledUp = false; setTimeout(() => scrollToBottom(true), 150)" class="flex flex-nowrap gap-2 items-center w-full">
+        <form
+            wire:key="chat-form-{{ $this->getId() }}"
+            wire:submit.prevent="sendMessage"
+            @submit="userScrolledUp = false; setTimeout(() => scrollToBottom(true), 150)"
+            style="position: relative; width: 100%; display: block;"
+        >
             <input
                 type="text"
                 wire:key="chat-input-{{ $this->getId() }}"
                 wire:model="newMessage"
                 placeholder="Tulis pesan..."
-                class="flex-1 min-w-0 border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-sans rounded-full bg-gray-50 focus:bg-white"
-                style="outline: none;"
+                class="border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-sans bg-gray-50 focus:bg-white"
+                style="outline: none; display: block; box-sizing: border-box; width: 100%; border-radius: 9999px; padding: 0.625rem 3rem 0.625rem 1rem;"
             />
             <button
                 type="submit"
                 wire:key="chat-send-{{ $this->getId() }}"
-                class="text-white flex items-center justify-center transition-transform hover:scale-105 flex-shrink-0 rounded-full shadow-sm"
-                style="background-color: #79D12A; width: 40px; height: 40px; min-width: 40px;"
+                class="text-white rounded-full shadow-sm"
+                style="position: absolute; top: 50%; right: 4px; transform: translateY(-50%); background-color: #79D12A; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; margin-left: -2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px; margin-left: -2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
         </form>
     </div>
