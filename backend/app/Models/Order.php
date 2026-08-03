@@ -3,7 +3,6 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Order extends Model
 {
@@ -80,9 +79,14 @@ class Order extends Model
 
     public static function generateUniqueOrderNumber(): string
     {
+        $prefix = 'EJ-' . now()->format('Ymd') . '-';
+        $sequence = self::where('order_number', 'like', $prefix . '%')->count() + 1;
+
         do {
-            $number = 'EJ-' . strtoupper(Str::random(8));
-        } while (self::where('order_number', $number)->exists());
+            $number = $prefix . str_pad($sequence, 2, '0', STR_PAD_LEFT);
+            $taken = self::where('order_number', $number)->exists();
+            $sequence++;
+        } while ($taken);
 
         return $number;
     }
