@@ -31,6 +31,12 @@ class WhatsAppService
         $formattedNumber = $this->formatNumber($phoneWA);
         $encodedMessage = rawurlencode($message);
 
+        \Illuminate\Support\Facades\Log::debug('WA_DEBUG generateWaLink', [
+            'first_60_bytes_hex' => bin2hex(substr($message, 0, 60)),
+            'is_valid_utf8'      => mb_check_encoding($message, 'UTF-8') ? 'yes' : 'NO',
+            'encoded_first_80'   => substr($encodedMessage, 0, 80),
+        ]);
+
         return "https://wa.me/{$formattedNumber}?text={$encodedMessage}";
     }
 
