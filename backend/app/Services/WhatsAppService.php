@@ -12,7 +12,7 @@ class WhatsAppService
 
     public function messageFooter(): string
     {
-        return "\n\n📌 Cek riwayat & progres pesanan Anda kapan saja di *" . self::WEBSITE_NAME . "*:\n"
+        return "\n\n>> Cek riwayat & progres pesanan Anda kapan saja di *" . self::WEBSITE_NAME . "*:\n"
              . self::DASHBOARD_URL;
     }
 
@@ -30,12 +30,6 @@ class WhatsAppService
     {
         $formattedNumber = $this->formatNumber($phoneWA);
         $encodedMessage = rawurlencode($message);
-
-        \Illuminate\Support\Facades\Log::debug('WA_DEBUG generateWaLink', [
-            'first_60_bytes_hex' => bin2hex(substr($message, 0, 60)),
-            'is_valid_utf8'      => mb_check_encoding($message, 'UTF-8') ? 'yes' : 'NO',
-            'encoded_first_80'   => substr($encodedMessage, 0, 80),
-        ]);
 
         return "https://wa.me/{$formattedNumber}?text={$encodedMessage}";
     }
@@ -119,7 +113,7 @@ class WhatsAppService
         return "Halo {$order->user->name} \n\n"
              . "Progres pesanan Anda #{$order->id} di *Era Jahit Studio* baru saja diperbarui oleh Admin:\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
-             . "*Tahap Progres:* *{$stage}* 🪡\n"
+             . "*Tahap Progres:* *{$stage}*\n"
              . "━━━━━━━━━━━━━━━━━━━\n"
              . "Pesan Progres:{$descriptionStr}\n\n"
              . "Terima kasih atas kepercayaan Anda!"
@@ -236,10 +230,10 @@ class WhatsAppService
                  . "Progres pesanan Anda di *Era Jahit Studio* baru saja diperbarui oleh Admin:\n"
                  . "━━━━━━━━━━━━━━━━━━━\n"
                  . "*Nomor Pesanan:* {$order->order_number}\n"
-                 . "*Tahap Progres:* *{$log->stage_label}* 🪡\n"
+                 . "*Tahap Progres:* *{$log->stage_label}*\n"
                  . "━━━━━━━━━━━━━━━━━━━\n"
                  . "Pesan Progres dari Admin:{$descriptionStr}\n\n"
-                 . "Anda dapat memantau linimasa progres pesanan Anda secara lengkap di aplikasi Era Jahit. Terima kasih! ✨";
+                 . "Anda dapat memantau linimasa progres pesanan Anda secara lengkap di aplikasi Era Jahit. Terima kasih!";
 
         $this->sendMessage($order->user->phone_wa, $message);
     }

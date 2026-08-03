@@ -368,15 +368,15 @@ class OrderResource extends Resource
                         if ($record->user && $record->user->phone_wa) {
                             $whatsAppService = app(\App\Services\WhatsAppService::class);
                             $nomPelunasan = number_format($data['final_payment_amount'], 0, ',', '.');
-                            $msg = "Halo {$record->user->name} 💵\n"
+                            $msg = "Halo {$record->user->name}\n"
                                  . "Terima kasih, pembayaran pelunasan sebesar *Rp {$nomPelunasan}* untuk pesanan #{$record->id} telah kami terima.\n";
-                            
+
                             if ($record->is_fully_paid) {
-                                $msg .= "Pesanan Anda kini berstatus LUNAS. Terima kasih! ✨";
+                                $msg .= "Pesanan Anda kini berstatus LUNAS. Terima kasih!";
                             } else {
                                 $sisa = max(0, $record->estimated_price - $record->dp_amount - $record->final_payment_amount);
                                 $nomSisa = number_format($sisa, 0, ',', '.');
-                                $msg .= "Sisa tagihan Anda saat ini adalah *Rp {$nomSisa}*. Terima kasih! ✨";
+                                $msg .= "Sisa tagihan Anda saat ini adalah *Rp {$nomSisa}*. Terima kasih!";
                             }
                             $msg .= $whatsAppService->messageFooter();
 
@@ -408,11 +408,11 @@ class OrderResource extends Resource
                             
                             $estimatedPrice = number_format($record->estimated_price, 0, ',', '.');
                             $dpAmount = number_format($record->dp_amount, 0, ',', '.');
-                            $msg = "Halo {$record->user->name} 🧵\n"
+                            $msg = "Halo {$record->user->name}\n"
                                  . "Tim Era Jahit telah meninjau pesanan Anda #{$record->id}.\n\n"
-                                 . "💰 *Estimasi Total*: Rp {$estimatedPrice}\n"
-                                 . "💳 *Uang Muka (DP)*: Rp {$dpAmount}\n\n"
-                                 . "Silakan bayar DP agar pesanan segera kami proses! 🙏"
+                                 . "*Estimasi Total*: Rp {$estimatedPrice}\n"
+                                 . "*Uang Muka (DP)*: Rp {$dpAmount}\n\n"
+                                 . "Silakan bayar DP agar pesanan segera kami proses!"
                                  . $waService->messageFooter();
 
                             $url = $waService->generateWaLink($record->user->phone_wa, $msg);

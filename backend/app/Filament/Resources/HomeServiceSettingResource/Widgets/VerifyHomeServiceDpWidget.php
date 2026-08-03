@@ -124,15 +124,15 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                             $customerName = $record->user->name;
                             $dpFormatted = 'Rp ' . number_format((float)$record->dp_amount, 0, ',', '.');
 
-                            $waMsg = "✅ *Halo {$customerName},*\n\n"
+                            $waMsg = "*Halo {$customerName},*\n\n"
                                    . "Kabar baik! Pembayaran DP pesanan Anda di *Era Jahit Studio* telah berhasil diverifikasi oleh Admin:\n"
                                    . "━━━━━━━━━━━━━━━━━━━\n"
-                                   . "📦 *Nomor Pesanan:* {$record->order_number}\n"
-                                   . "💰 *Jumlah DP Diverifikasi:* {$dpFormatted}\n"
-                                   . "📌 *Status Saat Ini:* *MENUNGGU KONFIRMASI ADMIN* ⏳\n"
+                                   . "*Nomor Pesanan:* {$record->order_number}\n"
+                                   . "*Jumlah DP Diverifikasi:* {$dpFormatted}\n"
+                                   . "*Status Saat Ini:* *MENUNGGU KONFIRMASI ADMIN*\n"
                                    . "━━━━━━━━━━━━━━━━━━━\n"
                                    . "Pesan dari Admin:\n"
-                                   . "_DP Anda sudah kami terima dan terverifikasi. Pesanan Anda kini sedang menunggu konfirmasi akhir dari Admin. Kami akan segera menghubungi Anda kembali setelah pesanan dikonfirmasi._ 🙏✨\n\n"
+                                   . "_DP Anda sudah kami terima dan terverifikasi. Pesanan Anda kini sedang menunggu konfirmasi akhir dari Admin. Kami akan segera menghubungi Anda kembali setelah pesanan dikonfirmasi._\n\n"
                                    . "Terima kasih telah memilih Era Jahit Studio!"
                                    . $waService->messageFooter();
 
@@ -187,15 +187,15 @@ class VerifyHomeServiceDpWidget extends BaseWidget
                             $waService = app(WhatsAppService::class);
                             $customerName = $record->user->name;
 
-                            $waMsg = "❌ *Halo {$customerName},*\n\n"
+                            $waMsg = "*Halo {$customerName},*\n\n"
                                    . "Mohon maaf, bukti pembayaran DP pesanan Anda di *Era Jahit Studio* tidak dapat kami verifikasi:\n"
                                    . "━━━━━━━━━━━━━━━━━━━\n"
-                                   . "📦 *Nomor Pesanan:* {$record->order_number}\n"
-                                   . "📌 *Status DP:* *DITOLAK* ❌\n"
+                                   . "*Nomor Pesanan:* {$record->order_number}\n"
+                                   . "*Status DP:* *DITOLAK*\n"
                                    . "━━━━━━━━━━━━━━━━━━━\n"
                                    . "Alasan dari Admin:\n"
                                    . "_*{$data['alasan_tolak']}*_\n\n"
-                                   . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih. 🙏"
+                                   . "Silakan upload ulang bukti transfer yang valid melalui aplikasi Era Jahit Studio. Jika ada pertanyaan, silakan hubungi kami langsung. Terima kasih."
                                    . $waService->messageFooter();
 
                             $waUrl = $waService->generateWaLink($record->user->phone_wa, $waMsg);
