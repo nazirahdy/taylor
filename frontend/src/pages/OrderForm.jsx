@@ -671,9 +671,9 @@ const OrderForm = () => {
                 </div>
                 
                 {formData.metode === 'home_service' && (
-                    <div className="mb-7 max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-8 border border-border rounded-[1.5rem] shadow-sm">
-                        <h3 className="font-display font-bold text-lg text-text-primary mb-2 flex items-center gap-3">
-                            <span className="w-6 h-[2px] bg-primary"></span> Detail Lokasi Kunjungan
+                    <div className="mb-7 max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500 bg-white p-4 sm:p-8 border border-border rounded-[1.5rem] shadow-sm">
+                        <h3 className="font-display font-bold text-lg text-text-primary mb-2 flex items-start gap-3">
+                            <span className="w-6 h-[2px] bg-primary mt-2.5 shrink-0"></span> Detail Lokasi Kunjungan
                         </h3>
 
                         {/* Single Unified Address Field with Autocomplete Suggestions */}
@@ -714,22 +714,22 @@ const OrderForm = () => {
                             )}
                         </div>
 
-                        <div className="bg-surface border border-border p-6 rounded-2xl">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                        <div className="bg-surface border border-border p-4 sm:p-6 rounded-2xl">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
                                 <div>
                                     <span className="text-[10px] uppercase tracking-widest text-text-muted font-bold block">Lokasi Barang (Pin Point Peta)</span>
                                     <span className={`text-xs font-bold flex items-center gap-2 ${mapsVerified ? 'text-green-600' : 'text-red-500'}`}>
-                                        <span className={`w-2 h-2 rounded-full ${mapsVerified ? 'bg-green-600 animate-ping' : 'bg-red-500'}`}></span>
+                                        <span className={`w-2 h-2 rounded-full shrink-0 ${mapsVerified ? 'bg-green-600 animate-ping' : 'bg-red-500'}`}></span>
                                         {mapsVerified ? 'Koordinat Terverifikasi & Dapat Digeser' : 'Belum Tersemat Pin Peta'}
                                     </span>
                                 </div>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                                     <button
                                         type="button"
                                         onClick={handleGetCurrentLocation}
-                                        className="px-4 py-2 text.xs font-bold rounded-xl transition-all border bg-white text-primary border-primary hover:bg-primary/10 shadow-sm flex items-center gap-2"
+                                        className="px-4 py-2 text-xs font-bold rounded-xl transition-all border bg-white text-primary border-primary hover:bg-primary/10 shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap"
                                     >
-                                        <MapPin className="w-4 h-4 text-primary" /> Gunakan GPS Saya
+                                        <MapPin className="w-4 h-4 text-primary shrink-0" /> Gunakan GPS Saya
                                     </button>
                                 </div>
                             </div>
