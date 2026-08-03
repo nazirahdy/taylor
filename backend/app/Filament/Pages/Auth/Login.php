@@ -8,6 +8,8 @@ use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class Login extends BaseLogin
 {
@@ -61,7 +63,12 @@ class Login extends BaseLogin
             return app(LoginResponse::class);
         }
 
-        
-        $this->throwFailureValidationException();
+        $emailTerdaftar = User::where('email', $credentials['email'] ?? null)->exists();
+
+        throw ValidationException::withMessages([
+            $emailTerdaftar ? 'data.password' : 'data.email' => $emailTerdaftar
+                ? 'Password yang Anda masukkan salah.'
+                : 'Email tidak terdaftar.',
+        ]);
     }
 }
