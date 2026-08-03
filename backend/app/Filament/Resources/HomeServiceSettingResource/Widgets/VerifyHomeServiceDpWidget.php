@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\HomeServiceSettingResource\Widgets;
 
 use App\Models\Order;
+use App\Models\ProgressLog;
 use App\Services\WhatsAppService;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -10,6 +11,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action as NotificationAction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class VerifyHomeServiceDpWidget extends BaseWidget
 {
@@ -114,6 +116,12 @@ class VerifyHomeServiceDpWidget extends BaseWidget
 
                         // 2. Update status pesanan ke confirmed (atau status baru 'dp_verified' jika sudah ditambahkan)
                         $record->update(['status' => 'confirmed']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'confirmed',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->refresh();
                         $record->load('user');
 

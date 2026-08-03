@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
+use App\Models\ProgressLog;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderResource extends Resource
 {
@@ -298,6 +300,12 @@ class OrderResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'pending' && $record->method !== 'home_service')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'confirmed']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'confirmed',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->refresh();
                         $record->load('user');
 
@@ -328,6 +336,12 @@ class OrderResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'finishing')
                     ->action(function (Order $record) {
                         $record->update(['status' => 'selesai_penyerahan']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'selesai_penyerahan',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         Notification::make()->title('Pesanan selesai & siap diserahkan!')->success()->send();
                     }),
                 

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderStatusResource\Pages;
 use App\Models\Order;
+use App\Models\ProgressLog;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action as NotificationAction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderStatusResource extends Resource
 {
@@ -176,6 +178,16 @@ class OrderStatusResource extends Resource
                         return $record;
                     })
                     ->after(function (Order $record, array $data, $livewire) {
+                        if (array_key_exists($data['status'], ProgressLog::STAGE_LABELS)) {
+                            ProgressLog::create([
+                                'order_id'    => $record->id,
+                                'stage'       => $data['status'],
+                                'description' => null,
+                                'updated_by'  => Auth::id(),
+                                'notified_at' => Carbon::now(),
+                            ]);
+                        }
+
                         if (!$record->user?->phone_wa) {
                             Notification::make()->title('Status Diperbarui')->success()->send();
                             return;
@@ -232,6 +244,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Pesanan akan dikonfirmasi dan Anda akan dialihkan ke WhatsApp untuk mengirim pesan.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'confirmed']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'confirmed',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -263,6 +281,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Status akan diubah ke "Pola dan Pemotongan" dan Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'pola_pemotongan']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'pola_pemotongan',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -294,6 +318,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Status akan diubah ke "Pola Penjahitan" dan Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'pola_penjahitan']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'pola_penjahitan',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -325,6 +355,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Status akan diubah ke "Proses Menjahit" dan Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'proses_menjahit']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'proses_menjahit',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -356,6 +392,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Status akan diubah ke "Finishing" dan Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'finishing']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'finishing',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
@@ -387,6 +429,12 @@ class OrderStatusResource extends Resource
                     ->modalDescription('Pesanan akan ditandai selesai dan diserahkan, serta Anda akan dialihkan ke WhatsApp.')
                     ->action(function (Order $record, $livewire) {
                         $record->update(['status' => 'selesai_penyerahan']);
+                        ProgressLog::create([
+                            'order_id'    => $record->id,
+                            'stage'       => 'selesai_penyerahan',
+                            'updated_by'  => Auth::id(),
+                            'notified_at' => Carbon::now(),
+                        ]);
                         $record->load('user');
 
                         if ($record->user?->phone_wa) {
