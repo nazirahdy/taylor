@@ -1229,18 +1229,18 @@ const OrderForm = () => {
                             </p>
                             
                             <div className="w-full h-64 rounded-2xl bg-gray-200 overflow-hidden relative border border-border shadow-inner mb-6">
-                                <iframe 
+                                <iframe
                                     title="Google Maps Studio"
-                                    src="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D" 
+                                    src="https://maps.google.com/maps?q=-0.9394053,100.4339543&t=&z=17&ie=UTF8&iwloc=&output=embed"
                                     className="w-full h-full border-0 grayscale opacity-90"
-                                    allowFullScreen="" 
+                                    allowFullScreen=""
                                     loading="lazy"
                                 ></iframe>
                                 <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>
                             </div>
 
-                            <a 
-                                href="https://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,261.95h,65.63t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D24.36674356233864%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D261.9512668509286!7i16384!8i8192!4m15!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m5!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3Dhttps://www.google.com/maps/place/Kantor+Camat+Pauh/@-0.9392632,100.4337847,94a,75y,235.37h,87.47t/data=!3m7!1e1!3m5!1szCgzPeCeTO156NQHVpPS2w!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D2.530974196500651%26panoid%3DzCgzPeCeTO156NQHVpPS2w%26yaw%3D235.36847697311003!7i16384!8i8192!4m16!1m8!3m7!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!2sKantor+Camat+Pauh!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd!3m6!1s0x2fd4b9da28a9eb37:0x9943782e33af5c61!8m2!3d-0.9394053!4d100.4339543!10e5!16s%2Fg%2F1hm6lxccd?entry=ttu&g_ep=EgoyMDI2MDcyNi4wIKXMDSoASAFQAw%3D%3D"
+                            <a
+                                href="https://www.google.com/maps/dir/?api=1&destination=-0.9394053,100.4339543"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full py-4 border border-border hover:border-primary text-text-primary hover:text-primary transition-all flex items-center justify-center gap-3 font-sans text-xs font-bold uppercase tracking-widest rounded-xl bg-surface hover:bg-white shadow-sm"
