@@ -117,7 +117,7 @@ class ChatMessageResource extends Resource
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)
-                    ->modalWidth('3xl'),
+                    ->modalWidth('lg'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

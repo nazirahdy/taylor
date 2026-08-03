@@ -37,8 +37,8 @@
             }
         });
     "
-    class="flex flex-col bg-white overflow-hidden w-full" 
-    style="height: 480px; display: flex; flex-direction: column;"
+    class="flex flex-col bg-white overflow-hidden w-full"
+    style="height: 400px; display: flex; flex-direction: column;"
     wire:poll.3s
 >
 
