@@ -70,7 +70,7 @@
                 $senderName = $isAdmin ? 'Admin Era Jahit' : ($msg->sender?->name ?: 'Pelanggan');
                 $initial = strtoupper(substr($senderName, 0, 1));
             @endphp
-            <div class="flex w-full mb-3 {{ $isAdmin ? 'justify-end' : 'justify-start' }} group relative">
+            <div wire:key="chat-msg-{{ $msg->id }}" class="flex w-full mb-3 {{ $isAdmin ? 'justify-end' : 'justify-start' }} group relative">
                 
                 @if(!$isAdmin)
                     <!-- Avatar Pelanggan -->
@@ -137,16 +137,18 @@
 
     <!-- Input Box -->
     <div class="pt-1 pb-1 bg-white flex-shrink-0" style="flex-shrink: 0;">
-        <form wire:submit.prevent="sendMessage" @submit="userScrolledUp = false; setTimeout(() => scrollToBottom(true), 150)" class="flex gap-2 items-center w-full">
-            <input 
-                type="text" 
-                wire:model="newMessage" 
-                placeholder="Tulis pesan..." 
-                class="flex-1 w-full min-w-0 border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-sans rounded-full bg-gray-50 focus:bg-white"
+        <form wire:key="chat-form-{{ $this->getId() }}" wire:submit.prevent="sendMessage" @submit="userScrolledUp = false; setTimeout(() => scrollToBottom(true), 150)" class="flex flex-nowrap gap-2 items-center w-full">
+            <input
+                type="text"
+                wire:key="chat-input-{{ $this->getId() }}"
+                wire:model="newMessage"
+                placeholder="Tulis pesan..."
+                class="flex-1 min-w-0 border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-sans rounded-full bg-gray-50 focus:bg-white"
                 style="outline: none;"
             />
-            <button 
-                type="submit" 
+            <button
+                type="submit"
+                wire:key="chat-send-{{ $this->getId() }}"
                 class="text-white flex items-center justify-center transition-transform hover:scale-105 flex-shrink-0 rounded-full shadow-sm"
                 style="background-color: #79D12A; width: 40px; height: 40px; min-width: 40px;"
             >
