@@ -825,7 +825,7 @@ const OrderForm = () => {
                 <p className="text-text-secondary text-sm max-w-lg mx-auto">Pilih tanggal yang tersedia untuk sesi desain utama atau pengukuran.</p>
             </div>
 
-            <div className="max-w-4xl mx-auto bg-surface rounded-[1.5rem] border border-border p-6 shadow-sm">
+            <div className="max-w-4xl mx-auto bg-surface rounded-[1.5rem] border border-border p-3 sm:p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <div>
                         <h3 className="text-xl font-bold text-text-primary">Kalender Jadwal Kuota</h3>
@@ -856,13 +856,13 @@ const OrderForm = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-7 gap-2 text-center text-[11px] uppercase tracking-[0.15em] text-text-muted font-bold mb-3">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center text-[8px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.15em] text-text-muted font-bold mb-3">
                     {weekDayLabels.map((day) => (
-                        <div key={day} className="py-2">{day}</div>
+                        <div key={day} className="py-1 sm:py-2">{day}</div>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-7 gap-2">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
                     {buildCalendarWeeks(dates).map((week, weekIndex) => (
                         <React.Fragment key={weekIndex}>
                             {week.map((d, dayIndex) => (
@@ -886,15 +886,15 @@ const OrderForm = () => {
                                         }
                                         setFormData({...formData, tanggal: d.date});
                                     }}
-                                    className={`min-h-[76px] flex flex-col items-center justify-between rounded-3xl border p-4 text-left transition-all duration-500 ${
+                                    className={`min-h-[52px] sm:min-h-[76px] flex flex-col items-center justify-between rounded-lg sm:rounded-3xl border p-1 sm:p-4 text-left transition-all duration-500 ${
                                         !d ? 'bg-transparent border-transparent cursor-default' : (d.is_past || d.disabled || d.is_closure) ? 'bg-surface border-border opacity-70 cursor-pointer hover:border-primary/50' : formData.tanggal === d.date ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20' : 'bg-white border-border hover:border-primary/50 text-text-primary shadow-sm'
                                     }`}
                                 >
                                     {d ? (
                                         <>
-                                            <span className="text-[11px] font-medium text-text-muted">{d.day}</span>
-                                            <span className="text-3xl font-bold my-2">{d.num}</span>
-                                            <span className={`text-[10px] px-2 py-1 rounded-full font-medium ${d.is_past ? 'bg-gray-100 text-gray-500 border border-gray-200' : d.is_closure ? 'bg-amber-50 text-amber-600 border border-amber-100' : d.disabled ? 'bg-red-50 text-red-600 border border-red-100' : formData.tanggal === d.date ? 'bg-white/20 text-white border border-white/30' : 'bg-surface border border-border text-text-muted'}`}>
+                                            <span className="text-[8px] sm:text-[11px] font-medium text-text-muted">{d.day}</span>
+                                            <span className="text-sm sm:text-3xl font-bold my-0.5 sm:my-2">{d.num}</span>
+                                            <span className={`text-[6px] sm:text-[10px] px-1 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium whitespace-nowrap ${d.is_past ? 'bg-gray-100 text-gray-500 border border-gray-200' : d.is_closure ? 'bg-amber-50 text-amber-600 border border-amber-100' : d.disabled ? 'bg-red-50 text-red-600 border border-red-100' : formData.tanggal === d.date ? 'bg-white/20 text-white border border-white/30' : 'bg-surface border border-border text-text-muted'}`}>
                                                 {d.is_past ? 'Lampau' : d.is_closure ? 'Tutup' : d.disabled ? 'Penuh' : `Sisa ${d.available_slots}`}
                                             </span>
                                         </>

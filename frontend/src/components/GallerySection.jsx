@@ -179,11 +179,11 @@ const GallerySection = () => {
                         </div>
 
                         <div className="w-full md:w-2/5 p-6 md:p-8 flex flex-col relative bg-white">
-                            <button onClick={() => setSelectedImage(null)} className="absolute top-8 right-8 w-12 h-12 bg-surface text-text-muted flex items-center justify-center rounded-xl hover:bg-primary hover:text-white transition-all border border-border group">
+                            <button onClick={() => setSelectedImage(null)} className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 md:w-12 md:h-12 bg-surface text-text-muted flex items-center justify-center rounded-xl hover:bg-primary hover:text-white transition-all border border-border group z-10">
                                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
                             </button>
 
-                            <div className="mt-4 mb-auto">
+                            <div className="mt-4 mb-auto pr-14 md:pr-0">
                                 <span className="text-primary text-[11px] uppercase tracking-[0.4em] block mb-2 font-bold font-sans">{selectedImage.category || 'Koleksi Eksklusif'}</span>
                                 <h3 className="text-2xl font-display font-bold mb-4 leading-tight text-text-primary">{selectedImage.title || `Galeri ${selectedImage.id}`}</h3>
                                 <p className="text-text-secondary text-sm leading-relaxed mb-8 font-body">
