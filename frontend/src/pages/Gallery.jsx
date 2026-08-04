@@ -99,11 +99,11 @@ const Gallery = () => {
                         <p className="font-body italic text-sm tracking-widest">Belum ada karya untuk kategori ini</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-5 gap-2 sm:gap-4">
                         {filteredModels.map((item, i) => (
                             <div
                                 key={item.id}
-                                className="group relative overflow-hidden rounded-[1.25rem] bg-surface p-2.5 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
+                                className="group relative overflow-hidden rounded-[1.25rem] bg-surface p-1 sm:p-2.5 border border-border cursor-zoom-in aspect-[4/5] animate-slide-up shadow-sm hover:shadow-2xl transition-all duration-700"
                                 style={{ animationDelay: `${i * 50}ms` }}
                                 onClick={() => handleImageClick(item)}
                             >
