@@ -77,10 +77,10 @@
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            padding: 8px 12px;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            width: 30%;
+            padding: 5px 8px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            width: 22%;
             box-sizing: border-box;
         }
         .summary-label {
