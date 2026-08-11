@@ -102,6 +102,12 @@ body {
   background: #1A5C4A;
 }
 
+/* Sembunyikan ikon mata bawaan browser (Edge/IE) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 /* UI Utilities */
 @utility glass {
   background: rgba(26, 26, 26, 0.7);

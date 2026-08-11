@@ -44,7 +44,7 @@ const ManagePassword = () => {
         }
     };
 
-    const inputClass = "w-full bg-white border border-border px-6 py-4 rounded-xl focus:outline-none focus:border-primary transition-all text-sm font-body text-text-primary placeholder:text-text-muted/50";
+    const inputClass = "w-full bg-white border border-border px-6 py-4 pr-12 rounded-xl focus:outline-none focus:border-primary transition-all text-sm font-body text-text-primary placeholder:text-text-muted/50";
     const labelClass = "block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-3 font-sans";
 
     return (
