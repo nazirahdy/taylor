@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { AlertCircle, CheckCircle2, Loader2, Save, KeyRound, User, Ruler, LogOut, Search } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, Save, KeyRound, User, Ruler, LogOut, Search, Eye, EyeOff } from 'lucide-react';
 
 const Profile = () => {
     const { user, updateUserState, logout } = useAuth();
@@ -33,6 +33,7 @@ const Profile = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     // State Notifikasi
     const [msgMode, setMsgMode] = useState('');
@@ -200,9 +201,24 @@ const Profile = () => {
                             )}
 
                             <form onSubmit={handleSavePassword} className="space-y-6">
-                                <input type="password" required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Kata Sandi Saat Ini" className={inputClass} />
-                                <input type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Kata Sandi Baru" className={inputClass} />
-                                <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Konfirmasi Kata Sandi Baru" className={inputClass} />
+                                <div className="relative">
+                                    <input type={showPassword ? "text" : "password"} required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Kata Sandi Saat Ini" className={inputClass} />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
+                                <div className="relative">
+                                    <input type={showPassword ? "text" : "password"} required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Kata Sandi Baru" className={inputClass} />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
+                                <div className="relative">
+                                    <input type={showPassword ? "text" : "password"} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Konfirmasi Kata Sandi Baru" className={inputClass} />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                </div>
                                 <button type="submit" disabled={isLoadingPw} className="w-full py-5 border border-border text-text-primary font-bold uppercase tracking-widest text-[11px] hover:bg-white hover:shadow-md transition-all rounded-xl font-sans">
                                     {isLoadingPw ? <Loader2 className="w-5 h-5 animate-spin" /> : "Perbarui Kata Sandi"}
                                 </button>
