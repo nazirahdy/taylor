@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, CheckCircle2, Loader2, KeyRound, ArrowLeft } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, KeyRound, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 const ManagePassword = () => {
     const navigate = useNavigate();
@@ -9,6 +9,7 @@ const ManagePassword = () => {
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const [msgMode, setMsgMode] = useState('');
     const [msgText, setMsgText] = useState('');
@@ -75,15 +76,30 @@ const ManagePassword = () => {
                     <form onSubmit={handleSavePassword} className="space-y-6">
                         <div>
                             <label className={labelClass}>Kata Sandi Saat Ini</label>
-                            <input type="password" required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Masukkan kata sandi lama" className={inputClass} />
+                            <div className="relative">
+                                <input type={showPassword ? "text" : "password"} required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} placeholder="Masukkan kata sandi lama" className={inputClass} />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label className={labelClass}>Kata Sandi Baru</label>
-                            <input type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Masukkan kata sandi baru" className={inputClass} />
+                            <div className="relative">
+                                <input type={showPassword ? "text" : "password"} required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Masukkan kata sandi baru" className={inputClass} />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label className={labelClass}>Konfirmasi Kata Sandi Baru</label>
-                            <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Ketik ulang kata sandi baru" className={inputClass} />
+                            <div className="relative">
+                                <input type={showPassword ? "text" : "password"} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Ketik ulang kata sandi baru" className={inputClass} />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors">
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
                         </div>
                         
                         <div className="pt-6 border-t border-border mt-8">
