@@ -19,10 +19,17 @@ class ClearReadNotifications
         $user = Auth::guard('web')->user() ?? Auth::guard('owner')->user();
 
         if ($user && method_exists($user, 'unreadNotifications')) {
-            $unread = $user->unreadNotifications;
+            // Gunakan ->get() agar tidak melakukan caching pada relasi model User
+            // yang dapat merusak fitur polling notifikasi bawaan Filament.
+            $unread = $user->unreadNotifications()->get();
 
             if ($unread->isNotEmpty()) {
                 $currentPath = $request->path(); 
+                
+                // Jangan jalankan pada request livewire (polling dsb)
+                if ($currentPath === 'livewire/update') {
+                    return $response;
+                }
                 
                 foreach ($unread as $notification) {
                     $actions = $notification->data['actions'] ?? [];
