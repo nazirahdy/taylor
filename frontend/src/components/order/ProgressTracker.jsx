@@ -73,11 +73,13 @@ const ProgressTracker = ({ orderId, orderStatus }) => {
     const STAGES_ORDER = ['pending', 'confirmed', 'pola_pemotongan', 'pola_penjahitan', 'proses_menjahit', 'finishing', 'selesai_penyerahan'];
     const currentIdx = STAGES_ORDER.indexOf(orderStatus);
     const isFullyDone = orderStatus === 'selesai_penyerahan';
-    const completedStageKeys = new Set(STAGES_ORDER.slice(0, currentIdx + (isFullyDone ? 1 : 0)));
+    
+    const sliceEnd = currentIdx >= 0 ? currentIdx + (isFullyDone ? 1 : 0) : 0;
+    const completedStageKeys = new Set(STAGES_ORDER.slice(0, sliceEnd));
     
     // Determine completed and active stages
-    const latestCompletedIndex = currentIdx;
-    const displayActiveIndex = currentIdx;
+    const latestCompletedIndex = currentIdx >= 0 ? currentIdx : -1;
+    const displayActiveIndex = currentIdx >= 0 ? currentIdx : 0;
 
     return (
         <div className="bg-surface rounded-[1.5rem] p-8 md:p-6 border border-border shadow-sm flex-1">
