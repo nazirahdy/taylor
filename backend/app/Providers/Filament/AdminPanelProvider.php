@@ -70,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 TrackAdminActivity::class,
+                \App\Http\Middleware\ClearReadNotifications::class,
             ]);
     }
 }
