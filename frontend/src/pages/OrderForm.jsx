@@ -1035,7 +1035,7 @@ const OrderForm = () => {
                         <div className="grid md:grid-cols-2 gap-5 mb-8">
                             <div>
                                 <span className="text-xs text-text-muted font-medium block mb-1">Transfer Bank Mandiri</span>
-                                <span className="text-text-primary font-mono font-bold text-lg tracking-wider block">123-00-0987654-1</span>
+                                <span className="text-text-primary font-mono font-bold text-lg tracking-wider block">7241 0102 9459534</span>
                                 <span className="text-xs text-text-muted block mt-1">a/n Era Jahit Studio</span>
                             </div>
                             <div>
